@@ -51,7 +51,7 @@ from promptic import promptic
     stream=True,
     model="claude-3-haiku-20240307",
 )
-def haiku(subject, adjective, verb) -> str:
+def haiku(subject, adjective, verb):
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
 print("".join(haiku("programming", "witty", "delights")))
