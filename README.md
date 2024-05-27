@@ -75,8 +75,6 @@ print("".join(haiku("nature", "beautiful", "inspires")))
 
 With its legible and concise codebase, `promptic` is easy to understand and extend. It leverages the power of `litellm` under the hood, ensuring compatibility with a wide range of LLMs.
 
-Whether you're building a chatbot, generating content, or analyzing text, `promptic` provides a straightforward and efficient way to interact with LLMs in your Python projects.
-
 ## License
 
 `promptic` is open-source software licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
