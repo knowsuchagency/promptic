@@ -1,6 +1,11 @@
 # promptic
 
-`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs with just a few lines of code.
+<div style="display: flex; align-items: center;">
+    <img src="https://github.com/knowsuchagency/promptic/assets/11974795/f268c049-5f33-4ee6-81d0-a976e855dc43" alt="Promptic Python logo" width="200" height="200">
+    <div style="margin-left: 20px;">
+        <code>promptic</code> is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using <a href="https://github.com/litellm/litellm">litellm</a>. With <code>promptic</code>, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs with just a few lines of code.
+    </div>
+</div>
 
 ## Installation
 
