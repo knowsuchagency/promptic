@@ -3,25 +3,39 @@ import json
 import re
 from functools import wraps
 from typing import Callable
+import logging
 
 import litellm
 from pydantic import BaseModel
 
+logger = logging.getLogger(__name__)
+
 
 def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
+    logger.debug("{fn = }")
+    logger.debug(f"{model = }")
+    logger.debug(f"{litellm_kwargs = }")
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            logger.debug(f"{args = }")
+            logger.debug(f"{kwargs = }")
             # Get the function's docstring as the prompt
             prompt_template = func.__doc__
 
-            # Get the argument names and values using inspect
-            arg_names = inspect.signature(func).parameters.keys()
-            arg_values = dict(zip(arg_names, args))
+            # Get the argument names, default values and values using inspect
+            sig = inspect.signature(func)
+            arg_names = sig.parameters.keys()
+            arg_values = {name: sig.parameters[name].default if sig.parameters[name].default is not inspect.Parameter.empty else None for name in arg_names}
+            arg_values.update(zip(arg_names, args))
             arg_values.update(kwargs)
+
+            logger.debug(f"{arg_values = }")
 
             # Replace {name} placeholders with argument values
             prompt_text = prompt_template.format(**arg_values)
+
+            
 
             # Check if the function has a return type hint of a Pydantic model
             return_type = func.__annotations__.get("return")
@@ -33,6 +47,8 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
                 prompt_text += f"\n\nThe result should conform to the following JSON schema:\n```json\n{json_schema}\n```"
                 prompt_text += "\n\nPlease provide the result enclosed in triple backticks with 'json' on the first line."
 
+            logger.debug(f"{prompt_text = }")
+            
             # Call the LLM with the prompt
             response = litellm.completion(
                 model=model,
@@ -50,6 +66,8 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
             else:
                 # Get the generated text from the LLM response
                 generated_text = response["choices"][0]["message"]["content"]
+
+                logger.debug(f"{generated_text = }")
 
                 if return_type and issubclass(return_type, BaseModel):
                     # Extract the JSON result using regex
@@ -73,7 +91,9 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
 
 def _stream_response(response):
     for part in response:
-        yield part.choices[0].delta.content or ""
+        chunk = part.choices[0].delta.content or ""
+        logger.debug(f"{chunk = }")
+        yield chunk
 
 
 llm = promptic
