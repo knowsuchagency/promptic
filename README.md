@@ -1,6 +1,6 @@
 # promptic
 
-`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using `litellm`. With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs, all in under 100 lines of code.
+`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm](litellm) With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs, all in under 100 lines of code.
 
 ## Installation
 
@@ -41,7 +41,7 @@ print(get_capital("France"))
 # country='France' capital='Paris'
 ```
 
-### Streaming Response
+### Streaming Response (and [litellm](litellm) integration)
 
 ```python
 from promptic import promptic
@@ -49,14 +49,15 @@ from promptic import promptic
 @promptic(
     # keyword args are passed to litellm.completion
     stream=True,
+    model="claude-3-haiku-20240307",
 )
-def haiku(subject: str, adjective: str, verb: str) -> str:
+def haiku(subject, adjective, verb) -> str:
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
-print("".join(haiku("nature", "beautiful", "inspires")))
-# Vibrant green leaves sway
-# Birds sing melodies of joy
-# Nature's perfect dance
+print("".join(haiku("programming", "witty", "delights")))
+# Bugs in the code taunt,
+# Syntax errors abound, yet
+# Caffeine fuels the fix.
 ```
 
 ## Features
@@ -65,7 +66,7 @@ print("".join(haiku("nature", "beautiful", "inspires")))
 - **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders.
 - **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
 - **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
-- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
+- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. Thanks to [litellm](litellm), `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
 
 
 ## Why promptic?
@@ -77,3 +78,5 @@ With its legible and concise codebase, `promptic` is easy to understand and exte
 ## License
 
 `promptic` is open-source software licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+[litellm]: https://github.com/BerriAI/litellm
