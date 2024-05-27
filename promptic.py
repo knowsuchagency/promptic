@@ -11,7 +11,12 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 
-def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
+def promptic(
+    fn=None,
+    model="gpt-3.5-turbo",
+    system: str = None,
+    **litellm_kwargs,
+):
     logger.debug(f"{fn = }")
     logger.debug(f"{model = }")
     logger.debug(f"{litellm_kwargs = }")
@@ -55,15 +60,29 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
 
             logger.debug(f"{prompt_text = }")
 
+            messages = []
+
+            if system:
+                messages.append(
+                    {
+                        "content": system,
+                        "role": "system",
+                    }
+                )
+            
+            messages.append(
+                {
+                    "content": prompt_text,
+                    "role": "user",
+                }
+            )
+
+            logger.debug(f"{messages = }")
+
             # Call the LLM with the prompt
             response = litellm.completion(
                 model=model,
-                messages=[
-                    {
-                        "content": prompt_text,
-                        "role": "user",
-                    },
-                ],
+                messages=messages,
                 **litellm_kwargs,
             )
 

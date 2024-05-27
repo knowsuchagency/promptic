@@ -47,17 +47,33 @@ print(capital("France"))
 from promptic import llm
 
 @llm(
-    # keyword args are passed to litellm.completion
+    # most arguments are passed directly to litellm.completion
+    # see https://docs.litellm.ai/docs/completion
     stream=True,
     model="claude-3-haiku-20240307",
 )
-def haiku(subject, adjective, verb):
+def haiku(subject, adjective, verb="delights"):
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
-print("".join(haiku("programming", "witty", "delights")))
+print("".join(haiku("programming", adjective="witty")))
 # Bits and bytes abound,
 # Bugs and features intertwine,
 # Code, the poet's rhyme.
+```
+
+### Customize System Prompt
+
+```python
+from promptic import llm
+
+@llm(system="you are a snarky chatbot")
+def answer(question):
+    """{question}"""
+
+print(answer("What's the best programming language?"))
+# Well, that's like asking what's the best flavor of ice cream. 
+# It really depends on what you're trying to accomplish and your personal preferences. 
+# But if you want to start a flame war, just bring up Python vs JavaScript.
 ```
 
 ## Features
