@@ -13,9 +13,9 @@ pip install promptic
 ### Simple Prompt
 
 ```python
-from promptic import promptic
+from promptic import llm
 
-@promptic
+@llm
 def president(year):
     """Who was the President of the United States in {year}?"""
 
@@ -27,13 +27,13 @@ print(president(2000))
 
 ```python
 from pydantic import BaseModel
-from promptic import promptic
+from promptic import llm
 
 class Capital(BaseModel):
     country: str
     capital: str
 
-@promptic
+@llm
 def capital(country) -> Capital:
     """What's the capital of {country}?"""
 
@@ -44,9 +44,9 @@ print(capital("France"))
 ### Streaming Response (and [litellm][litellm] integration)
 
 ```python
-from promptic import promptic
+from promptic import llm
 
-@promptic(
+@llm(
     # keyword args are passed to litellm.completion
     stream=True,
     model="claude-3-haiku-20240307",
@@ -55,14 +55,14 @@ def haiku(subject, adjective, verb):
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
 print("".join(haiku("programming", "witty", "delights")))
-# Bugs in the code taunt,
-# Syntax errors abound, yet
-# Caffeine fuels the fix.
+# Bits and bytes abound,
+# Bugs and features intertwine,
+# Code, the poet's rhyme.
 ```
 
 ## Features
 
-- **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic`.
+- **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic.llm`.
 - **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders within docstrings.
 - **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
 - **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
@@ -73,7 +73,7 @@ print("".join(haiku("programming", "witty", "delights")))
 
 `promptic` is designed to be simple, functional, and robust, providing exactly what you need 90% of the time when working with LLMs. It eliminates the need to remember the specific shapes of OpenAPI response objects or other LLM-specific details, allowing you to focus on creating prompts and receiving structured outputs.
 
-With its legible and concise codebase, `promptic` is easy to understand and extend. It leverages the power of `litellm` under the hood, ensuring compatibility with a wide range of LLMs.
+With its legible and concise codebase, `promptic` is reliable easy to understand. It leverages the power of `litellm` under the hood, ensuring compatibility with a wide range of LLMs.
 
 ## License
 

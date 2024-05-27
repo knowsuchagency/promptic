@@ -8,7 +8,7 @@ import litellm
 from pydantic import BaseModel
 
 
-def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
+def llm(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -74,3 +74,6 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
 def _stream_response(response):
     for part in response:
         yield part.choices[0].delta.content or ""
+
+
+llm = llm
