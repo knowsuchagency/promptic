@@ -2,14 +2,6 @@
 
 `promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using `litellm`. With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs, all in under 100 lines of code.
 
-## Features
-
-- **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic`.
-- **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders.
-- **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
-- **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
-- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
-
 ## Installation
 
 ```bash
@@ -17,8 +9,6 @@ pip install promptic
 ```
 
 ## Usage
-
-Here are a few examples of how to use `promptic`:
 
 ### Simple Prompt
 
@@ -68,6 +58,15 @@ print("".join(haiku("nature", "beautiful", "inspires")))
 # Birds sing melodies of joy
 # Nature's perfect dance
 ```
+
+## Features
+
+- **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic`.
+- **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders.
+- **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
+- **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
+- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
+
 
 ## Why promptic?
 
