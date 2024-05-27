@@ -12,7 +12,8 @@ requires = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "0.1.0"
+version = "0.1.1"
+readme = "README.md"
 
 [project.urls]
 Home = "https://github.com/knowsuchagency/promptic"
