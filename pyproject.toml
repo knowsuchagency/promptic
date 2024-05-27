@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "promptic"
 version = "0.1.0"
-description = "A simple yet powerful llm abstraction library for litellm and pydantic"
+description = "A simple yet powerful abstraction for litellm and pydantic"
 authors = [{name = "Stephan Fitzpatrick", email = "knowsuchagency@gmail.com"}]
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: Apache Software License"]
