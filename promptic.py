@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
-    logger.debug("{fn = }")
+    logger.debug(f"{fn = }")
     logger.debug(f"{model = }")
     logger.debug(f"{litellm_kwargs = }")
 
