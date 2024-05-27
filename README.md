@@ -63,10 +63,10 @@ print("".join(haiku("programming", "witty", "delights")))
 ## Features
 
 - **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic`.
-- **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders.
+- **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders within docstrings.
 - **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
 - **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
-- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. Thanks to [litellm](litellm), `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
+- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
 
 
 ## Why promptic?
