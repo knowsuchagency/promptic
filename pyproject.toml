@@ -12,7 +12,7 @@ requires = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "0.5.0"
+version = "0.5.1"
 readme = "README.md"
 
 [project.urls]

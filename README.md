@@ -46,12 +46,10 @@ print(capital("France"))
 ```python
 from promptic import llm
 
-@llm(
-    # most arguments are passed directly to litellm.completion
-    # see https://docs.litellm.ai/docs/completion
-    stream=True,
-    model="claude-3-haiku-20240307",
-)
+# most arguments are passed directly to litellm.completion
+# see https://docs.litellm.ai/docs/completion
+
+@llm(stream=True, model="claude-3-haiku-20240307")
 def haiku(subject, adjective, verb="delights"):
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
