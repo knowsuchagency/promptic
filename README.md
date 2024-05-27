@@ -56,7 +56,10 @@ print(get_capital("France"))
 ```python
 from promptic import promptic
 
-@promptic(stream=True)
+@promptic(
+    # keyword args are passed to litellm.completion
+    stream=True,
+)
 def haiku(subject: str, adjective: str, verb: str) -> str:
     """Write a haiku about {subject} that is {adjective} and {verb}."""
 
