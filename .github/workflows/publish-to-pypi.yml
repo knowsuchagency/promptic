@@ -10,7 +10,6 @@ jobs:
     name: upload release to PyPI
     runs-on: ubuntu-latest
     permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
     steps:
       - uses: actions/checkout@v2
@@ -18,7 +17,6 @@ jobs:
         run: pip install flit
       - name: Build Package
         run: flit build
-      # retrieve your distributions here
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
