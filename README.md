@@ -16,10 +16,10 @@ pip install promptic
 from promptic import promptic
 
 @promptic
-def us_president(year):
+def president(year):
     """Who was the President of the United States in {year}?"""
 
-print(us_president(2000))
+print(president(2000))
 # The President of the United States in 2000 was Bill Clinton until January 20th, when George W. Bush was inaugurated as the 43rd President.
 ```
 
@@ -34,10 +34,10 @@ class Capital(BaseModel):
     capital: str
 
 @promptic
-def get_capital(country) -> Capital:
+def capital(country) -> Capital:
     """What's the capital of {country}?"""
 
-print(get_capital("France"))
+print(capital("France"))
 # country='France' capital='Paris'
 ```
 
