@@ -1,6 +1,6 @@
 # promptic
 
-`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm](litellm). With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs, all in under 100 lines of code.
+`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs, all in under 100 lines of code.
 
 ## Installation
 
@@ -41,7 +41,7 @@ print(get_capital("France"))
 # country='France' capital='Paris'
 ```
 
-### Streaming Response (and [litellm](litellm) integration)
+### Streaming Response (and [litellm][litellm] integration)
 
 ```python
 from promptic import promptic
