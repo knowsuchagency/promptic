@@ -1,9 +1,9 @@
 import inspect
 import json
+import logging
 import re
 from functools import wraps
 from typing import Callable
-import logging
 
 import litellm
 from pydantic import BaseModel
@@ -15,6 +15,7 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
     logger.debug("{fn = }")
     logger.debug(f"{model = }")
     logger.debug(f"{litellm_kwargs = }")
+
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -26,7 +27,14 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
             # Get the argument names, default values and values using inspect
             sig = inspect.signature(func)
             arg_names = sig.parameters.keys()
-            arg_values = {name: sig.parameters[name].default if sig.parameters[name].default is not inspect.Parameter.empty else None for name in arg_names}
+            arg_values = {
+                name: (
+                    sig.parameters[name].default
+                    if sig.parameters[name].default is not inspect.Parameter.empty
+                    else None
+                )
+                for name in arg_names
+            }
             arg_values.update(zip(arg_names, args))
             arg_values.update(kwargs)
 
@@ -34,8 +42,6 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
 
             # Replace {name} placeholders with argument values
             prompt_text = prompt_template.format(**arg_values)
-
-            
 
             # Check if the function has a return type hint of a Pydantic model
             return_type = func.__annotations__.get("return")
@@ -48,7 +54,7 @@ def promptic(fn=None, model="gpt-3.5-turbo", **litellm_kwargs):
                 prompt_text += "\n\nPlease provide the result enclosed in triple backticks with 'json' on the first line."
 
             logger.debug(f"{prompt_text = }")
-            
+
             # Call the LLM with the prompt
             response = litellm.completion(
                 model=model,
