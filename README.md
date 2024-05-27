@@ -73,7 +73,7 @@ print("".join(haiku("programming", "witty", "delights")))
 
 `promptic` is designed to be simple, functional, and robust, providing exactly what you need 90% of the time when working with LLMs. It eliminates the need to remember the specific shapes of OpenAPI response objects or other LLM-specific details, allowing you to focus on creating prompts and receiving structured outputs.
 
-With its legible and concise codebase, `promptic` is reliable easy to understand. It leverages the power of `litellm` under the hood, ensuring compatibility with a wide range of LLMs.
+With its legible and concise codebase, `promptic` is reliable easy to understand. It leverages the power of [litellm][litellm] under the hood, ensuring compatibility with a wide range of LLMs.
 
 ## License
 
