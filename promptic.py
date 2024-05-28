@@ -2,6 +2,7 @@ import inspect
 import json
 import logging
 import re
+import os
 from functools import wraps
 from typing import Callable
 
@@ -9,6 +10,10 @@ import litellm
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
+
+if os.getenv("PROMPTIC_DEBUG"):
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(logging.StreamHandler())
 
 
 def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwargs):
