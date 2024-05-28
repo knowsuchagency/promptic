@@ -1,15 +1,15 @@
 import inspect
 import json
 import logging
-import re
 import os
+import re
 from functools import wraps
 from typing import Callable
 
 import litellm
 from pydantic import BaseModel
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("promptic")
 
 if os.getenv("PROMPTIC_DEBUG"):
     logger.setLevel(logging.DEBUG)
