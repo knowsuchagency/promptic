@@ -8,11 +8,11 @@ classifiers = ["License :: OSI Approved :: Apache Software License"]
 description = "A simple yet powerful abstraction for litellm and pydantic"
 license = {file = "LICENSE"}
 name = "promptic"
-requires = [
+dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "0.6.1"
+version = "0.7.0"
 readme = "README.md"
 
 [project.urls]
