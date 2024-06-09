@@ -61,6 +61,9 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
 
             # Check if the function has a return type hint of a Pydantic model
             return_type = func.__annotations__.get("return")
+
+            logger.debug(f"{return_type = }")
+            
             if return_type and inspect.isclass(return_type) and issubclass(return_type, BaseModel):
                 # Get the JSON schema of the Pydantic model
                 schema = return_type.model_json_schema()
