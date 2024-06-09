@@ -108,7 +108,9 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
                     if match:
                         json_result = match.group(1)
                         # Parse the JSON and return an instance of the Pydantic model
-                        return return_type.model_validate_json(json_result)
+                        control_characters_removed = re.sub(r'[\x00-\x1F]', '', json_result)
+                        json_string = json.loads(control_characters_removed)
+                        return return_type.model_validate_json(json_string)
                     else:
                         raise ValueError(
                             "Failed to extract JSON result from the generated text."
