@@ -4,6 +4,7 @@ import logging
 import os
 import re
 from functools import wraps
+from textwrap import dedent
 from typing import Callable
 
 import litellm
@@ -38,7 +39,7 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
             logger.debug(f"{args = }")
             logger.debug(f"{kwargs = }")
             # Get the function's docstring as the prompt
-            prompt_template = func.__doc__
+            prompt_template = dedent(func.__doc__)
 
             # Get the argument names, default values and values using inspect
             sig = inspect.signature(func)
@@ -69,14 +70,14 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
                 schema = return_type.model_json_schema()
                 json_schema = json.dumps(schema, indent=2)
                 # Update the prompt to specify the expected JSON format
-                prompt_text += f"\n\nThe result should conform to the following JSON schema:\n```json\n{json_schema}\n```"
-                prompt_text += "\n\nPlease provide the result enclosed in triple backticks with 'json' on the first line."
+                prompt_text += f"\n\nThe result must conform to the following JSON schema:\n```json\n{json_schema}\n```"
+                prompt_text += "\n\nProvide the result enclosed in triple backticks with 'json' on the first line. Don't put control characters in the wrong place or the JSON will be invalid."
             # if the return type is a dict, assume it's a json schema
             elif return_type and isinstance(return_type, dict):
                 json_schema = json.dumps(return_type, indent=2)
                 # Update the prompt to specify the expected JSON format
-                prompt_text += f"\n\nThe result should conform to the following JSON schema:\n```json\n{json_schema}\n```"
-                prompt_text += "\n\nPlease provide the result enclosed in triple backticks with 'json' on the first line."
+                prompt_text += f"\n\nThe result must conform to the following JSON schema:\n```json\n{json_schema}\n```"
+                prompt_text += "\n\nProvide the result enclosed in triple backticks with 'json' on the first line. Don't put control characters in the wrong place or the JSON will be invalid."
 
             logger.debug(f"{prompt_text = }")
 
@@ -108,9 +109,7 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
                     if match:
                         json_result = match.group(1)
                         # Parse the JSON and return an instance of the Pydantic model
-                        control_characters_removed = re.sub(r'[\x00-\x1F]', '', json_result)
-                        json_string = json.loads(control_characters_removed)
-                        return return_type.model_validate_json(json_string)
+                        return return_type.model_validate_json(json_result)
                     else:
                         raise ValueError(
                             "Failed to extract JSON result from the generated text."
