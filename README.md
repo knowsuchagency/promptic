@@ -1,6 +1,6 @@
 # promptic
 
-`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, and receive structured outputs from LLMs with just a few lines of code.
+`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, receive structured outputs from LLMs, and enable function/tool calling capabilities with just a few lines of code.
 
 ## Installation
 
@@ -74,6 +74,31 @@ print(answer("What's the best programming language?"))
 # But if you want to start a flame war, just bring up Python vs JavaScript.
 ```
 
+### Tool/Function Calling
+
+```python
+from promptic import llm
+
+@llm(system="you are a posh smart home assistant named Jarvis")
+def jarvis(command):
+    """{command}"""
+
+@jarvis.tool
+def turn_light_on():
+    """turn light on"""
+    return True
+
+@jarvis.tool
+def get_current_weather(location: str, unit: str = "fahrenheit"):
+    """Get the current weather in a given location"""
+    return f"The weather in {location} is 45 degrees {unit}"
+
+print(jarvis("Please turn the light on and check the weather in San Francisco"))
+# Certainly, sir. I'll assist you with that right away.
+# I've turned the light on for you. As for the weather in San Francisco,
+# it is currently 45 degrees fahrenheit.
+```
+
 ## Features
 
 - **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic.llm`.
@@ -81,6 +106,7 @@ print(answer("What's the best programming language?"))
 - **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
 - **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
 - **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
+- **Tool/Function calling**: Register custom functions as tools that the LLM can use to perform actions or retrieve information.
 
 
 ## Why promptic?

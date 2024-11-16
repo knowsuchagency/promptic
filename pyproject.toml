@@ -12,8 +12,17 @@ dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "0.7.6"
+version = "0.8.0"
 readme = "README.md"
 
 [project.urls]
 Home = "https://github.com/knowsuchagency/promptic"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
