@@ -12,9 +12,12 @@ from pydantic import BaseModel
 
 logger = logging.getLogger("promptic")
 
-if os.getenv("PROMPTIC_DEBUG"):
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(logging.StreamHandler())
+if promptic_debug := os.getenv("PROMPTIC_DEBUG"):
+    if promptic_debug.lower() in ["0", "false", "no"]:
+        logger.setLevel(logging.WARNING)
+    else:
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(logging.StreamHandler())
 
 regex = re.compile(r"```(?:json)?(.*?)```", re.DOTALL)
 
@@ -64,8 +67,12 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
             return_type = func.__annotations__.get("return")
 
             logger.debug(f"{return_type = }")
-            
-            if return_type and inspect.isclass(return_type) and issubclass(return_type, BaseModel):
+
+            if (
+                return_type
+                and inspect.isclass(return_type)
+                and issubclass(return_type, BaseModel)
+            ):
                 # Get the JSON schema of the Pydantic model
                 schema = return_type.model_json_schema()
                 json_schema = json.dumps(schema, indent=2)
@@ -103,14 +110,23 @@ def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwarg
 
                 logger.debug(f"{generated_text = }")
 
-                if return_type and inspect.isclass(return_type) and issubclass(return_type, BaseModel):
+                if (
+                    return_type
+                    and inspect.isclass(return_type)
+                    and issubclass(return_type, BaseModel)
+                ):
+                    logger.debug("return_type is a Pydantic model")
                     # Extract the JSON result using regex
                     match = regex.search(generated_text)
                     if match:
+                        logger.debug("JSON result extracted")
                         json_result = match.group(1)
                         # Parse the JSON and return an instance of the Pydantic model
                         return return_type.model_validate_json(json_result)
                     else:
+                        logger.debug(
+                            "Failed to extract JSON result from the generated text."
+                        )
                         raise ValueError(
                             "Failed to extract JSON result from the generated text."
                         )
