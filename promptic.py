@@ -212,6 +212,8 @@ class PromptDecorator:
                 # Return the generated text as is
                 return generated_text
 
+        # Add tool decorator method to the wrapped function
+        wrapper.tool = self.tool
         return wrapper
 
 
