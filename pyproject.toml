@@ -17,3 +17,12 @@ readme = "README.md"
 
 [project.urls]
 Home = "https://github.com/knowsuchagency/promptic"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
