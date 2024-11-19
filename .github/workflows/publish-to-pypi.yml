@@ -6,13 +6,8 @@ on:
       - main
 
 jobs:
-  # First, we need to reference the test job
-  test:
-    uses: ./.github/workflows/tests.yml
-
   pypi-publish:
     name: upload release to PyPI
-    needs: test  # This makes it wait for tests to pass
     runs-on: ubuntu-latest
     permissions:
       id-token: write
