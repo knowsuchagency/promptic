@@ -106,7 +106,7 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 - **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
 - **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
 - **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
-- **Seamlessly Build Agents**: Decorate functions as tools that the LLM can use to perform actions or retrieve information.
+- **Build Agents Seamlessly**: Decorate functions as tools that the LLM can use to perform actions or retrieve information.
 
 
 ## Why promptic?
