@@ -74,7 +74,7 @@ print(answer("What's the best programming language?"))
 # But if you want to start a flame war, just bring up Python vs JavaScript.
 ```
 
-### Tool/Function Calling
+### Agents
 
 ```python
 from promptic import llm
