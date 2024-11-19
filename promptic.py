@@ -166,10 +166,10 @@ class PromptDecorator:
                         function_args = json.loads(tool_call.function.arguments)
                         if self.dry_run:
                             self.logger.info(
-                                f"Would call tool function: {function_name} with args: {function_args}"
+                                f"[DRY RUN]: {function_name = } {function_args = }"
                             )
                             function_response = (
-                                f"[DRY RUN] Would have called {function_name}"
+                                f"[DRY RUN] Would have called {function_name = } {function_args = }"
                             )
                         else:
                             function_response = self.tools[function_name](
