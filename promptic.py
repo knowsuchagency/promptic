@@ -25,9 +25,14 @@ class PromptDecorator:
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
 
-        # Setup logger
+        # Setup logger with detailed format
         self.logger = logging.getLogger("promptic")
-        self.logger.addHandler(logging.StreamHandler())
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
+        )
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
         if debug:
             self.logger.setLevel(logging.DEBUG)
         else:
@@ -79,8 +84,15 @@ class PromptDecorator:
     def decorator(self, func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            self.logger.debug(f"{self.model = }")
+            self.logger.debug(f"{self.system = }")
+            self.logger.debug(f"{self.dry_run = }")
+            self.logger.debug(f"{self.litellm_kwargs = }")
+            self.logger.debug(f"{self.tools = }")
+            self.logger.debug(f"{func = }")
             self.logger.debug(f"{args = }")
             self.logger.debug(f"{kwargs = }")
+
             # Get the function's docstring as the prompt
             prompt_template = dedent(func.__doc__)
 
@@ -168,9 +180,7 @@ class PromptDecorator:
                             self.logger.info(
                                 f"[DRY RUN]: {function_name = } {function_args = }"
                             )
-                            function_response = (
-                                f"[DRY RUN] Would have called {function_name = } {function_args = }"
-                            )
+                            function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
                         else:
                             function_response = self.tools[function_name](
                                 **function_args
@@ -233,7 +243,6 @@ class PromptDecorator:
         # Add tool decorator method to the wrapped function
         wrapper.tool = self.tool
         return wrapper
-
 
     def stream_response(self, response):
         for part in response:
