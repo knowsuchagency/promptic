@@ -165,9 +165,8 @@ class PromptDecorator:
                     if function_name in self.tools:
                         function_args = json.loads(tool_call.function.arguments)
                         if self.dry_run:
-                            self.logger.info(
-                                f"Would call tool function: {function_name} with args: {function_args}"
-                            )
+                            args_str = ", ".join(f"{k}={repr(v)}" for k, v in function_args.items())
+                            self.logger.info(f"[DRY RUN]: {function_name}({args_str})")
                             function_response = (
                                 f"[DRY RUN] Would have called {function_name}"
                             )
