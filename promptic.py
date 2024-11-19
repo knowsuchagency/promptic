@@ -1,37 +1,43 @@
 import inspect
 import json
 import logging
-import os
 import re
 from functools import wraps
 from textwrap import dedent
-from typing import Callable, Dict, Optional, Any
+from typing import Callable, Dict, Any
 
 import litellm
 from pydantic import BaseModel
 
-logger = logging.getLogger("promptic")
-
-if promptic_debug := os.getenv("PROMPTIC_DEBUG"):
-    if promptic_debug.lower() in ["0", "false", "no"]:
-        logger.setLevel(logging.WARNING)
-    else:
-        logger.setLevel(logging.DEBUG)
-        logger.addHandler(logging.StreamHandler())
-
-regex = re.compile(r"```(?:json)?(.*?)```", re.DOTALL)
-
 
 class PromptDecorator:
-    def __init__(self, model="gpt-3.5-turbo", system: str = None, **litellm_kwargs):
+    def __init__(
+        self,
+        model="gpt-3.5-turbo",
+        system: str = None,
+        dry_run: bool = False,
+        debug: bool = False,
+        **litellm_kwargs,
+    ):
         self.model = model
         self.system = system
+        self.dry_run = dry_run
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
-    
+
+        # Setup logger
+        self.logger = logging.getLogger("promptic")
+        self.logger.addHandler(logging.StreamHandler())
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.WARNING)
+
+        self.result_regex = re.compile(r"```(?:json)?(.*?)```", re.DOTALL)
+
     def __call__(self, fn=None):
         return self.decorator(fn) if fn else self.decorator
-    
+
     def tool(self, fn: Callable) -> Callable:
         """Register a function as a tool that can be used by the LLM"""
         self.tools[fn.__name__] = fn
@@ -41,20 +47,16 @@ class PromptDecorator:
         """Generate a tool definition from a function's metadata"""
         sig = inspect.signature(fn)
         doc = dedent(fn.__doc__ or "")
-        
-        parameters = {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-        
+
+        parameters = {"type": "object", "properties": {}, "required": []}
+
         for name, param in sig.parameters.items():
             param_type = param.annotation if param.annotation != inspect._empty else Any
             param_default = None if param.default == inspect._empty else param.default
-            
+
             if param_default is None and param.default == inspect._empty:
                 parameters["required"].append(name)
-            
+
             param_info = {"type": "string"}  # Default to string if no type hint
             if param_type == int:
                 param_info["type"] = "integer"
@@ -62,23 +64,23 @@ class PromptDecorator:
                 param_info["type"] = "number"
             elif param_type == bool:
                 param_info["type"] = "boolean"
-            
+
             parameters["properties"][name] = param_info
-        
+
         return {
             "type": "function",
             "function": {
                 "name": fn.__name__,
                 "description": doc,
-                "parameters": parameters
-            }
+                "parameters": parameters,
+            },
         }
 
     def decorator(self, func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            logger.debug(f"{args = }")
-            logger.debug(f"{kwargs = }")
+            self.logger.debug(f"{args = }")
+            self.logger.debug(f"{kwargs = }")
             # Get the function's docstring as the prompt
             prompt_template = dedent(func.__doc__)
 
@@ -96,7 +98,7 @@ class PromptDecorator:
             arg_values.update(zip(arg_names, args))
             arg_values.update(kwargs)
 
-            logger.debug(f"{arg_values = }")
+            self.logger.debug(f"{arg_values = }")
 
             # Replace {name} placeholders with argument values
             prompt_text = prompt_template.format(**arg_values)
@@ -104,7 +106,7 @@ class PromptDecorator:
             # Check if the function has a return type hint of a Pydantic model
             return_type = func.__annotations__.get("return")
 
-            logger.debug(f"{return_type = }")
+            self.logger.debug(f"{return_type = }")
 
             if (
                 return_type
@@ -124,17 +126,20 @@ class PromptDecorator:
                 prompt_text += f"\n\nThe result must conform to the following JSON schema:\n```json\n{json_schema}\n```"
                 prompt_text += "\n\nProvide the result enclosed in triple backticks with 'json' on the first line. Don't put control characters in the wrong place or the JSON will be invalid."
 
-            logger.debug(f"{prompt_text = }")
+            self.logger.debug(f"{prompt_text = }")
 
             messages = [{"content": prompt_text, "role": "user"}]
             if self.system:
                 messages.insert(0, {"content": self.system, "role": "system"})
-            
+
             # Add tools if any are registered
             tools = None
             if self.tools:
-                tools = [self._generate_tool_definition(tool_fn) for tool_fn in self.tools.values()]
-            
+                tools = [
+                    self._generate_tool_definition(tool_fn)
+                    for tool_fn in self.tools.values()
+                ]
+
             # Call the LLM with the prompt and tools
             response = litellm.completion(
                 model=self.model,
@@ -143,55 +148,68 @@ class PromptDecorator:
                 tool_choice="auto" if tools else None,
                 **self.litellm_kwargs,
             )
-            
+
             if self.litellm_kwargs.get("stream"):
-                return _stream_response(response)
-            
+                return self.stream_response(response)
+
             # Handle tool calls if present
-            if hasattr(response.choices[0].message, 'tool_calls') and response.choices[0].message.tool_calls:
+            if (
+                hasattr(response.choices[0].message, "tool_calls")
+                and response.choices[0].message.tool_calls
+            ):
                 tool_calls = response.choices[0].message.tool_calls
                 messages.append(response.choices[0].message)
-                
+
                 for tool_call in tool_calls:
                     function_name = tool_call.function.name
                     if function_name in self.tools:
                         function_args = json.loads(tool_call.function.arguments)
-                        function_response = self.tools[function_name](**function_args)
-                        messages.append({
-                            "tool_call_id": tool_call.id,
-                            "role": "tool",
-                            "name": function_name,
-                            "content": str(function_response)
-                        })
-                
+                        if self.dry_run:
+                            self.logger.info(
+                                f"Would call tool function: {function_name} with args: {function_args}"
+                            )
+                            function_response = (
+                                f"[DRY RUN] Would have called {function_name}"
+                            )
+                        else:
+                            function_response = self.tools[function_name](
+                                **function_args
+                            )
+                        messages.append(
+                            {
+                                "tool_call_id": tool_call.id,
+                                "role": "tool",
+                                "name": function_name,
+                                "content": str(function_response),
+                            }
+                        )
+
                 # Get final response after tool calls
                 final_response = litellm.completion(
-                    model=self.model,
-                    messages=messages,
-                    **self.litellm_kwargs
+                    model=self.model, messages=messages, **self.litellm_kwargs
                 )
                 return final_response.choices[0].message.content
-            
+
             # Get the generated text from the LLM response
             generated_text = response["choices"][0]["message"]["content"]
 
-            logger.debug(f"{generated_text = }")
+            self.logger.debug(f"{generated_text = }")
 
             if (
                 return_type
                 and inspect.isclass(return_type)
                 and issubclass(return_type, BaseModel)
             ):
-                logger.debug("return_type is a Pydantic model")
+                self.logger.debug("return_type is a Pydantic model")
                 # Extract the JSON result using regex
-                match = regex.search(generated_text)
+                match = self.result_regex.search(generated_text)
                 if match:
-                    logger.debug("JSON result extracted")
+                    self.logger.debug("JSON result extracted")
                     json_result = match.group(1)
                     # Parse the JSON and return an instance of the Pydantic model
                     return return_type.model_validate_json(json_result)
                 else:
-                    logger.debug(
+                    self.logger.debug(
                         "Failed to extract JSON result from the generated text."
                     )
                     raise ValueError(
@@ -199,7 +217,7 @@ class PromptDecorator:
                     )
             elif return_type and isinstance(return_type, dict):
                 # Extract the JSON result using regex
-                match = regex.search(generated_text)
+                match = self.result_regex.search(generated_text)
                 if match:
                     json_result = match.group(1)
                     # Parse the JSON and return the result
@@ -217,15 +235,28 @@ class PromptDecorator:
         return wrapper
 
 
-def _stream_response(response):
-    for part in response:
-        chunk = part.choices[0].delta.content or ""
-        logger.debug(f"{chunk = }")
-        yield chunk
+    def stream_response(self, response):
+        for part in response:
+            chunk = part.choices[0].delta.content or ""
+            self.logger.debug(f"{chunk = }")
+            yield chunk
 
 
-def promptic(fn=None, model="gpt-3.5-turbo", system: str = None, **litellm_kwargs):
-    decorator = PromptDecorator(model=model, system=system, **litellm_kwargs)
+def promptic(
+    fn=None,
+    model="gpt-3.5-turbo",
+    system: str = None,
+    dry_run: bool = False,
+    debug: bool = False,
+    **litellm_kwargs,
+):
+    decorator = PromptDecorator(
+        model=model,
+        system=system,
+        dry_run=dry_run,
+        debug=debug,
+        **litellm_kwargs,
+    )
     return decorator(fn) if fn else decorator
 
 
