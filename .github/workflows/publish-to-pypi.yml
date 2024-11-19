@@ -1,12 +1,16 @@
 name: Publish to PyPI
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Python Tests"]
+    types:
+      - completed
     branches:
       - main
 
 jobs:
   pypi-publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: upload release to PyPI
     runs-on: ubuntu-latest
     permissions:
