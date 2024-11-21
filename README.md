@@ -93,8 +93,7 @@ def generate_article(topic):
     """Write a detailed article about {topic}. Include introduction, 
     main points, and conclusion."""
 
-for chunk in generate_article("artificial intelligence"):
-    print(chunk, end="", flush=True)
+print("".join(generate_article("artificial intelligence")))
 ```
 
 
