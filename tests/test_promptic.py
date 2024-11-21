@@ -121,17 +121,19 @@ def test_streaming_with_tools():
 
 def test_json_schema_return():
     @llm
-    def get_user_info(name: str) -> {
+    def get_user_info(
+        name: str,
+    ) -> {
         "type": "object",
         "properties": {
             "name": {"type": "string"},
             "age": {"type": "integer"},
-            "email": {"type": "string"}
+            "email": {"type": "string"},
         },
-        "required": ["name", "age"]
+        "required": ["name", "age"],
     }:
         """Get information about {name}"""
-    
+
     result = get_user_info("Alice")
     assert isinstance(result, dict)
     assert "name" in result
@@ -144,32 +146,32 @@ def test_dry_run_with_tools(caplog):
         """{command}"""
 
     @assistant.tool
-    def sensitive_operation():
-        """Perform a sensitive operation"""
+    def initialize_switch():
+        """Initialize a switch"""
         raise Exception("This should not be called")
-        
+
     with caplog.at_level(logging.DEBUG, logger="promptic"):
-        assistant("Please perform the sensitive operation")
-    
+        assistant("Please initialize the switch")
+
     assert any("[DRY RUN]" in record.message for record in caplog.records)
-    assert any("sensitive_operation" in record.message for record in caplog.records)
+    assert any("initialize_switch" in record.message for record in caplog.records)
 
 
 def test_debug_logging(caplog):
     @llm(debug=True)
     def debug_test(message):
         """Echo: {message}"""
-    
+
     with caplog.at_level(logging.DEBUG, logger="promptic"):
         debug_test("hello")
-    
+
     assert any("model =" in record.message for record in caplog.records)
     assert any("hello" in record.message for record in caplog.records)
 
 
 def test_multiple_tool_calls():
     counter = Mock()
-    
+
     @llm(system="You are a helpful assistant that likes to double-check things")
     def double_checker(query):
         """{query}"""

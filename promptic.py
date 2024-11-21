@@ -25,12 +25,6 @@ class Promptic:
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
 
-        if self.tools:
-            assert litellm.supports_function_calling(
-                self.model
-            ), f"Model {self.model} does not support function calling"
-
-        # Setup logger with detailed format
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
         formatter = logging.Formatter(
@@ -38,6 +32,7 @@ class Promptic:
         )
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
+
         if debug:
             self.logger.setLevel(logging.DEBUG)
         else:
@@ -97,6 +92,11 @@ class Promptic:
             self.logger.debug(f"{func = }")
             self.logger.debug(f"{args = }")
             self.logger.debug(f"{kwargs = }")
+
+            if self.tools:
+                assert litellm.supports_function_calling(
+                    self.model
+                ), f"Model {self.model} does not support function calling"
 
             # Get the function's docstring as the prompt
             prompt_template = dedent(func.__doc__)
@@ -250,7 +250,6 @@ class Promptic:
         return wrapper
 
     def _stream_response(self, response):
-        # Track incomplete tool calls
         current_tool_calls = {}
         current_index = None
 
@@ -302,6 +301,7 @@ class Promptic:
                                     continue
                         except Exception as e:
                             self.logger.error(f"Error executing tool: {e}")
+                            self.logger.exception(e)
                             continue
 
             # Stream regular content
