@@ -76,13 +76,14 @@ def check_calendar(date: str):
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
 
-cmd = "Can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"
-print(scheduler(cmd))
-# checking calendar for 2023-10-04
-# adding reminder: Team meeting at 2023-10-04T14:00:00
-# I've checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM.
-```
+cmd = "What time is it? Also, can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"
 
+print(scheduler(cmd))
+# getting current time
+# checking calendar for 2023-10-05
+# adding reminder: Team meeting at 2023-10-05T14:00:00
+# The current time is 3:48 PM. I checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM tomorrow.
+```
 
 ### Streaming
 The streaming feature allows real-time response generation, useful for long-form content or interactive applications:

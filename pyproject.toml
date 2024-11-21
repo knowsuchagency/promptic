@@ -12,7 +12,7 @@ dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "1.1.5"
+version = "1.1.6"
 readme = "README.md"
 
 [project.urls]
