@@ -74,11 +74,8 @@ def check_calendar(date: str):
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
 
-print(
-    scheduler(
-        "Can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"
-    )
-)
+cmd = "Can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"
+print(scheduler(cmd))
 # checking calendar for 2023-10-04
 # adding reminder: Team meeting at 2023-10-04T14:00:00
 # I've checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM.
