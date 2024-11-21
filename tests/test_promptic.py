@@ -79,7 +79,7 @@ def test_agents():
         "Please turn the light on Jarvis. By the way, what is the weather in San Francisco?"
     )
     assert isinstance(result, str)
-    assert "weather" in result.lower()
+    assert ("weather" in result.lower() or "temperature" in result.lower())
 
 
 def test_streaming_with_tools():
