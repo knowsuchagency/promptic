@@ -130,6 +130,50 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 ```
 
 
+### Resilient LLM Calls with Tenacity
+
+`promptic` pairs perfectly with `tenacity` for handling temporary API failures, rate limits, validation errors, and so on. Here's how you can implement a cost-effective retry strategy that starts with smaller models:
+
+```python
+from tenacity import retry, stop_after_attempt, retry_if_exception_type
+from pydantic import BaseModel, ValidationError
+from promptic import llm
+
+class MovieReview(BaseModel):
+    title: str
+    rating: float
+    summary: str
+    recommended: bool
+
+@retry(
+    # Retry only on Pydantic validation errors
+    retry=retry_if_exception_type(ValidationError),
+    # Try up to 3 times
+    stop=stop_after_attempt(3),
+)
+@llm(model="gpt-3.5-turbo")  # Start with a faster, cheaper model
+def analyze_movie(text) -> MovieReview:
+    """Analyze this movie review and extract the key information: {text}"""
+
+try:
+    # First attempt with smaller model
+    result = analyze_movie("The new Dune movie was spectacular...")
+except ValidationError as e:
+    # If validation fails after retries with smaller model, 
+    # try one final time with a more capable model
+    analyze_movie.retry.stop = stop_after_attempt(1)  # Only try once with GPT-4o
+    analyze_movie.model = "gpt-4o"
+    result = analyze_movie("The new Dune movie was spectacular...")
+
+print(result)
+# title='Dune' rating=9.5 summary='A spectacular sci-fi epic...' recommended=True
+```
+
+This approach:
+1. Starts with a faster, cheaper model (gpt-3.5-turbo)
+2. Retries only on Pydantic validation errors
+3. Falls back to a more capable model (gpt-4o) if validation still fails
+
 ## Features
 
 - **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic.llm`.
