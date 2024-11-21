@@ -10,7 +10,7 @@ import litellm
 from pydantic import BaseModel
 
 
-class PromptDecorator:
+class Promptic:
     def __init__(
         self,
         model="gpt-3.5-turbo",
@@ -320,7 +320,7 @@ def promptic(
     debug: bool = False,
     **litellm_kwargs,
 ):
-    decorator = PromptDecorator(
+    decorator = Promptic(
         model=model,
         system=system,
         dry_run=dry_run,
