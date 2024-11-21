@@ -1,6 +1,6 @@
-import pytest
 from promptic import llm, promptic
 from pydantic import BaseModel
+from unittest.mock import Mock
 
 def test_basic():
     @promptic
@@ -72,3 +72,33 @@ def test_agents():
     result = jarvis("Please turn the light on Jarvis. By the way, what is the weather in San Francisco?")
     assert isinstance(result, str)
     assert "weather" in result.lower() 
+
+def test_streaming_with_tools():
+    time_mock = Mock(return_value="12:00 PM")
+    weather_mock = Mock(return_value="Sunny in Paris")
+
+    @llm(
+        stream=True,
+        model="gpt-4o",
+        system="you are a helpful assistant"
+    )
+    def stream_with_tools(query):
+        """{query}"""
+
+    @stream_with_tools.tool
+    def get_time():
+        """Get the current time"""
+        return time_mock()
+
+    @stream_with_tools.tool
+    def get_weather(location: str):
+        """Get the weather for a location"""
+        return weather_mock(location)
+
+    result = "".join(stream_with_tools("What time is it and what's the weather in Paris?"))
+
+
+    assert isinstance(result, str)
+    time_mock.assert_called_once()
+    weather_mock.assert_called_once()
+    

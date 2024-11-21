@@ -162,7 +162,7 @@ class PromptDecorator:
             )
 
             if self.litellm_kwargs.get("stream"):
-                return self.stream_response(response)
+                return self._stream_response(response)
 
             # Handle tool calls if present
             if (
@@ -244,11 +244,67 @@ class PromptDecorator:
         wrapper.tool = self.tool
         return wrapper
 
-    def stream_response(self, response):
+    def _stream_response(self, response):
+        # Track incomplete tool calls
+        current_tool_calls = {}
+        current_index = None
+
         for part in response:
-            chunk = part.choices[0].delta.content or ""
-            self.logger.debug(f"{chunk = }")
-            yield chunk
+            # Handle tool calls in streaming mode
+            if (
+                hasattr(part.choices[0].delta, "tool_calls")
+                and part.choices[0].delta.tool_calls
+            ):
+                tool_calls = part.choices[0].delta.tool_calls
+
+                for tool_call in tool_calls:
+                    # If we have an ID and name, this is the start of a new tool call
+                    if tool_call.id:
+                        current_index = tool_call.index
+                        current_tool_calls[current_index] = {
+                            "id": tool_call.id,
+                            "name": tool_call.function.name,
+                            "arguments": "",
+                        }
+
+                    # If we don't have an ID but have arguments, append to current tool call
+                    elif tool_call.function.arguments and current_index is not None:
+                        current_tool_calls[current_index]["arguments"] += (
+                            tool_call.function.arguments
+                        )
+
+                        # Try to execute if arguments look complete
+                        tool_info = current_tool_calls[current_index]
+                        try:
+                            args_str = tool_info["arguments"]
+                            if (
+                                args_str.strip() and args_str[-1] == "}"
+                            ):  # Check if arguments look complete
+                                try:
+                                    function_args = json.loads(args_str)
+                                    if tool_info["name"] in self.tools:
+                                        if self.dry_run:
+                                            function_response = f"[DRY RUN] Would have called {tool_info['name']} with {function_args}"
+                                        else:
+                                            function_response = self.tools[
+                                                tool_info["name"]
+                                            ](**function_args)
+                                        yield str(function_response)
+                                        # Clear after successful execution
+                                        del current_tool_calls[current_index]
+                                except json.JSONDecodeError:
+                                    # Arguments not complete yet, continue accumulating
+                                    continue
+                        except Exception as e:
+                            self.logger.error(f"Error executing tool: {e}")
+                            continue
+
+            # Stream regular content
+            if (
+                hasattr(part.choices[0].delta, "content")
+                and part.choices[0].delta.content
+            ):
+                yield part.choices[0].delta.content
 
 
 def promptic(
