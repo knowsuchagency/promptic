@@ -96,13 +96,14 @@ The streaming feature allows real-time response generation, useful for long-form
 from promptic import llm
 
 @llm(stream=True)
-def generate_article(topic):
-    """Write a detailed article about {topic}. Include introduction, 
-    main points, and conclusion."""
+def write_poem(topic):
+    """Write a haiku about {topic}."""
 
-print("".join(generate_article("artificial intelligence")))
+print("".join(write_poem("artificial intelligence")))
+# Binary thoughts hum,
+# Electron minds awake, learn,
+# Future thinking now.
 ```
-
 
 ### Error Handling and Dry Runs
 
@@ -131,15 +132,15 @@ def get_current_weather(location: str, unit: str = "fahrenheit"):
 
 print(jarvis("Please turn the light on and check the weather in San Francisco"))
 # ...
-# 2024-11-21 13:29:08,587 - promptic - INFO - promptic.py:185 - [DRY RUN]: function_name = 'turn_light_on' function_args = {}
-# 2024-11-21 13:29:08,587 - promptic - INFO - promptic.py:185 - [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
+# [DRY RUN]: function_name = 'turn_light_on' function_args = {}
+# [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
 # ...
 ```
 
 
 ### Resilient LLM Calls with Tenacity
 
-`promptic` pairs perfectly with `tenacity` for handling temporary API failures, rate limits, validation errors, and so on. Here's how you can implement a cost-effective retry strategy that starts with smaller models:
+`promptic` pairs perfectly with `tenacity` for handling temporary API failures, rate limits, validation errors, and so on. For example, here's how you can implement a cost-effective retry strategy that starts with smaller models:
 
 ```python
 from tenacity import retry, stop_after_attempt, retry_if_exception_type
@@ -175,11 +176,6 @@ except ValidationError as e:
 print(result)
 # title='Dune' rating=9.5 summary='A spectacular sci-fi epic...' recommended=True
 ```
-
-This approach:
-1. Starts with a faster, cheaper model (gpt-3.5-turbo)
-2. Retries only on Pydantic validation errors
-3. Falls back to a more capable model (gpt-4o) if validation still fails
 
 ## Features
 
