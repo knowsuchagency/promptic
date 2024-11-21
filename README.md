@@ -10,7 +10,7 @@ pip install promptic
 
 ## Usage
 
-### Simple Prompt
+### Basics
 
 ```python
 from promptic import llm
@@ -23,7 +23,7 @@ print(president(2000))
 # The President of the United States in 2000 was Bill Clinton until January 20th, when George W. Bush was inaugurated as the 43rd President.
 ```
 
-### Structured Output with Pydantic
+### Structured Outputs
 
 ```python
 from pydantic import BaseModel
@@ -41,45 +41,74 @@ print(capital("France"))
 # country='France' capital='Paris'
 ```
 
-### Streaming Response (and [litellm][litellm] integration)
-
-```python
-from promptic import llm
-
-# most arguments are passed directly to litellm.completion
-# see https://docs.litellm.ai/docs/completion
-
-@llm(stream=True, model="claude-3-haiku-20240307")
-def haiku(subject, adjective, verb="delights"):
-    """Write a haiku about {subject} that is {adjective} and {verb}."""
-
-print("".join(haiku("programming", adjective="witty")))
-# Bits and bytes abound,
-# Bugs and features intertwine,
-# Code, the poet's rhyme.
-```
-
-### Customize System Prompt
-
-```python
-from promptic import llm
-
-@llm(system="you are a snarky chatbot")
-def answer(question):
-    """{question}"""
-
-print(answer("What's the best programming language?"))
-# Well, that's like asking what's the best flavor of ice cream. 
-# It really depends on what you're trying to accomplish and your personal preferences. 
-# But if you want to start a flame war, just bring up Python vs JavaScript.
-```
 
 ### Agents
 
 ```python
+from datetime import datetime
+
 from promptic import llm
 
-@llm(system="you are a posh smart home assistant named Jarvis")
+@llm(
+    system="You are a helpful assistant that manages schedules and reminders",
+    model="gpt-4o-mini"
+)
+def scheduler(command):
+    """{command}"""
+
+@scheduler.tool
+def get_current_time():
+    """Get the current time"""
+    print("getting current time")
+    return datetime.now().strftime("%I:%M %p")
+
+@scheduler.tool
+def add_reminder(task: str, time: str):
+    """Add a reminder for a specific task and time"""
+    print(f"adding reminder: {task} at {time}")
+    return f"Reminder set: {task} at {time}"
+
+@scheduler.tool
+def check_calendar(date: str):
+    """Check calendar for a specific date"""
+    print(f"checking calendar for {date}")
+    return f"Calendar checked for {date}: No conflicts found"
+
+print(scheduler("Can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"))
+# checking calendar for 2023-10-04
+# adding reminder: Team meeting at 2023-10-04T14:00:00
+# I've checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM.
+```
+
+
+### Streaming
+The streaming feature allows real-time response generation, useful for long-form content or interactive applications:
+
+```python
+from promptic import llm
+
+@llm(stream=True)
+def generate_article(topic):
+    """Write a detailed article about {topic}. Include introduction, 
+    main points, and conclusion."""
+
+for chunk in generate_article("artificial intelligence"):
+    print(chunk, end="", flush=True)
+```
+
+
+### Error Handling and Dry Runs
+
+Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
+
+```python
+from promptic import llm
+
+@llm(
+    system="you are a posh smart home assistant named Jarvis",
+    dry_run=True,
+    debug=True,
+)
 def jarvis(command):
     """{command}"""
 
@@ -94,10 +123,12 @@ def get_current_weather(location: str, unit: str = "fahrenheit"):
     return f"The weather in {location} is 45 degrees {unit}"
 
 print(jarvis("Please turn the light on and check the weather in San Francisco"))
-# Certainly, sir. I'll assist you with that right away.
-# I've turned the light on for you. As for the weather in San Francisco,
-# it is currently 45 degrees fahrenheit.
+# ...
+# 2024-11-21 13:29:08,587 - promptic - INFO - promptic.py:185 - [DRY RUN]: function_name = 'turn_light_on' function_args = {}
+# 2024-11-21 13:29:08,587 - promptic - INFO - promptic.py:185 - [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
+# ...
 ```
+
 
 ## Features
 
