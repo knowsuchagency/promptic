@@ -76,7 +76,11 @@ def check_calendar(date: str):
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
 
-cmd = "What time is it? Also, can you check my calendar for tomorrow and set a reminder for a team meeting at 2pm?"
+cmd = """
+What time is it? 
+Also, can you check my calendar for tomorrow 
+and set a reminder for a team meeting at 2pm?
+"""
 
 print(scheduler(cmd))
 # getting current time
