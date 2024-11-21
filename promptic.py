@@ -25,6 +25,11 @@ class PromptDecorator:
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
 
+        if self.tools:
+            assert litellm.supports_function_calling(
+                self.model
+            ), f"Model {self.model} does not support function calling"
+
         # Setup logger with detailed format
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
