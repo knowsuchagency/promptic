@@ -31,18 +31,18 @@ print(president(2000))
 from pydantic import BaseModel
 from promptic import llm
 
-class Capital(BaseModel):
-    country: str
-    capital: str
+class Forecast(BaseModel):
+    location: str
+    temperature: float
+    units: str
 
-@llm
-def capital(country) -> Capital:
-    """What's the capital of {country}?"""
+@llm(model="gpt-4o", system="You generate test data for weather forecasts.")
+def get_weather(location, units: str = "fahrenheit") -> Forecast:
+    """What's the weather for {location} in {units}?"""
 
-print(capital("France"))
-# country='France' capital='Paris'
+print(get_weather("San Francisco", units="celsius"))
+# location='San Francisco' temperature=16.0 units='Celsius'
 ```
-
 
 ### Agents
 
