@@ -50,7 +50,7 @@ print(get_weather("San Francisco", units="celsius"))
 
 ### Agents
 
-Decorate functions with `@llm.tool` to register them as tools the LLM can use to perform actions or retrieve information. The agent will automatically call the decorated function with the arguments extracted from the LLM's response.
+Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically parse its own reasoning into function arguments and execute the appropriate tool calls, creating a seamless agent interaction.
 
 ```python
 from datetime import datetime
