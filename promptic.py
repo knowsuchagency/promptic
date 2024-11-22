@@ -13,7 +13,7 @@ from pydantic import BaseModel
 class Promptic:
     def __init__(
         self,
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         system: str = None,
         dry_run: bool = False,
         debug: bool = False,
@@ -182,7 +182,7 @@ class Promptic:
                     if function_name in self.tools:
                         function_args = json.loads(tool_call.function.arguments)
                         if self.dry_run:
-                            self.logger.info(
+                            self.logger.warning(
                                 f"[DRY RUN]: {function_name = } {function_args = }"
                             )
                             function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
@@ -288,12 +288,13 @@ class Promptic:
                                     function_args = json.loads(args_str)
                                     if tool_info["name"] in self.tools:
                                         if self.dry_run:
-                                            function_response = f"[DRY RUN] Would have called {tool_info['name']} with {function_args}"
+                                            self.logger.warning(
+                                                f"[DRY RUN] Would have called {tool_info['name']} with {function_args}"
+                                            )
                                         else:
-                                            function_response = self.tools[
-                                                tool_info["name"]
-                                            ](**function_args)
-                                        yield str(function_response)
+                                            self.tools[tool_info["name"]](
+                                                **function_args
+                                            )
                                         # Clear after successful execution
                                         del current_tool_calls[current_index]
                                 except json.JSONDecodeError:
@@ -314,7 +315,7 @@ class Promptic:
 
 def promptic(
     fn=None,
-    model="gpt-3.5-turbo",
+    model="gpt-4o-mini",
     system: str = None,
     dry_run: bool = False,
     debug: bool = False,
