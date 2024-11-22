@@ -1,7 +1,7 @@
 # promptic
 
 [![PyPI version](https://badge.fury.io/py/promptic.svg)](https://badge.fury.io/py/promptic)
-[![Python Versions](https://img.shields.io/pypi/pyversions/promptic.svg)](https://pypi.org/project/promptic/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/promptic)](https://pypi.org/project/promptic/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ### 90% of what you need for LLM app development. Nothing you don't.
