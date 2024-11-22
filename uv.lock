@@ -616,7 +616,7 @@ wheels = [
 
 [[package]]
 name = "promptic"
-version = "1.1.13"
+version = "1.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "litellm" },

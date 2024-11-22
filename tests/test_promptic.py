@@ -5,7 +5,7 @@ import logging
 
 
 def test_basic():
-    @promptic
+    @promptic(temperature=0)
     def president(year):
         """Who was the President of the United States in {year}?"""
 
@@ -15,12 +15,12 @@ def test_basic():
 
 
 def test_parens():
-    @promptic(model="gpt-3.5-turbo")
+    @promptic(model="gpt-3.5-turbo", temperature=0)
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
     result = vice_president(2001)
-    assert "Cheney" in result
+    assert "Dick Cheney" in result
     assert isinstance(result, str)
 
 
@@ -42,6 +42,7 @@ def test_streaming():
     @llm(
         stream=True,
         model="claude-3-haiku-20240307",
+        temperature=0,
     )
     def haiku(subject, adjective, verb="delights"):
         """Write a haiku about {subject} that is {adjective} and {verb}."""
@@ -51,7 +52,7 @@ def test_streaming():
 
 
 def test_system_prompt():
-    @llm(system="you are a snarky chatbot")
+    @llm(system="you are a snarky chatbot", temperature=0)
     def answer(question):
         """{question}"""
 
@@ -61,7 +62,7 @@ def test_system_prompt():
 
 
 def test_agents():
-    @llm(system="you are a posh smart home assistant named Jarvis")
+    @llm(system="you are a posh smart home assistant named Jarvis", temperature=0)
     def jarvis(command):
         """{command}"""
 
@@ -96,7 +97,9 @@ def test_streaming_with_tools():
     time_mock = Mock(return_value="12:00 PM")
     weather_mock = Mock(return_value="Sunny in Paris")
 
-    @llm(stream=True, model="gpt-4o", system="you are a helpful assistant")
+    @llm(
+        stream=True, model="gpt-4o", system="you are a helpful assistant", temperature=0
+    )
     def stream_with_tools(query):
         """{query}"""
 
@@ -120,7 +123,7 @@ def test_streaming_with_tools():
 
 
 def test_json_schema_return():
-    @llm
+    @llm(temperature=0)
     def get_user_info(
         name: str,
     ) -> {
@@ -141,7 +144,7 @@ def test_json_schema_return():
 
 
 def test_dry_run_with_tools(caplog):
-    @llm(dry_run=True, debug=True)
+    @llm(dry_run=True, debug=True, temperature=0)
     def assistant(command):
         """{command}"""
 
@@ -158,7 +161,7 @@ def test_dry_run_with_tools(caplog):
 
 
 def test_debug_logging(caplog):
-    @llm(debug=True)
+    @llm(debug=True, temperature=0)
     def debug_test(message):
         """Echo: {message}"""
 
@@ -172,7 +175,10 @@ def test_debug_logging(caplog):
 def test_multiple_tool_calls():
     counter = Mock()
 
-    @llm(system="You are a helpful assistant that likes to double-check things")
+    @llm(
+        system="You are a helpful assistant that likes to double-check things",
+        temperature=0,
+    )
     def double_checker(query):
         """{query}"""
 
