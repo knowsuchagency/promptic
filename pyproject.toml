@@ -3,17 +3,23 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.2,<4"]
 
 [project]
-authors = [{name = "Stephan Fitzpatrick", email = "knowsuchagency@gmail.com"}]
-classifiers = ["License :: OSI Approved :: Apache Software License"]
-description = "A simple yet powerful abstraction for litellm and pydantic"
+authors = [{name = "Stephan Fitzpatrick", email = "stephan@knowsuchagency.com"}]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+description = "90% of what you need for LLM app development. Nothing you don't."
 license = {file = "LICENSE"}
 name = "promptic"
 dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "1.2.0"
+version = "1.2.1"
 readme = "README.md"
+requires-python = ">=3.11"
 
 [project.urls]
 Home = "https://github.com/knowsuchagency/promptic"

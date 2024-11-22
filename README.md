@@ -1,5 +1,9 @@
 # promptic
 
+[![PyPI version](https://badge.fury.io/py/promptic.svg)](https://badge.fury.io/py/promptic)
+[![Python Versions](https://img.shields.io/pypi/pyversions/promptic.svg)](https://pypi.org/project/promptic/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 ### 90% of what you need for LLM app development. Nothing you don't.
 
 `promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, receive structured outputs from LLMs, and **build agents** with just a few lines of code.
