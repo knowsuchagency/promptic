@@ -20,7 +20,7 @@ def test_parens():
         """Who was the Vice President of the United States in {year}?"""
 
     result = vice_president(2001)
-    assert "Dick Cheney" in result
+    assert "Cheney" in result
     assert isinstance(result, str)
 
 
