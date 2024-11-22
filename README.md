@@ -14,17 +14,31 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` will automatically interpolate arguments into the prompt.
+Functions decorated with `@llm` will automatically interpolate arguments into the prompt. You can also customize the model, system prompt, and more. Most arguments will be passed to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 ```python
 from promptic import llm
 
 @llm
-def president(year):
-    """Who was the President of the United States in {year}?"""
+def translate(text, target_language="Chinese"):
+    """Translate this text: {text} 
+    Target language: {target_language}"""
 
-print(president(2000))
-# The President of the United States in 2000 was Bill Clinton until January 20th, when George W. Bush was inaugurated as the 43rd President.
+print(translate("Hello world!"))
+# 您好，世界！
+
+@llm(
+    model="claude-3-haiku-20240307",
+    system="You are a customer service analyst. Provide clear sentiment analysis with key points."
+)
+def analyze_sentiment(text):
+    """Analyze the sentiment of this customer feedback: {text}"""
+
+print(analyze_sentiment("The product was okay but shipping took forever"))
+# Sentiment: Mixed/Negative
+# Key points:
+# - Neutral product satisfaction
+# - Significant dissatisfaction with shipping time
 ```
 
 ### Structured Outputs
@@ -40,7 +54,7 @@ class Forecast(BaseModel):
     temperature: float
     units: str
 
-@llm(model="gpt-4o", system="You generate test data for weather forecasts.")
+@llm
 def get_weather(location, units: str = "fahrenheit") -> Forecast:
     """What's the weather for {location} in {units}?"""
 
@@ -57,10 +71,7 @@ from datetime import datetime
 
 from promptic import llm
 
-@llm(
-    system="You are a helpful assistant that manages schedules and reminders",
-    model="gpt-4o-mini"
-)
+@llm
 def scheduler(command):
     """{command}"""
 
@@ -181,6 +192,43 @@ except ValidationError as e:
 
 print(result)
 # title='Dune' rating=9.5 summary='A spectacular sci-fi epic...' recommended=True
+```
+
+## API Reference
+
+### `llm`
+
+The main decorator for creating LLM-powered functions. Can be used as `@llm` or `@llm()` with parameters.
+
+#### Parameters
+
+- `model` (str, optional): The LLM model to use. Defaults to "gpt-4o-mini".
+- `system` (str, optional): System prompt to set context for the LLM.
+- `dry_run` (bool, optional): If True, simulates tool calls without executing them. Defaults to False.
+- `debug` (bool, optional): If True, enables detailed logging. Defaults to False.
+- `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+
+#### Methods
+
+- `tool(fn)`: Decorator method to register a function as a tool that can be called by the LLM.
+
+#### Example
+
+```python
+from promptic import llm
+
+@llm(
+    model="gpt-4",
+    system="You are a helpful assistant",
+    temperature=0.7
+)
+def generate_story(topic: str, length: str = "short"):
+    """Write a {length} story about {topic}."""
+    
+@generate_story.tool
+def get_writing_style():
+    """Get the current writing style preference"""
+    return "whimsical and light-hearted"
 ```
 
 ## License

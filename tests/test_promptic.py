@@ -15,7 +15,7 @@ def test_basic():
 
 
 def test_parens():
-    @promptic()
+    @promptic(model="gpt-3.5-turbo")
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
