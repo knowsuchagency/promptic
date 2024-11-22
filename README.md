@@ -14,6 +14,8 @@ pip install promptic
 
 ### Basics
 
+Functions decorated with `@llm` will automatically interpolate arguments into the prompt.
+
 ```python
 from promptic import llm
 
@@ -26,6 +28,8 @@ print(president(2000))
 ```
 
 ### Structured Outputs
+
+You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a proper Pydantic object.
 
 ```python
 from pydantic import BaseModel
@@ -45,6 +49,8 @@ print(get_weather("San Francisco", units="celsius"))
 ```
 
 ### Agents
+
+Decorate functions with `@llm.tool` to allow the LLM to call them as part of a multi-step workflow. The agent will automatically call the decorated function with the arguments extracted from the LLM's response.
 
 ```python
 from datetime import datetime
@@ -176,22 +182,6 @@ except ValidationError as e:
 print(result)
 # title='Dune' rating=9.5 summary='A spectacular sci-fi epic...' recommended=True
 ```
-
-## Features
-
-- **Decorator-based API**: Easily define prompts using function docstrings and decorate them with `@promptic.llm`.
-- **Argument interpolation**: Automatically interpolate function arguments into the prompt using `{argument_name}` placeholders within docstrings.
-- **Pydantic model support**: Specify the expected output structure using Pydantic models, and `promptic` will ensure the LLM's response conforms to the defined schema.
-- **Streaming support**: Receive LLM responses in real-time by setting `stream=True` when calling the decorated function.
-- **Simplified LLM interaction**: No need to remember the exact shape of the OpenAPI response object or other LLM-specific details. `promptic` abstracts away the complexities, allowing you to focus on defining prompts and receiving structured outputs.
-- **Build Agents Seamlessly**: Decorate functions as tools that the LLM can use to perform actions or retrieve information.
-
-
-## Why promptic?
-
-`promptic` is designed to be simple, functional, and robust, providing exactly what you need 90% of the time when working with LLMs. It eliminates the need to remember the specific shapes of OpenAPI response objects or other LLM-specific details, allowing you to focus on creating prompts and receiving structured outputs.
-
-With its legible and concise codebase, `promptic` is reliable easy to understand. It leverages the power of [litellm][litellm] under the hood, ensuring compatibility with a wide range of LLMs.
 
 ## License
 
