@@ -1,11 +1,16 @@
 import logging
 from unittest.mock import Mock
-from typing import Literal
 
 import pytest
-
-from promptic import llm, promptic, State, Promptic
+from litellm.exceptions import RateLimitError
 from pydantic import BaseModel
+from tenacity import (
+    retry,
+    wait_exponential,
+    retry_if_exception_type,
+)
+
+from promptic import Promptic, State, llm, promptic
 
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
@@ -13,6 +18,10 @@ REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_basic(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(temperature=0, model=model)
     def president(year):
         """Who was the President of the United States in {year}?"""
@@ -24,6 +33,10 @@ def test_basic(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_parens(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @promptic(temperature=0, model=model)
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
@@ -39,6 +52,10 @@ def test_pydantic(model):
         country: str
         capital: str
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(temperature=0, model=model)
     def capital(country) -> Capital:
         """What's the capital of {country}?"""
@@ -50,6 +67,10 @@ def test_pydantic(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_streaming(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(
         stream=True,
         model=model,
@@ -64,6 +85,10 @@ def test_streaming(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_system_prompt(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(system="you are a snarky chatbot", temperature=0, model=model)
     def answer(question):
         """{question}"""
@@ -75,10 +100,13 @@ def test_system_prompt(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_agents(model):
-    # Skip test for Anthropic models
     if "claude" in model:
         pytest.skip("Anthropic models only support one tool")
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(
         system="you are a posh smart home assistant named Jarvis",
         temperature=0,
@@ -87,12 +115,20 @@ def test_agents(model):
     def jarvis(command):
         """{command}"""
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @jarvis.tool
     def turn_light_on():
         """turn light on"""
         print("turning light on")
         return True
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @jarvis.tool
     def get_current_weather(location: str, unit: str = "fahrenheit"):
         """Get the current weather in a given location"""
@@ -116,16 +152,18 @@ def test_agents(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_streaming_with_tools(model):
-    # Skip test for Anthropic models
     if "claude" in model:
         pytest.skip("Anthropic models only support one tool")
-    # Skip test for Gemini models
     if model.startswith(("gemini", "vertex")):
         pytest.skip("Gemini models do not support streaming with tools")
 
     time_mock = Mock(return_value="12:00 PM")
     weather_mock = Mock(return_value="Sunny in Paris")
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(stream=True, model=model, system="you are a helpful assistant", temperature=0)
     def stream_with_tools(query):
         """{query}"""
@@ -151,6 +189,10 @@ def test_streaming_with_tools(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_json_schema_return(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(temperature=0, model=model)
     def get_user_info(
         name: str,
@@ -173,6 +215,10 @@ def test_json_schema_return(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_dry_run_with_tools(model, caplog):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(dry_run=True, debug=True, temperature=0, model=model)
     def assistant(command):
         """{command}"""
@@ -191,6 +237,10 @@ def test_dry_run_with_tools(model, caplog):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_debug_logging(model, caplog):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(debug=True, temperature=0, model=model)
     def debug_test(message):
         """Echo: {message}"""
@@ -204,12 +254,15 @@ def test_debug_logging(model, caplog):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_multiple_tool_calls(model):
-    # Skip test for Anthropic models
     if "claude" in model:
         pytest.skip("Anthropic models only support one tool")
 
     counter = Mock()
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(
         system="You are a helpful assistant that likes to double-check things",
         temperature=0,
@@ -218,6 +271,10 @@ def test_multiple_tool_calls(model):
     def double_checker(query):
         """{query}"""
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @double_checker.tool
     def check_status():
         """Check the current status"""
@@ -254,6 +311,10 @@ def test_state_limit(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_memory_conversation(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(memory=True, temperature=0, model=model)
     def chat(message):
         """Chat: {message}"""
@@ -280,6 +341,10 @@ def test_custom_state(model):
 
     custom_state = TestState()
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(state=custom_state, temperature=0, model=model)
     def chat(message):
         """Chat: {message}"""
@@ -294,6 +359,10 @@ def test_custom_state(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_memory_disabled(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(memory=False, temperature=0, model=model)
     def chat(message):
         """Chat: {message}"""
@@ -307,7 +376,6 @@ def test_memory_disabled(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_memory_with_streaming(model):
-    # Initialize state and promptic instance
     state = State()
     p = Promptic(
         model=model,
@@ -317,6 +385,10 @@ def test_memory_with_streaming(model):
         temperature=0,
     )
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @p
     def simple_conversation(input_text: str) -> str:
         """Just respond to: {input_text}"""
@@ -351,7 +423,6 @@ def test_memory_with_streaming(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_pydantic_with_tools(model):
-    # Skip test for Anthropic models
     if "claude" in model:
         pytest.skip("Anthropic models only support one tool")
 
@@ -360,15 +431,27 @@ def test_pydantic_with_tools(model):
         temperature: float
         conditions: str
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(temperature=0, model=model)
     def get_weather_report(location: str) -> WeatherReport:
         """Create a detailed weather report for {location}"""
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @get_weather_report.tool
     def get_temperature(city: str) -> float:
         """Get the temperature for a city"""
         return 72.5
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @get_weather_report.tool
     def get_conditions(city: str) -> str:
         """Get the weather conditions for a city"""
@@ -383,7 +466,6 @@ def test_pydantic_with_tools(model):
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_pydantic_tools_with_memory(model):
-    # Skip test for Anthropic models
     if "claude" in model:
         pytest.skip("Anthropic models only support one tool")
 
@@ -394,6 +476,10 @@ def test_pydantic_tools_with_memory(model):
 
     state = State()
 
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(memory=True, state=state, temperature=0, model=model)
     def task_tracker(command: str) -> TaskStatus:
         """Process the following task command: {command}"""
@@ -421,6 +507,10 @@ def test_pydantic_tools_with_memory(model):
 
 
 def test_anthropic_tool_calling():
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(
         model="claude-3-haiku-20240307",
         temperature=0,
@@ -441,6 +531,10 @@ def test_anthropic_tool_calling():
 
 
 def test_anthropic_multiple_tools_error():
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(
         model="claude-3-haiku-20240307",
         temperature=0,
@@ -465,6 +559,10 @@ def test_anthropic_multiple_tools_error():
 
 # Add new test to verify Gemini streaming with tools raises exception
 def test_gemini_streaming_with_tools_error():
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
     @llm(stream=True, model="gemini/gemini-1.5-pro")
     def assistant(command):
         """{command}"""
