@@ -73,11 +73,15 @@ class Promptic:
         else:
             self.state = state
 
+        self._anthropic = self.model.startswith(("claude", "anthropic"))
+
     def __call__(self, fn=None):
         return self.decorator(fn) if fn else self.decorator
 
     def tool(self, fn: Callable) -> Callable:
         """Register a function as a tool that can be used by the LLM"""
+        if self._anthropic and self.tools:
+            raise ValueError("Anthropic models currently support only one tool.")
         self.tools[fn.__name__] = fn
         return fn
 
@@ -292,9 +296,18 @@ class Promptic:
                             }
                         )
 
+                claude_kwargs = {}
+                # Anthropic requires tools be explicitly set
+                if self._anthropic and tools:
+                    claude_kwargs["tools"] = tools
+                    claude_kwargs["tool_choice"] = "auto"
+
                 # Get final response after tool calls
                 final_response = litellm.completion(
-                    model=self.model, messages=messages, **self.litellm_kwargs
+                    model=self.model,
+                    messages=messages,
+                    **self.litellm_kwargs,
+                    **claude_kwargs,
                 )
                 generated_text = final_response.choices[0].message.content
             else:

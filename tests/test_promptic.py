@@ -1,6 +1,8 @@
 import logging
 from unittest.mock import Mock
 
+import pytest
+
 from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
 
@@ -365,3 +367,46 @@ def test_pydantic_tools_with_memory():
     result2 = task_tracker("What was the last task we checked?")
     assert isinstance(result2, TaskStatus)
     assert result2.task_id == 123  # Should reference the previous task
+
+
+def test_anthropic_tool_calling():
+    @llm(
+        model="claude-3-haiku-20240307",
+        temperature=0,
+        debug=True,
+    )
+    def assistant(command):
+        """{command}"""
+
+    @assistant.tool
+    def get_time():
+        """Get the current time"""
+        return "12:00 PM"
+
+    result = assistant("What time is it?")
+
+    assert isinstance(result, str)
+    assert "12:00" in result
+
+
+def test_anthropic_multiple_tools_error():
+    @llm(
+        model="claude-3-haiku-20240307",
+        temperature=0,
+    )
+    def assistant(command):
+        """{command}"""
+
+    @assistant.tool
+    def get_time():
+        """Get the current time"""
+        return "12:00 PM"
+
+    with pytest.raises(ValueError) as exc_info:
+
+        @assistant.tool
+        def get_weather(location: str):
+            """Get the weather for a location"""
+            return f"Sunny in {location}"
+
+    assert str(exc_info.value) == "Anthropic models currently support only one tool."
