@@ -112,13 +112,12 @@ class Promptic:
 
             parameters["properties"][name] = param_info
 
-        # Add llm_invocation parameter for Gemini models
+        # Add dummy parameter for Gemini models
         if self._gemini:
             parameters["properties"]["llm_invocation"] = {
                 "type": "boolean",
                 "description": "True if the function was invoked by an LLM",
             }
-            # Make llm_invocation required for Gemini
             parameters["required"].append("llm_invocation")
 
         return {
@@ -362,7 +361,6 @@ class Promptic:
         current_index = None
         accumulated_response = ""
 
-        # Wrap the response iterator with our retry logic
         for part in self._stream_with_retry(response):
             # Handle tool calls in streaming mode
             if (
