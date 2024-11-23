@@ -1,5 +1,6 @@
 import logging
 from unittest.mock import Mock
+import os
 
 import pytest
 from litellm.exceptions import RateLimitError
@@ -12,8 +13,16 @@ from tenacity import (
 
 from promptic import Promptic, State, llm, promptic
 
-CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
-REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
+CHEAP_MODELS = (
+    [os.environ["TEST_MODEL"]]
+    if os.environ.get("TEST_MODEL") and os.environ.get("TEST_MODEL_TYPE") == "cheap"
+    else ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
+)
+REGULAR_MODELS = (
+    [os.environ["TEST_MODEL"]]
+    if os.environ.get("TEST_MODEL") and os.environ.get("TEST_MODEL_TYPE") == "regular"
+    else ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
+)
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
