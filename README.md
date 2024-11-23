@@ -290,6 +290,20 @@ print(story1.content)
 story2 = story_assistant("Write another story with the same style but about a time traveler")
 ```
 
+## Limitations
+
+`promptic` is designed to be a lightweight abstraction layer over litellm and various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+
+- **Tool/Function Calling**:
+  - Anthropic (Claude) models currently support only one tool per function
+  - Some providers may have different function calling formats or capabilities
+
+- **Streaming**:
+  - Gemini models do not support streaming when using tools/function calls
+  - Streaming capabilities may vary between providers
+
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with litellm or the provider's SDK directly.
+
 ## License
 
 `promptic` is open-source software licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

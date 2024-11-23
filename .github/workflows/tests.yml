@@ -31,4 +31,4 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       run: |
-        uv run pytest tests/ -v 
+        uv run pytest -v -n auto tests/
