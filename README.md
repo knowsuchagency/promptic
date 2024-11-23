@@ -160,14 +160,17 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 
 ### Resiliency
 
-`promptic` pairs perfectly with tools like [stamina](https://github.com/hynek/stamina) or [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
+`promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
 ```python
-from stamina import retry
+from tenacity import retry, wait_exponential, retry_if_exception_type
 from promptic import llm
-from litellm import APIError
+from litellm.exceptions import RateLimitError
 
-@retry(on=APIError, attempts=3)  # Retries up to 3 times with exponential backoff + jitter
+@retry(
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    retry=retry_if_exception_type(RateLimitError)
+)
 @llm
 def generate_summary(text):
     """Summarize this text in 2-3 sentences: {text}"""
@@ -289,6 +292,18 @@ print(story1.content)
 # Second interaction (with memory context)
 story2 = story_assistant("Write another story with the same style but about a time traveler")
 ```
+
+## Limitations
+
+`promptic` is designed to be a lightweight abstraction layer over litellm and various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+
+- **Tool/Function Calling**:
+  - Anthropic (Claude) models currently support only one tool per function
+
+- **Streaming**:
+  - Gemini models do not support streaming when using tools/function calls
+
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with litellm or the provider's SDK directly.
 
 ## License
 

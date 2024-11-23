@@ -17,8 +17,10 @@ name = "promptic"
 dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
+  "pytest-xdist>=3.6.1",
+  "tenacity~=9.0.0",
 ]
-version = "1.4.1"
+version = "1.4.2"
 readme = "README.md"
 requires-python = ">=3.11"
 

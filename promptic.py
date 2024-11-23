@@ -7,7 +7,9 @@ from textwrap import dedent
 from typing import Callable, Dict, Any, List, Optional
 
 import litellm
+from litellm.exceptions import RateLimitError
 from pydantic import BaseModel
+from tenacity import retry, wait_exponential, retry_if_exception_type
 
 
 class State:
@@ -74,6 +76,7 @@ class Promptic:
             self.state = state
 
         self._anthropic = self.model.startswith(("claude", "anthropic"))
+        self._gemini = self.model.startswith(("gemini", "vertex"))
 
     def __call__(self, fn=None):
         return self.decorator(fn) if fn else self.decorator
@@ -108,6 +111,14 @@ class Promptic:
                 param_info["type"] = "boolean"
 
             parameters["properties"][name] = param_info
+
+        # Add dummy parameter for Gemini models
+        if self._gemini:
+            parameters["properties"]["llm_invocation"] = {
+                "type": "boolean",
+                "description": "True if the function was invoked by an LLM",
+            }
+            parameters["required"].append("llm_invocation")
 
         return {
             "type": "function",
@@ -205,11 +216,12 @@ class Promptic:
             if self.system:
                 messages.insert(0, {"content": self.system, "role": "system"})
 
-            # Add historical context only if memory is enabled
+            # Store the user message in state before making the API call
             if self.memory and self.state:
+                self.state.add_message({"content": prompt_text, "role": "user"})
                 history = self.state.get_messages()
-                if history:
-                    messages = history + messages
+                if history[:-1]:  # Add all messages except the last one we just added
+                    messages = history[:-1] + messages
 
             # Add tools if any are registered
             tools = None
@@ -254,6 +266,10 @@ class Promptic:
                     }
                 )
 
+            # Add check for Gemini streaming with tools
+            if self._gemini and self.litellm_kwargs.get("stream") and self.tools:
+                raise ValueError("Gemini models do not support streaming with tools")
+
             # Call the LLM with the prompt and tools
             response = litellm.completion(
                 model=self.model,
@@ -278,6 +294,8 @@ class Promptic:
                     function_name = tool_call.function.name
                     if function_name in self.tools:
                         function_args = json.loads(tool_call.function.arguments)
+                        if self._gemini and "llm_invocation" in function_args:
+                            function_args.pop("llm_invocation")
                         if self.dry_run:
                             self.logger.warning(
                                 f"[DRY RUN]: {function_name = } {function_args = }"
@@ -319,13 +337,31 @@ class Promptic:
         wrapper.tool = self.tool
         return wrapper
 
+    def _stream_with_retry(self, response):
+        """Helper method to handle streaming with retries"""
+
+        @retry(
+            wait=wait_exponential(multiplier=1, min=4, max=10),
+            retry=retry_if_exception_type(RateLimitError),
+        )
+        def _stream_chunk():
+            try:
+                return next(response)
+            except StopIteration:
+                return None
+
+        while True:
+            chunk = _stream_chunk()
+            if chunk is None:
+                break
+            yield chunk
+
     def _stream_response(self, response):
         current_tool_calls = {}
         current_index = None
-        # Add accumulated_response to store the full response
         accumulated_response = ""
 
-        for part in response:
+        for part in self._stream_with_retry(response):
             # Handle tool calls in streaming mode
             if (
                 hasattr(part.choices[0].delta, "tool_calls")
@@ -358,6 +394,11 @@ class Promptic:
                             ):  # Check if arguments look complete
                                 try:
                                     function_args = json.loads(args_str)
+                                    if (
+                                        self._gemini
+                                        and "llm_invocation" in function_args
+                                    ):
+                                        function_args.pop("llm_invocation")
                                     if tool_info["name"] in self.tools:
                                         if self.dry_run:
                                             self.logger.warning(
