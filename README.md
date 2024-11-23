@@ -160,10 +160,9 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 
 ### Resiliency
 
-`promptic` pairs perfectly with tools like `stamina` or `tenacity` for handling rate limits, temporary API failures, and more.
+`promptic` pairs perfectly with tools like [stamina](https://github.com/hynek/stamina) or [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
 ```python
-# Using stamina
 from stamina import retry
 from promptic import llm
 from litellm import APIError
