@@ -198,6 +198,48 @@ print(result)
 # title='Dune' rating=9.5 summary='A spectacular sci-fi epic...' recommended=True
 ```
 
+### Memory and State Management
+
+By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system. This can be useful for chatbots, agents, and other applications requiring persistent context and session management.
+
+```python
+from promptic import llm, State
+
+
+@llm(memory=True)
+def chat(message):
+    """Chat: {message}"""
+
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        break
+    response = chat(user_input)
+    print(f"Bot: {response}")
+
+
+class RedisState(State):
+    def __init__(self, redis_client):
+        super().__init__()
+        self.redis = redis_client
+        self.key = "chat_history"
+    
+    def add_message(self, message):
+        self.redis.rpush(self.key, json.dumps(message))
+    
+    def get_messages(self, limit=None):
+        messages = self.redis.lrange(self.key, 0, -1)
+        return [json.loads(m) for m in messages][-limit:] if limit else messages
+    
+    def clear(self):
+        self.redis.delete(self.key)
+
+
+@llm(state=RedisState(redis_client))
+def persistent_chat(message):
+    """Chat: {message}"""
+```
+
 ## API Reference
 
 ### `llm`
@@ -210,17 +252,27 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 - `system` (str, optional): System prompt to set context for the LLM.
 - `dry_run` (bool, optional): If True, simulates tool calls without executing them. Defaults to False.
 - `debug` (bool, optional): If True, enables detailed logging. Defaults to False.
+- `memory` (bool, optional): If True, enables conversation memory using the default State implementation. Defaults to False.
+- `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
 - `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods
 
 - `tool(fn)`: Decorator method to register a function as a tool that can be called by the LLM.
 
+### `State`
+
+Base class for managing conversation memory and state. Can be extended to implement custom storage solutions.
+
+#### Methods
+
+- `add_message(message: dict)`: Add a message to the conversation history.
+- `get_messages(limit: Optional[int] = None) -> List[dict]`: Retrieve conversation history, optionally limited to the most recent messages.
+- `clear()`: Clear all stored messages.
+
 #### Example
 
 ```python
-from promptic import llm
-
 @llm(
     model="gpt-4",
     system="You are a helpful assistant",

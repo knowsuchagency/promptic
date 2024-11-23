@@ -1,4 +1,4 @@
-from promptic import llm, promptic
+from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
 from unittest.mock import Mock
 import logging
@@ -190,3 +190,116 @@ def test_multiple_tool_calls():
 
     result = double_checker("Please check the status twice to be sure")
     assert counter.call_count == 2
+
+
+def test_state_basic():
+    state = State()
+    message = {"role": "user", "content": "Hello"}
+
+    state.add_message(message)
+    assert state.get_messages() == [message]
+
+    state.clear()
+    assert state.get_messages() == []
+
+
+def test_state_limit():
+    state = State()
+    messages = [{"role": "user", "content": f"Message {i}"} for i in range(3)]
+
+    for msg in messages:
+        state.add_message(msg)
+
+    assert state.get_messages(limit=2) == messages[-2:]
+    assert state.get_messages() == messages
+
+
+def test_memory_conversation():
+    @llm(memory=True, temperature=0)
+    def chat(message):
+        """Chat: {message}"""
+
+    # First message should be stored
+    result1 = chat("What is the capital of France?")
+    assert "Paris" in result1
+
+    # Second message should reference the context from first
+    result2 = chat("What did I just ask about?")
+    assert "france" in result2.lower() or "paris" in result2.lower()
+
+
+def test_custom_state():
+    class TestState(State):
+        def __init__(self):
+            super().__init__()
+            self.cleared = False
+
+        def clear(self):
+            self.cleared = True
+            super().clear()
+
+    custom_state = TestState()
+
+    @llm(state=custom_state, temperature=0)
+    def chat(message):
+        """Chat: {message}"""
+
+    result = chat("Hello")
+    assert len(custom_state.get_messages()) > 0
+
+    custom_state.clear()
+    assert custom_state.cleared
+    assert len(custom_state.get_messages()) == 0
+
+
+def test_memory_disabled():
+    @llm(memory=False, temperature=0)
+    def chat(message):
+        """Chat: {message}"""
+
+    result1 = chat("What is the capital of France?")
+    result2 = chat("What did I just ask about?")
+
+    # Without memory, the second response shouldn't mention France
+    assert not ("france" in result2.lower() or "paris" in result2.lower())
+
+
+def test_memory_with_streaming():
+    # Initialize state and promptic instance
+    state = State()
+    p = Promptic(
+        model="gpt-3.5-turbo",
+        memory=True,
+        state=state,
+        stream=True,
+        temperature=0,
+    )
+
+    @p
+    def simple_conversation(input_text: str) -> str:
+        """Just respond to: {input_text}"""
+        return str
+
+    # Simulate a conversation with streaming
+    response_stream = simple_conversation("Hello!")
+    # Consume the stream
+    response = "".join(list(response_stream))
+
+    # Verify first message is stored
+    assert len(state.get_messages()) == 1
+    assert state.get_messages()[0]["role"] == "assistant"
+    assert state.get_messages()[0]["content"] == response
+
+    # Second message
+    response_stream = simple_conversation("How are you?")
+    response2 = "".join(list(response_stream))
+
+    # Verify both messages are stored
+    assert len(state.get_messages()) == 2
+    assert state.get_messages()[1]["role"] == "assistant"
+    assert state.get_messages()[1]["content"] == response2
+
+    # Verify messages are in correct order
+    messages = state.get_messages()
+    assert messages[0]["content"] == response
+    assert messages[1]["content"] == response2
