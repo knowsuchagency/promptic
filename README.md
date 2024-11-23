@@ -299,11 +299,9 @@ story2 = story_assistant("Write another story with the same style but about a ti
 
 - **Tool/Function Calling**:
   - Anthropic (Claude) models currently support only one tool per function
-  - Some providers may have different function calling formats or capabilities
 
 - **Streaming**:
   - Gemini models do not support streaming when using tools/function calls
-  - Streaming capabilities may vary between providers
 
 These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with litellm or the provider's SDK directly.
 
