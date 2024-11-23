@@ -29,6 +29,7 @@ Home = "https://github.com/knowsuchagency/promptic"
 [tool.uv]
 dev-dependencies = [
     "pytest>=8.3.3",
+    "tenacity>=9.0.0",
 ]
 
 [tool.pytest.ini_options]
