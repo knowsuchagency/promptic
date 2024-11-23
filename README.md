@@ -205,7 +205,7 @@ print(result)
 ```python
 from promptic import llm, State
 
-# Simple conversational chat bot using default in-memory state
+
 @llm(memory=True)
 def chat(message):
     """Chat: {message}"""
@@ -217,7 +217,7 @@ while True:
     response = chat(user_input)
     print(f"Bot: {response}")
 
-# Custom state implementation example using Redis
+
 class RedisState(State):
     def __init__(self, redis_client):
         super().__init__()
@@ -234,7 +234,7 @@ class RedisState(State):
     def clear(self):
         self.redis.delete(self.key)
 
-# Use custom state implementation
+
 @llm(state=RedisState(redis_client))
 def persistent_chat(message):
     """Chat: {message}"""
