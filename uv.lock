@@ -631,12 +631,12 @@ dependencies = [
     { name = "litellm" },
     { name = "pydantic" },
     { name = "pytest-xdist" },
+    { name = "tenacity" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
-    { name = "tenacity" },
 ]
 
 [package.metadata]
@@ -644,13 +644,11 @@ requires-dist = [
     { name = "litellm", specifier = "~=1.38" },
     { name = "pydantic", specifier = "~=2.7" },
     { name = "pytest-xdist", specifier = ">=3.6.1" },
+    { name = "tenacity", specifier = "~=9.0.0" },
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.3.3" },
-    { name = "tenacity", specifier = ">=9.0.0" },
-]
+dev = [{ name = "pytest", specifier = ">=8.3.3" }]
 
 [[package]]
 name = "propcache"

@@ -7,7 +7,9 @@ from textwrap import dedent
 from typing import Callable, Dict, Any, List, Optional
 
 import litellm
+from litellm.exceptions import RateLimitError
 from pydantic import BaseModel
+from tenacity import retry, wait_exponential, retry_if_exception_type
 
 
 class State:
@@ -336,13 +338,32 @@ class Promptic:
         wrapper.tool = self.tool
         return wrapper
 
+    def _stream_with_retry(self, response):
+        """Helper method to handle streaming with retries"""
+
+        @retry(
+            wait=wait_exponential(multiplier=1, min=4, max=10),
+            retry=retry_if_exception_type(RateLimitError),
+        )
+        def _stream_chunk():
+            try:
+                return next(response)
+            except StopIteration:
+                return None
+
+        while True:
+            chunk = _stream_chunk()
+            if chunk is None:
+                break
+            yield chunk
+
     def _stream_response(self, response):
         current_tool_calls = {}
         current_index = None
-        # Add accumulated_response to store the full response
         accumulated_response = ""
 
-        for part in response:
+        # Wrap the response iterator with our retry logic
+        for part in self._stream_with_retry(response):
             # Handle tool calls in streaming mode
             if (
                 hasattr(part.choices[0].delta, "tool_calls")

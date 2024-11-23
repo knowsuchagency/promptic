@@ -18,6 +18,7 @@ dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
   "pytest-xdist>=3.6.1",
+  "tenacity~=9.0.0",
 ]
 version = "1.4.2"
 readme = "README.md"
@@ -29,7 +30,6 @@ Home = "https://github.com/knowsuchagency/promptic"
 [tool.uv]
 dev-dependencies = [
     "pytest>=8.3.3",
-    "tenacity>=9.0.0",
 ]
 
 [tool.pytest.ini_options]
