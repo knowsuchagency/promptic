@@ -200,7 +200,7 @@ print(result)
 
 ### Memory and State Management
 
-`promptic` includes built-in conversation memory through its `State` class. By default, state is managed in-memory using a list, but you can extend the `State` class to implement persistence in any database or storage system.
+By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system. This can be useful for chatbots, agents, and other applications requiring persistent context and session management.
 
 ```python
 from promptic import llm, State
