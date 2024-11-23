@@ -16,6 +16,7 @@ from promptic import Promptic, State, llm, promptic
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
 
+
 # Override with single model if running in GitHub Actions
 if os.environ.get("GITHUB_ACTIONS") == "true":
     required_vars = ["TEST_MODEL", "TEST_MODEL_TYPE"]
@@ -27,8 +28,10 @@ if os.environ.get("GITHUB_ACTIONS") == "true":
     
     if os.environ["TEST_MODEL_TYPE"] == "cheap":
         CHEAP_MODELS = [os.environ["TEST_MODEL"]]
+        REGULAR_MODELS = []
     elif os.environ["TEST_MODEL_TYPE"] == "regular":
         REGULAR_MODELS = [os.environ["TEST_MODEL"]]
+        CHEAP_MODELS = []
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
