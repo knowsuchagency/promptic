@@ -5,7 +5,6 @@ from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
 
 
-
 def test_basic():
     @promptic(temperature=0)
     def president(year):
