@@ -1,7 +1,9 @@
+import logging
+from unittest.mock import Mock
+
 from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
-from unittest.mock import Mock
-import logging
+
 
 
 def test_basic():
