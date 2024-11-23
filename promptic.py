@@ -4,10 +4,34 @@ import logging
 import re
 from functools import wraps
 from textwrap import dedent
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, List, Optional
 
 import litellm
 from pydantic import BaseModel
+
+
+class State:
+    """Base state class for managing conversation memory"""
+
+    def __init__(self):
+        self._messages: List[Dict[str, str]] = []
+
+    def add_message(self, message: Dict[str, str]) -> None:
+        """Add a message to the conversation history"""
+        self._messages.append(message)
+
+    def get_messages(self, limit: Optional[int] = None) -> List[Dict[str, str]]:
+        """Retrieve messages from the conversation history
+        Args:
+            limit: Optional number of most recent messages to return
+        """
+        if limit is None:
+            return self._messages
+        return self._messages[-limit:]
+
+    def clear(self) -> None:
+        """Clear all messages from memory"""
+        self._messages = []
 
 
 class Promptic:
@@ -17,6 +41,8 @@ class Promptic:
         system: str = None,
         dry_run: bool = False,
         debug: bool = False,
+        memory: bool = False,
+        state: Optional[State] = None,
         **litellm_kwargs,
     ):
         self.model = model
@@ -39,6 +65,13 @@ class Promptic:
             self.logger.setLevel(logging.WARNING)
 
         self.result_regex = re.compile(r"```(?:json)?(.*?)```", re.DOTALL)
+
+        self.memory = memory or state is not None
+
+        if memory and state is None:
+            self.state = State()
+        else:
+            self.state = state
 
     def __call__(self, fn=None):
         return self.decorator(fn) if fn else self.decorator
@@ -149,6 +182,12 @@ class Promptic:
             if self.system:
                 messages.insert(0, {"content": self.system, "role": "system"})
 
+            # Add historical context only if memory is enabled
+            if self.memory and self.state:
+                history = self.state.get_messages()
+                if history:
+                    messages = history + messages
+
             # Add tools if any are registered
             tools = None
             if self.tools:
@@ -203,6 +242,8 @@ class Promptic:
                 final_response = litellm.completion(
                     model=self.model, messages=messages, **self.litellm_kwargs
                 )
+                if self.memory and self.state:
+                    self.state.add_message(final_response.choices[0].message)
                 return final_response.choices[0].message.content
 
             # Get the generated text from the LLM response
@@ -222,6 +263,10 @@ class Promptic:
                     self.logger.debug("JSON result extracted")
                     json_result = match.group(1)
                     # Parse the JSON and return an instance of the Pydantic model
+                    if self.memory and self.state:
+                        self.state.add_message(
+                            {"content": json_result, "role": "assistant"}
+                        )
                     return return_type.model_validate_json(json_result)
                 else:
                     self.logger.debug(
@@ -236,6 +281,10 @@ class Promptic:
                 if match:
                     json_result = match.group(1)
                     # Parse the JSON and return the result
+                    if self.memory and self.state:
+                        self.state.add_message(
+                            {"content": json_result, "role": "assistant"}
+                        )
                     return json.loads(json_result)
                 else:
                     raise ValueError(
@@ -243,6 +292,10 @@ class Promptic:
                     )
             else:
                 # Return the generated text as is
+                if self.memory and self.state:
+                    self.state.add_message(
+                        {"content": generated_text, "role": "assistant"}
+                    )
                 return generated_text
 
         # Add tool decorator method to the wrapped function
@@ -319,6 +372,8 @@ def promptic(
     system: str = None,
     dry_run: bool = False,
     debug: bool = False,
+    memory: bool = False,
+    state: Optional[State] = None,
     **litellm_kwargs,
 ):
     decorator = Promptic(
@@ -326,6 +381,8 @@ def promptic(
         system=system,
         dry_run=dry_run,
         debug=debug,
+        memory=memory,
+        state=state,
         **litellm_kwargs,
     )
     return decorator(fn) if fn else decorator
