@@ -1,4 +1,4 @@
-from promptic import llm, promptic, State
+from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
 from unittest.mock import Mock
 import logging
@@ -262,3 +262,44 @@ def test_memory_disabled():
 
     # Without memory, the second response shouldn't mention France
     assert not ("france" in result2.lower() or "paris" in result2.lower())
+
+
+def test_memory_with_streaming():
+    # Initialize state and promptic instance
+    state = State()
+    p = Promptic(
+        model="gpt-3.5-turbo",
+        memory=True,
+        state=state,
+        stream=True,
+        temperature=0,
+    )
+
+    @p
+    def simple_conversation(input_text: str) -> str:
+        """Just respond to: {input_text}"""
+        return str
+
+    # Simulate a conversation with streaming
+    response_stream = simple_conversation("Hello!")
+    # Consume the stream
+    response = "".join(list(response_stream))
+
+    # Verify first message is stored
+    assert len(state.get_messages()) == 1
+    assert state.get_messages()[0]["role"] == "assistant"
+    assert state.get_messages()[0]["content"] == response
+
+    # Second message
+    response_stream = simple_conversation("How are you?")
+    response2 = "".join(list(response_stream))
+
+    # Verify both messages are stored
+    assert len(state.get_messages()) == 2
+    assert state.get_messages()[1]["role"] == "assistant"
+    assert state.get_messages()[1]["content"] == response2
+
+    # Verify messages are in correct order
+    messages = state.get_messages()
+    assert messages[0]["content"] == response
+    assert messages[1]["content"] == response2

@@ -305,6 +305,8 @@ class Promptic:
     def _stream_response(self, response):
         current_tool_calls = {}
         current_index = None
+        # Add accumulated_response to store the full response
+        accumulated_response = ""
 
         for part in response:
             # Handle tool calls in streaming mode
@@ -358,12 +360,20 @@ class Promptic:
                             self.logger.exception(e)
                             continue
 
-            # Stream regular content
+            # Stream regular content and accumulate
             if (
                 hasattr(part.choices[0].delta, "content")
                 and part.choices[0].delta.content
             ):
-                yield part.choices[0].delta.content
+                content = part.choices[0].delta.content
+                accumulated_response += content
+                yield content
+
+        # After streaming is complete, add to state if memory is enabled
+        if self.memory and self.state:
+            self.state.add_message(
+                {"content": accumulated_response, "role": "assistant"}
+            )
 
 
 def promptic(
