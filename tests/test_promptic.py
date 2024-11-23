@@ -1,7 +1,9 @@
+import logging
+from unittest.mock import Mock
+
 from promptic import llm, promptic, State, Promptic
 from pydantic import BaseModel
-from unittest.mock import Mock
-import logging
+
 
 
 def test_basic():
@@ -303,3 +305,64 @@ def test_memory_with_streaming():
     messages = state.get_messages()
     assert messages[0]["content"] == response
     assert messages[1]["content"] == response2
+
+
+def test_pydantic_with_tools():
+    class WeatherReport(BaseModel):
+        location: str
+        temperature: float
+        conditions: str
+
+    @llm(temperature=0)
+    def get_weather_report(location: str) -> WeatherReport:
+        """Create a detailed weather report for {location}"""
+
+    @get_weather_report.tool
+    def get_temperature(city: str) -> float:
+        """Get the temperature for a city"""
+        return 72.5
+
+    @get_weather_report.tool
+    def get_conditions(city: str) -> str:
+        """Get the weather conditions for a city"""
+        return "Sunny with light clouds"
+
+    result = get_weather_report("San Francisco")
+    assert isinstance(result, WeatherReport)
+    assert result.location == "San Francisco"
+    assert isinstance(result.temperature, float)
+    assert isinstance(result.conditions, str)
+
+
+def test_pydantic_tools_with_memory():
+    class TaskStatus(BaseModel):
+        task_id: int
+        status: str
+        last_update: str
+
+    state = State()
+
+    @llm(memory=True, state=state, temperature=0)
+    def task_tracker(command: str) -> TaskStatus:
+        """Process the following task command: {command}"""
+
+    @task_tracker.tool
+    def get_task_status(task_id: int) -> str:
+        """Get the current status of a task"""
+        return "in_progress"
+
+    @task_tracker.tool
+    def get_last_update(task_id: int) -> str:
+        """Get the last update timestamp for a task"""
+        return "2024-03-15 10:00 AM"
+
+    # First interaction
+    result1 = task_tracker("Check status of task 123")
+    assert isinstance(result1, TaskStatus)
+    assert result1.task_id == 123
+    assert result1.status == "in_progress"
+
+    # Second interaction should have context from the first
+    result2 = task_tracker("What was the last task we checked?")
+    assert isinstance(result2, TaskStatus)
+    assert result2.task_id == 123  # Should reference the previous task

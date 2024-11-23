@@ -114,6 +114,45 @@ class Promptic:
             },
         }
 
+    def _parse_and_validate_response(self, generated_text: str, return_type: Any):
+        """Parse and validate the response according to the return type"""
+        self.logger.debug(f"Parsing response: {generated_text}")
+        self.logger.debug(f"Return type: {return_type}")
+
+        # Handle Pydantic model return types
+        if (
+            return_type
+            and inspect.isclass(return_type)
+            and issubclass(return_type, BaseModel)
+        ):
+            match = self.result_regex.search(generated_text)
+            if match:
+                json_result = match.group(1)
+                if self.memory and self.state:
+                    self.state.add_message(
+                        {"content": json_result, "role": "assistant"}
+                    )
+                return return_type.model_validate_json(json_result)
+            raise ValueError("Failed to extract JSON result from the generated text.")
+
+        # Handle dictionary schema return types
+        elif return_type and isinstance(return_type, dict):
+            match = self.result_regex.search(generated_text)
+            if match:
+                json_result = match.group(1)
+                if self.memory and self.state:
+                    self.state.add_message(
+                        {"content": json_result, "role": "assistant"}
+                    )
+                return json.loads(json_result)
+            raise ValueError("Failed to extract JSON result from the generated text.")
+
+        # Handle plain text responses
+        else:
+            if self.memory and self.state:
+                self.state.add_message({"content": generated_text, "role": "assistant"})
+            return generated_text
+
     def decorator(self, func: Callable):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -158,26 +197,6 @@ class Promptic:
 
             self.logger.debug(f"{return_type = }")
 
-            if (
-                return_type
-                and inspect.isclass(return_type)
-                and issubclass(return_type, BaseModel)
-            ):
-                # Get the JSON schema of the Pydantic model
-                schema = return_type.model_json_schema()
-                json_schema = json.dumps(schema, indent=2)
-                # Update the prompt to specify the expected JSON format
-                prompt_text += f"\n\nThe result must conform to the following JSON schema:\n```json\n{json_schema}\n```"
-                prompt_text += "\n\nProvide the result enclosed in triple backticks with 'json' on the first line. Don't put control characters in the wrong place or the JSON will be invalid."
-            # if the return type is a dict, assume it's a json schema
-            elif return_type and isinstance(return_type, dict):
-                json_schema = json.dumps(return_type, indent=2)
-                # Update the prompt to specify the expected JSON format
-                prompt_text += f"\n\nThe result must conform to the following JSON schema:\n```json\n{json_schema}\n```"
-                prompt_text += "\n\nProvide the result enclosed in triple backticks with 'json' on the first line. Don't put control characters in the wrong place or the JSON will be invalid."
-
-            self.logger.debug(f"{prompt_text = }")
-
             messages = [{"content": prompt_text, "role": "user"}]
             if self.system:
                 messages.insert(0, {"content": self.system, "role": "system"})
@@ -195,6 +214,41 @@ class Promptic:
                     self._generate_tool_definition(tool_fn)
                     for tool_fn in self.tools.values()
                 ]
+
+            # Add schema instructions before any LLM call if return type requires it
+            if (
+                return_type
+                and inspect.isclass(return_type)
+                and issubclass(return_type, BaseModel)
+            ):
+                schema = return_type.model_json_schema()
+                json_schema = json.dumps(schema, indent=2)
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": (
+                            "Format your response according to this JSON schema:\n"
+                            f"```json\n{json_schema}\n```\n\n"
+                            "Provide the result enclosed in triple backticks with 'json' "
+                            "on the first line. Don't put control characters in the wrong "
+                            "place or the JSON will be invalid."
+                        ),
+                    }
+                )
+            elif return_type and isinstance(return_type, dict):
+                json_schema = json.dumps(return_type, indent=2)
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": (
+                            "Format your response according to this JSON schema:\n"
+                            f"```json\n{json_schema}\n```\n\n"
+                            "Provide the result enclosed in triple backticks with 'json' "
+                            "on the first line. Don't put control characters in the wrong "
+                            "place or the JSON will be invalid."
+                        ),
+                    }
+                )
 
             # Call the LLM with the prompt and tools
             response = litellm.completion(
@@ -242,61 +296,11 @@ class Promptic:
                 final_response = litellm.completion(
                     model=self.model, messages=messages, **self.litellm_kwargs
                 )
-                if self.memory and self.state:
-                    self.state.add_message(final_response.choices[0].message)
-                return final_response.choices[0].message.content
-
-            # Get the generated text from the LLM response
-            generated_text = response["choices"][0]["message"]["content"]
-
-            self.logger.debug(f"{generated_text = }")
-
-            if (
-                return_type
-                and inspect.isclass(return_type)
-                and issubclass(return_type, BaseModel)
-            ):
-                self.logger.debug("return_type is a Pydantic model")
-                # Extract the JSON result using regex
-                match = self.result_regex.search(generated_text)
-                if match:
-                    self.logger.debug("JSON result extracted")
-                    json_result = match.group(1)
-                    # Parse the JSON and return an instance of the Pydantic model
-                    if self.memory and self.state:
-                        self.state.add_message(
-                            {"content": json_result, "role": "assistant"}
-                        )
-                    return return_type.model_validate_json(json_result)
-                else:
-                    self.logger.debug(
-                        "Failed to extract JSON result from the generated text."
-                    )
-                    raise ValueError(
-                        "Failed to extract JSON result from the generated text."
-                    )
-            elif return_type and isinstance(return_type, dict):
-                # Extract the JSON result using regex
-                match = self.result_regex.search(generated_text)
-                if match:
-                    json_result = match.group(1)
-                    # Parse the JSON and return the result
-                    if self.memory and self.state:
-                        self.state.add_message(
-                            {"content": json_result, "role": "assistant"}
-                        )
-                    return json.loads(json_result)
-                else:
-                    raise ValueError(
-                        "Failed to extract JSON result from the generated text."
-                    )
+                generated_text = final_response.choices[0].message.content
             else:
-                # Return the generated text as is
-                if self.memory and self.state:
-                    self.state.add_message(
-                        {"content": generated_text, "role": "assistant"}
-                    )
-                return generated_text
+                generated_text = response["choices"][0]["message"]["content"]
+
+            return self._parse_and_validate_response(generated_text, return_type)
 
         # Add tool decorator method to the wrapped function
         wrapper.tool = self.tool
