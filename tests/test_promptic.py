@@ -303,3 +303,30 @@ def test_memory_with_streaming():
     messages = state.get_messages()
     assert messages[0]["content"] == response
     assert messages[1]["content"] == response2
+
+
+def test_pydantic_with_tools():
+    class WeatherReport(BaseModel):
+        location: str
+        temperature: float
+        conditions: str
+
+    @llm(temperature=0)
+    def get_weather_report(location: str) -> WeatherReport:
+        """Create a detailed weather report for {location}"""
+
+    @get_weather_report.tool
+    def get_temperature(city: str) -> float:
+        """Get the temperature for a city"""
+        return 72.5
+
+    @get_weather_report.tool
+    def get_conditions(city: str) -> str:
+        """Get the weather conditions for a city"""
+        return "Sunny with light clouds"
+
+    result = get_weather_report("San Francisco")
+    assert isinstance(result, WeatherReport)
+    assert result.location == "San Francisco"
+    assert isinstance(result.temperature, float)
+    assert isinstance(result.conditions, str)
