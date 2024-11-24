@@ -12,6 +12,7 @@ from tenacity import (
 )
 
 from promptic import Promptic, State, llm, promptic
+
 # Define default model lists
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
@@ -25,7 +26,7 @@ if os.environ.get("GITHUB_ACTIONS") == "true":
         raise RuntimeError(
             f"Running in GitHub Actions but missing required environment variables: {missing_vars}"
         )
-    
+
     if os.environ["TEST_MODEL_TYPE"] == "cheap":
         CHEAP_MODELS = [os.environ["TEST_MODEL"]]
         REGULAR_MODELS = []
