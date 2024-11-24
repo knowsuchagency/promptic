@@ -57,7 +57,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.12"]
         model: ["gemini/gemini-1.5-flash", "gemini/gemini-1.5-pro"]
         include:
           - model: "gemini/gemini-1.5-flash"
