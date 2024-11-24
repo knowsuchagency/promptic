@@ -9,3 +9,6 @@ test-parallel: format
 
 test-fn fn:
     uv run pytest tests/test_promptic.py::{{fn}}
+
+test-cov: format
+    uv run pytest --cov=promptic --cov-report=term-missing tests/
