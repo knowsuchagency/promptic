@@ -10,6 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 3
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
         model: ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash", "gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
