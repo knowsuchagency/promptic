@@ -78,7 +78,6 @@ jobs:
         uv sync
         
     - name: Run tests
-      timeout-minutes: 3
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
