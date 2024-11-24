@@ -207,15 +207,8 @@ def test_streaming_with_tools(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_json_schema_return(model):
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
-    )
-    @llm(temperature=0, model=model)
-    def get_user_info(
-        name: str,
-    ) -> {
+def test_json_schema_validation(model):
+    schema = {
         "type": "object",
         "properties": {
             "name": {"type": "string"},
@@ -223,13 +216,42 @@ def test_json_schema_return(model):
             "email": {"type": "string"},
         },
         "required": ["name", "age"],
-    }:
+    }
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
+    @llm(temperature=0, model=model, json_schema=schema)
+    def get_user_info(name: str):
         """Get information about {name}"""
 
     result = get_user_info("Alice")
     assert isinstance(result, dict)
     assert "name" in result
     assert "age" in result
+    assert isinstance(result["age"], int)
+
+    # # Test invalid schema
+    # invalid_schema = {
+    #     "type": "object",
+    #     "properties": {
+    #         "invalid_field": {"type": "string"},
+    #     },
+    #     "required": ["invalid_field"],
+    # }
+
+    # @retry(
+    #     wait=wait_exponential(multiplier=1, min=4, max=10),
+    #     retry=retry_if_exception_type(RateLimitError),
+    # )
+    # @llm(temperature=0, model=model, json_schema=invalid_schema)
+    # def get_invalid_info(name: str):
+    #     """Get information about {name}"""
+
+    # with pytest.raises(Exception) as exc_info:
+    #     get_invalid_info("Alice")
+    # assert "ValidationError" in str(exc_info.value)
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)

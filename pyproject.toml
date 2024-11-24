@@ -15,10 +15,11 @@ description = "90% of what you need for LLM app development. Nothing you don't."
 license = {file = "LICENSE"}
 name = "promptic"
 dependencies = [
+  "jsonschema>=4.23.0",
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "1.5.0"
+version = "2.0.0"
 readme = "README.md"
 requires-python = ">=3.11"
 

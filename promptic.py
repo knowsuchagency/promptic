@@ -7,6 +7,7 @@ from textwrap import dedent
 from typing import Callable, Dict, Any, List, Optional
 
 import litellm
+from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 
 
@@ -43,6 +44,7 @@ class Promptic:
         debug: bool = False,
         memory: bool = False,
         state: Optional[State] = None,
+        json_schema: Optional[Dict] = None,
         **litellm_kwargs,
     ):
         self.model = model
@@ -50,6 +52,7 @@ class Promptic:
         self.dry_run = dry_run
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
+        self.json_schema = json_schema
 
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
@@ -148,17 +151,26 @@ class Promptic:
                 return return_type.model_validate_json(json_result)
             raise ValueError("Failed to extract JSON result from the generated text.")
 
-        # Handle dictionary schema return types
-        elif return_type and isinstance(return_type, dict):
+        # Handle json_schema if provided
+        elif self.json_schema:
             match = self.result_regex.search(generated_text)
-            if match:
+            if not match:
+                raise ValueError("Failed to extract JSON result from the generated text.")
+            
+            try:
                 json_result = match.group(1)
+                parsed_result = json.loads(json_result)
+                # Validate against the schema
+                validate_json_schema(instance=parsed_result, schema=self.json_schema)
                 if self.memory and self.state:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
-                return json.loads(json_result)
-            raise ValueError("Failed to extract JSON result from the generated text.")
+                return parsed_result
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid JSON in response: {e}")
+            except Exception as e:
+                raise ValueError(f"Schema validation failed: {str(e)}")
 
         # Handle plain text responses
         else:
@@ -249,8 +261,8 @@ class Promptic:
                         ),
                     }
                 )
-            elif return_type and isinstance(return_type, dict):
-                json_schema = json.dumps(return_type, indent=2)
+            elif self.json_schema:
+                json_schema = json.dumps(self.json_schema, indent=2)
                 messages.append(
                     {
                         "role": "user",
@@ -421,6 +433,7 @@ def promptic(
     debug: bool = False,
     memory: bool = False,
     state: Optional[State] = None,
+    json_schema: Optional[Dict] = None,
     **litellm_kwargs,
 ):
     decorator = Promptic(
@@ -430,6 +443,7 @@ def promptic(
         debug=debug,
         memory=memory,
         state=state,
+        json_schema=json_schema,
         **litellm_kwargs,
     )
     return decorator(fn) if fn else decorator
