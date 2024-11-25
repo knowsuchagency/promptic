@@ -8,7 +8,7 @@
 ### 90% of what you need for LLM app development. Nothing you don't.
 
 
-Promptic is the most pythonic way to build LLM applications. Built on top of [liteLLM][litellm], you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+Promptic is the most pythonic way to build LLM applications. Built on top of [LiteLLM][litellm], you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
 
 ### At a glance
 
