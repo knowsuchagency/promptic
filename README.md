@@ -1,6 +1,5 @@
 # promptic
 
-[![PyPI version](https://badge.fury.io/py/promptic.svg)](https://badge.fury.io/py/promptic)
 [![Python Versions](https://img.shields.io/pypi/pyversions/promptic)](https://pypi.org/project/promptic)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml/badge.svg)](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml)
@@ -8,7 +7,7 @@
 ### 90% of what you need for LLM app development. Nothing you don't.
 
 
-Promptic is the most pythonic way to build LLM applications. Built on top of [LiteLLM][litellm], you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+Promptic aims to be the most productive and pythonic way to build LLM applications -- the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
 
 ### At a glance
 
@@ -353,7 +352,7 @@ print(story_assistant("Write another story with the same style but about a time 
 
 ## Limitations
 
-`promptic` is designed to be a lightweight abstraction layer over litellm and various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
 
 - **Tool/Function Calling**:
   - Anthropic (Claude) models currently support only one tool per function
@@ -361,7 +360,7 @@ print(story_assistant("Write another story with the same style but about a time 
 - **Streaming**:
   - Gemini models do not support streaming when using tools/function calls
 
-These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with litellm or the provider's SDK directly.
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
 ## License
 
