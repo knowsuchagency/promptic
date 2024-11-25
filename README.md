@@ -36,8 +36,7 @@ from promptic import llm
 
 @llm
 def translate(text, target_language="Chinese"):
-    """Translate this text: {text} 
-    Target language: {target_language}"""
+    """Translate this text: {text} to {target_language}"""
 
 print(translate("Hello world!"))
 # 您好，世界！
@@ -343,15 +342,13 @@ def count_words(text: str) -> int:
     """Count words in the provided text"""
     return len(text.split())
 
-# First interaction
-story1 = story_assistant("Write a short story about a magical library")
-print(f"Title: {story1.title}")
-print(f"Style: {story1.style}")
-print(f"Words: {story1.word_count}")
-print(story1.content)
+story = story_assistant("Write a short story about a magical library")
+print(f"Title: {story.title}")
+print(f"Style: {story.style}")
+print(f"Words: {story.word_count}")
+print(story.content)
 
-# Second interaction (with memory context)
-story2 = story_assistant("Write another story with the same style but about a time traveler")
+print(story_assistant("Write another story with the same style but about a time traveler"))
 ```
 
 ## Limitations
