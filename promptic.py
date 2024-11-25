@@ -358,14 +358,15 @@ class Promptic:
 
             return self._parse_and_validate_response(generated_text, return_type)
 
-        # Add tool decorator method explicitly
+        # Add methods explicitly
         wrapper.tool = self.tool
+        wrapper.clear = self.clear
 
         # Automatically expose all other attributes from self
         for attr_name, attr_value in self.__dict__.items():
             if (
-                not attr_name.startswith("_") and attr_name != "tool"
-            ):  # Skip private attributes and 'tool'
+                not attr_name.startswith("_")
+            ):  # Skip private attributes
                 setattr(wrapper, attr_name, attr_value)
 
         return wrapper
@@ -446,6 +447,16 @@ class Promptic:
             self.state.add_message(
                 {"content": accumulated_response, "role": "assistant"}
             )
+
+    def clear(self) -> None:
+        """Clear all messages from the state if it exists.
+        
+        Raises:
+            ValueError: If memory/state is not enabled
+        """
+        if not self.memory or not self.state:
+            raise ValueError("Cannot clear state: memory/state is not enabled")
+        self.state.clear()
 
 
 def promptic(

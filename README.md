@@ -287,6 +287,7 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 #### Methods
 
 - `tool(fn)`: Decorator method to register a function as a tool that can be called by the LLM.
+- `clear()`: Clear all stored messages from memory. Raises ValueError if memory/state is not enabled.
 
 ### `State`
 
