@@ -36,7 +36,7 @@ from promptic import llm
 
 @llm
 def translate(text, target_language="Chinese"):
-    """Translate this text: {text} to {target_language}"""
+    """Translate '{text}' to {target_language}"""
 
 print(translate("Hello world!"))
 # 您好，世界！
