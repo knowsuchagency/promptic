@@ -1,14 +1,16 @@
 # promptic
 
-[![PyPI version](https://badge.fury.io/py/promptic.svg)](https://badge.fury.io/py/promptic)
 [![Python Versions](https://img.shields.io/pypi/pyversions/promptic)](https://pypi.org/project/promptic)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml/badge.svg)](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/knowsuchagency/promptic/branch/main/graph/badge.svg)](https://codecov.io/gh/knowsuchagency/promptic)
 
 ### 90% of what you need for LLM app development. Nothing you don't.
 
 
-Promptic is the most pythonic way to build LLM applications. Built on top of [LiteLLM][litellm], you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+Promptic aims to be the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development -- the most productive and pythonic way to build LLM applications. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+
+> “Perfection is attained, not when there is nothing more to add, but when there is nothing more to take away.”
 
 ### At a glance
 
@@ -29,7 +31,7 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` will automatically interpolate arguments into the prompt. You can also customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+Functions decorated with `@llm` inject arguments into the prompt. You can customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 ```python
 from promptic import llm
@@ -246,7 +248,7 @@ with gr.ChatInterface(
     fn=predict,
     title="Promptic Chatbot Demo",
 ) as demo:
-    # Ensure clearing the chatbot clears the state
+    # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
 if __name__ == "__main__":
@@ -353,7 +355,7 @@ print(story_assistant("Write another story with the same style but about a time 
 
 ## Limitations
 
-`promptic` is designed to be a lightweight abstraction layer over litellm and various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
 
 - **Tool/Function Calling**:
   - Anthropic (Claude) models currently support only one tool per function
@@ -361,7 +363,7 @@ print(story_assistant("Write another story with the same style but about a time 
 - **Streaming**:
   - Gemini models do not support streaming when using tools/function calls
 
-These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with litellm or the provider's SDK directly.
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
 ## License
 

@@ -3,6 +3,9 @@ name: Tests
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - '*.md'
   pull_request:
     branches: [main]
 
@@ -57,4 +60,13 @@ jobs:
           TEST_MODEL: ${{ matrix.model }}
           TEST_MODEL_TYPE: ${{ matrix.model_type }}
         run: |
-          uv run pytest -v tests/
+          # Note: Some tests are expected to be skipped based on model capabilities
+          uv run pytest --cov=promptic --cov-report=xml tests/
+      
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: true
