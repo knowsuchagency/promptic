@@ -227,24 +227,39 @@ generate_summary("Long article text here...")
 
 ### Memory and State Management
 
-By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system. This can be useful for chatbots, agents, and other applications requiring persistent context and session management.
+By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. Here's a practical example using Gradio to create a web-based chatbot interface:
 
 ```python
-from promptic import llm, State
+import gradio as gr
+from promptic import llm
 
 
-@llm(memory=True)
-def chat(message):
-    """Chat: {message}"""
-
-while True:
-    user_input = input("You: ")
-    if user_input.lower() == "exit":
-        break
-    response = chat(user_input)
-    print(f"Bot: {response}")
+@llm(memory=True, stream=True)
+def assistant(message):
+    """{message}"""
 
 
+def predict(message, history):
+    partial_message = ""
+    for chunk in assistant(message):
+        partial_message += str(chunk)
+        yield partial_message
+
+
+with gr.ChatInterface(
+    fn=predict,
+    title="Promptic Chatbot Demo",
+) as demo:
+    # Ensure when we clear the chat, that the state is cleared too.
+    demo.chatbot.clear(assistant.clear)
+
+if __name__ == "__main__":
+    demo.launch()
+```
+
+For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
+
+```python
 class RedisState(State):
     def __init__(self, redis_client):
         super().__init__()
