@@ -662,3 +662,60 @@ def test_mutually_exclusive_schemas(model):
         str(exc_info.value)
         == "Cannot use both Pydantic return type hints and json_schema validation together"
     )
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_wrapper_attributes(model):
+    custom_state = State()
+    p = Promptic(
+        model=model,
+        temperature=0.7,
+        memory=True,
+        system="test system prompt",
+        stream=True,
+        debug=True,
+        state=custom_state,
+    )
+
+    @p
+    def test_function(input_text: str):
+        """Test: {input_text}"""
+
+    assert hasattr(test_function, "tool")
+    assert callable(test_function.tool)
+
+    assert test_function.model == model
+    assert test_function.memory is True
+    assert test_function.system == "test system prompt"
+    assert test_function.debug is True
+    assert test_function.state is custom_state
+
+    assert test_function.litellm_kwargs == {"temperature": 0.7, "stream": True}
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_clear_state(model):
+    # Test successful clearing
+    state = State()
+    
+    @llm(model=model, memory=True, state=state)
+    def chat(message):
+        """Chat: {message}"""
+    
+    # Add some messages
+    chat("Hello")
+    assert len(state.get_messages()) > 0
+    
+    # Clear the state
+    chat.clear()
+    assert len(state.get_messages()) == 0
+    
+    # Test error when memory/state is disabled
+    
+    @llm(model=model, memory=False)
+    def chat_no_memory(message):
+        """Chat: {message}"""
+        
+    with pytest.raises(ValueError) as exc_info:
+        chat_no_memory.clear()
+    assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
