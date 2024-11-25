@@ -207,15 +207,8 @@ def test_streaming_with_tools(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_json_schema_return(model):
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
-    )
-    @llm(temperature=0, model=model)
-    def get_user_info(
-        name: str,
-    ) -> {
+def test_json_schema_validation(model):
+    schema = {
         "type": "object",
         "properties": {
             "name": {"type": "string"},
@@ -223,13 +216,58 @@ def test_json_schema_return(model):
             "email": {"type": "string"},
         },
         "required": ["name", "age"],
-    }:
+        "additionalProperties": False,
+        "properties": {
+            "name": {
+                "type": "string",
+                "pattern": "^[A-Z][a-z]+$",
+                "minLength": 2,
+                "maxLength": 20,
+            },
+            "age": {"type": "integer", "minimum": 0, "maximum": 120},
+            "email": {"type": "string", "format": "email"},
+        },
+    }
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
+    @llm(temperature=0, model=model, json_schema=schema)
+    def get_user_info(name: str):
         """Get information about {name}"""
 
     result = get_user_info("Alice")
     assert isinstance(result, dict)
     assert "name" in result
     assert "age" in result
+    assert isinstance(result["age"], int)
+
+    invalid_schema = {
+        "type": "object",
+        "properties": {
+            "score": {
+                "type": "number",
+                "minimum": 1000,
+                "maximum": 1,
+                "multipleOf": 0.5,
+            }
+        },
+        "required": ["score"],
+        "additionalProperties": False,
+    }
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(RateLimitError),
+    )
+    @llm(temperature=0, model=model, json_schema=invalid_schema)
+    def get_impossible_score(name: str):
+        """Get score for {name}"""
+
+    with pytest.raises(ValueError) as exc_info:
+        get_impossible_score("Alice")
+    assert "Schema validation failed" in str(exc_info.value)
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -597,3 +635,30 @@ def test_gemini_streaming_with_tools_error():
         next(assistant("What time is it?"))
 
     assert str(exc_info.value) == "Gemini models do not support streaming with tools"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_mutually_exclusive_schemas(model):
+    schema = {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "age": {"type": "integer"},
+        },
+        "required": ["name", "age"],
+    }
+
+    class Person(BaseModel):
+        name: str
+        age: int
+
+    with pytest.raises(ValueError) as exc_info:
+
+        @llm(temperature=0, model=model, json_schema=schema)
+        def get_person(name: str) -> Person:
+            """Get information about {name}"""
+
+    assert (
+        str(exc_info.value)
+        == "Cannot use both Pydantic return type hints and json_schema validation together"
+    )

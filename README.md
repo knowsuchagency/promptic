@@ -67,6 +67,42 @@ print(get_weather("San Francisco", units="celsius"))
 # location='San Francisco' temperature=16.0 units='Celsius'
 ```
 
+Alternatively, you can use JSON Schema dictionaries for more fine-grained validation control:
+
+```python
+from promptic import llm
+
+schema = {
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "pattern": "^[A-Z][a-z]+$",
+            "minLength": 2,
+            "maxLength": 20
+        },
+        "age": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120
+        },
+        "email": {
+            "type": "string",
+            "format": "email"
+        }
+    },
+    "required": ["name", "age"],
+    "additionalProperties": False
+}
+
+@llm(json_schema=schema, system="You generate test data.")
+def get_user_info(name: str):
+    """Get information about {name}"""
+
+print(get_user_info("Alice"))
+# {'name': 'Alice', 'age': 25, 'email': 'alice@example.com'}
+```
+
 ### Agents
 
 Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically execute the appropriate tool calls, creating a seamless agent interaction.
@@ -235,6 +271,7 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 - `debug` (bool, optional): If True, enables detailed logging. Defaults to False.
 - `memory` (bool, optional): If True, enables conversation memory using the default State implementation. Defaults to False.
 - `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
+- `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
 - `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods
