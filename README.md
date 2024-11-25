@@ -247,7 +247,7 @@ with gr.ChatInterface(
     fn=predict,
     title="Promptic Chatbot Demo",
 ) as demo:
-    # Ensure when we clear the chat, that the state is cleared too.
+    # Ensure clearing the chatbot clears the state
     demo.chatbot.clear(assistant.clear)
 
 if __name__ == "__main__":
