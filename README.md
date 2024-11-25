@@ -8,7 +8,9 @@
 ### 90% of what you need for LLM app development. Nothing you don't.
 
 
-Promptic aims to be the most productive and pythonic way to build LLM applications -- the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+Promptic aims to be the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development -- the most productive and pythonic way to build LLM applications. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+
+> “Perfection is attained, not when there is nothing more to add, but when there is nothing more to take away.”
 
 ### At a glance
 
@@ -29,7 +31,7 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` will automatically interpolate arguments into the prompt. You can also customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+Functions decorated with `@llm` inject arguments into the prompt. You can customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 ```python
 from promptic import llm
@@ -246,7 +248,7 @@ with gr.ChatInterface(
     fn=predict,
     title="Promptic Chatbot Demo",
 ) as demo:
-    # Ensure clearing the chatbot clears the state
+    # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
 if __name__ == "__main__":
