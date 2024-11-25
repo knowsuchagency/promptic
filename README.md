@@ -244,10 +244,7 @@ def predict(message, history):
         partial_message += str(chunk)
         yield partial_message
 
-with gr.ChatInterface(
-    fn=predict,
-    title="Promptic Chatbot Demo",
-) as demo:
+with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
