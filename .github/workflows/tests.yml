@@ -1,10 +1,10 @@
-name: Python Tests
+name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -12,7 +12,15 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
-        model: ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash", "gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
+        model:
+          [
+            "gpt-4o-mini",
+            "claude-3-haiku-20240307",
+            "gemini/gemini-1.5-flash",
+            "gpt-4o",
+            "claude-3.5",
+            "gemini/gemini-1.5-pro",
+          ]
         include:
           - model: "gpt-4o-mini"
             model_type: "cheap"
@@ -28,25 +36,25 @@ jobs:
             model_type: "regular"
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install uv
-        uv sync
-        
-    - name: Run tests
-      timeout-minutes: 2
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        TEST_MODEL: ${{ matrix.model }}
-        TEST_MODEL_TYPE: ${{ matrix.model_type }}
-      run: |
-        uv run pytest -v tests/
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install uv
+          uv sync
+
+      - name: Run Tests
+        timeout-minutes: 2
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TEST_MODEL: ${{ matrix.model }}
+          TEST_MODEL_TYPE: ${{ matrix.model_type }}
+        run: |
+          uv run pytest -v tests/

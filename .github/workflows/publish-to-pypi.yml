@@ -2,7 +2,7 @@ name: Publish to PyPI
 
 on:
   workflow_run:
-    workflows: ["Python Tests"]
+    workflows: ["Tests"]
     types:
       - completed
     branches:
