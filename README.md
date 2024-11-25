@@ -1,13 +1,23 @@
 # promptic
 
 [![PyPI version](https://badge.fury.io/py/promptic.svg)](https://badge.fury.io/py/promptic)
-[![Python Versions](https://img.shields.io/pypi/pyversions/promptic)](https://pypi.org/project/promptic/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/promptic)](https://pypi.org/project/promptic)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml/badge.svg)](https://github.com/knowsuchagency/promptic/actions/workflows/tests.yml)
 
 ### 90% of what you need for LLM app development. Nothing you don't.
 
-`promptic` is a lightweight, decorator-based Python library that simplifies the process of interacting with large language models (LLMs) using [litellm][litellm]. With `promptic`, you can effortlessly create prompts, handle input arguments, receive structured outputs from LLMs, and **build agents** with just a few lines of code.
+
+Promptic is the most pythonic way to build LLM applications. Built on top of [liteLLM][litellm], you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
+
+### At a glance
+
+- 🎯 Type-safe structured outputs with Pydantic
+- 🤖 Easy-to-build agents with function calling
+- 🔄 Streaming support for real-time responses
+- 💾 Built-in conversation memory
+- 🛠️ Error handling and retries
+- 🔌 Extensible state management
 
 ## Installation
 
@@ -19,7 +29,7 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` will automatically interpolate arguments into the prompt. You can also customize the model, system prompt, and more. Most arguments will be passed to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+Functions decorated with `@llm` will automatically interpolate arguments into the prompt. You can also customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 ```python
 from promptic import llm
@@ -48,7 +58,7 @@ print(analyze_sentiment("The product was okay but shipping took forever"))
 
 ### Structured Outputs
 
-You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a proper Pydantic object.
+You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
 
 ```python
 from pydantic import BaseModel
@@ -67,7 +77,7 @@ print(get_weather("San Francisco", units="celsius"))
 # location='San Francisco' temperature=16.0 units='Celsius'
 ```
 
-Alternatively, you can use JSON Schema dictionaries for more fine-grained validation control:
+Alternatively, you can use JSON Schema dictionaries for more low-level validation:
 
 ```python
 from promptic import llm
@@ -96,7 +106,7 @@ schema = {
 }
 
 @llm(json_schema=schema, system="You generate test data.")
-def get_user_info(name: str):
+def get_user_info(name: str) -> dict:
     """Get information about {name}"""
 
 print(get_user_info("Alice"))
@@ -112,7 +122,7 @@ from datetime import datetime
 
 from promptic import llm
 
-@llm
+@llm(model="gpt-4o")
 def scheduler(command):
     """{command}"""
 
