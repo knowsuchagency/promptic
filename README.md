@@ -233,18 +233,15 @@ By default, each function call is independent and stateless. Setting `memory=Tru
 import gradio as gr
 from promptic import llm
 
-
 @llm(memory=True, stream=True)
 def assistant(message):
     """{message}"""
-
 
 def predict(message, history):
     partial_message = ""
     for chunk in assistant(message):
         partial_message += str(chunk)
         yield partial_message
-
 
 with gr.ChatInterface(
     fn=predict,
