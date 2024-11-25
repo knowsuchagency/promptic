@@ -248,8 +248,7 @@ with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
-if __name__ == "__main__":
-    demo.launch()
+demo.launch()
 ```
 
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
