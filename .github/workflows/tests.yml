@@ -57,6 +57,7 @@ jobs:
           TEST_MODEL: ${{ matrix.model }}
           TEST_MODEL_TYPE: ${{ matrix.model_type }}
         run: |
+          # Note: Some tests are expected to be skipped based on model capabilities
           uv run pytest --cov=promptic --cov-report=xml tests/
       
 

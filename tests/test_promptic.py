@@ -119,7 +119,7 @@ def test_system_prompt(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_agents(model):
-    if "claude" in model:
+    if "claude" in model:  # pragma: no cover
         pytest.skip("Anthropic models only support one tool")
 
     @retry(
@@ -171,9 +171,9 @@ def test_agents(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_streaming_with_tools(model):
-    if "claude" in model:
+    if "claude" in model:  # pragma: no cover
         pytest.skip("Anthropic models only support one tool")
-    if model.startswith(("gemini", "vertex")):
+    if model.startswith(("gemini", "vertex")):  # pragma: no cover
         pytest.skip("Gemini models do not support streaming with tools")
 
     time_mock = Mock(return_value="12:00 PM")
@@ -482,7 +482,7 @@ def test_memory_with_streaming(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_pydantic_with_tools(model):
-    if "claude" in model:
+    if "claude" in model:  # pragma: no cover
         pytest.skip("Anthropic models only support one tool")
 
     class WeatherReport(BaseModel):
@@ -525,7 +525,7 @@ def test_pydantic_with_tools(model):
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_pydantic_tools_with_memory(model):
-    if "claude" in model:
+    if "claude" in model:  # pragma: no cover
         pytest.skip("Anthropic models only support one tool")
 
     class TaskStatus(BaseModel):
