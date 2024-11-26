@@ -254,6 +254,9 @@ demo.launch()
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
 
 ```python
+import json
+from promptic import State, llm
+
 class RedisState(State):
     def __init__(self, redis_client):
         super().__init__()
@@ -305,7 +308,7 @@ Base class for managing conversation memory and state. Can be extended to implem
 #### Methods
 
 - `add_message(message: dict)`: Add a message to the conversation history.
-- `get_messages(limit: Optional[int] = None) -> List[dict]`: Retrieve conversation history, optionally limited to the most recent messages.
+- `get_messages(prompt: str = None, limit: int = None) -> List[dict]`: Retrieve conversation history, optionally limited to the most recent messages and filtered by a prompt.
 - `clear()`: Clear all stored messages.
 
 #### Example

@@ -21,9 +21,12 @@ class State:
         """Add a message to the conversation history"""
         self._messages.append(message)
 
-    def get_messages(self, limit: Optional[int] = None) -> List[Dict[str, str]]:
+    def get_messages(
+        self, prompt: str = None, limit: int = None
+    ) -> List[Dict[str, str]]:
         """Retrieve messages from the conversation history
         Args:
+            prompt: Optional prompt to filter messages by
             limit: Optional number of most recent messages to return
         """
         if limit is None:
@@ -146,7 +149,7 @@ class Promptic:
             match = self.result_regex.search(generated_text)
             if match:
                 json_result = match.group(1)
-                if self.memory and self.state:
+                if self.state:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
@@ -166,7 +169,7 @@ class Promptic:
                 parsed_result = json.loads(json_result)
                 # Validate against the schema
                 validate_json_schema(instance=parsed_result, schema=self.json_schema)
-                if self.memory and self.state:
+                if self.state:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
@@ -178,7 +181,7 @@ class Promptic:
 
         # Handle plain text responses
         else:
-            if self.memory and self.state:
+            if self.state:
                 self.state.add_message({"content": generated_text, "role": "assistant"})
             return generated_text
 
@@ -242,11 +245,11 @@ class Promptic:
                 messages.insert(0, {"content": self.system, "role": "system"})
 
             # Store the user message in state before making the API call
-            if self.memory and self.state:
-                self.state.add_message({"content": prompt_text, "role": "user"})
+            if self.state:
                 history = self.state.get_messages()
-                if history[:-1]:  # Add all messages except the last one we just added
-                    messages = history[:-1] + messages
+                self.state.add_message({"content": prompt_text, "role": "user"})
+                if history:  # Add previous history if it exists
+                    messages = history + messages
 
             # Add tools if any are registered
             tools = None
@@ -364,9 +367,7 @@ class Promptic:
 
         # Automatically expose all other attributes from self
         for attr_name, attr_value in self.__dict__.items():
-            if (
-                not attr_name.startswith("_")
-            ):  # Skip private attributes
+            if not attr_name.startswith("_"):  # Skip private attributes
                 setattr(wrapper, attr_name, attr_value)
 
         return wrapper
@@ -443,14 +444,14 @@ class Promptic:
                 yield content
 
         # After streaming is complete, add to state if memory is enabled
-        if self.memory and self.state:
+        if self.state:
             self.state.add_message(
                 {"content": accumulated_response, "role": "assistant"}
             )
 
     def clear(self) -> None:
         """Clear all messages from the state if it exists.
-        
+
         Raises:
             ValueError: If memory/state is not enabled
         """
