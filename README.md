@@ -279,6 +279,44 @@ def persistent_chat(message):
     """Chat: {message}"""
 ```
 
+### Authentication
+
+Authentication can be handled in two ways:
+
+1. Directly via the `api_key` parameter:
+```python
+from promptic import llm
+
+@llm(model="gpt-4o-mini", api_key="your-api-key-here")
+def my_function(text):
+    """Process this text: {text}"""
+```
+
+2. Through environment variables (recommended):
+```bash
+# OpenAI
+export OPENAI_API_KEY=sk-...
+
+# Anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Google
+export GEMINI_API_KEY=...
+
+# Azure OpenAI
+export AZURE_API_KEY=...
+export AZURE_API_BASE=...
+export AZURE_API_VERSION=...
+```
+
+The supported environment variables correspond to the model provider:
+
+| Provider | Environment Variable | Model Examples |
+|----------|---------------------|----------------|
+| OpenAI | `OPENAI_API_KEY` | gpt-4o, gpt-3.5-turbo |
+| Anthropic | `ANTHROPIC_API_KEY` | claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229 |
+| Google | `GEMINI_API_KEY` | gemini/gemini-1.5-pro-latest |
+
 ## API Reference
 
 ### `llm`
