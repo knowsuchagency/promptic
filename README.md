@@ -281,7 +281,7 @@ def persistent_chat(message):
 
 ### Authentication
 
-Authentication can be handled in two ways:
+Authentication can be handled in three ways:
 
 1. Directly via the `api_key` parameter:
 ```python
@@ -307,6 +307,13 @@ export GEMINI_API_KEY=...
 export AZURE_API_KEY=...
 export AZURE_API_BASE=...
 export AZURE_API_VERSION=...
+```
+
+3. By setting the API key programmatically via litellm:
+```python
+from litellm import litellm
+
+litellm.api_key = "your-api-key-here"
 ```
 
 The supported environment variables correspond to the model provider:
