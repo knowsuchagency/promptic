@@ -1,0 +1,18 @@
+{
+  "title": "promptic",
+  "root": true,
+  "pages": [
+    "---Getting Started---",
+    "introduction",
+    "---Core Features---",
+    "structured-outputs",
+    "agents",
+    "streaming",
+    "error-handling",
+    "memory-state",
+    "authentication",
+    "limitations",
+    "---Additional Info---",
+    "api-reference"
+  ]
+}

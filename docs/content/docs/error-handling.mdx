@@ -1,0 +1,55 @@
+---
+title: "Error Handling"
+group: "Core Features"
+groupOrder: 3
+---
+
+Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
+
+```python
+from promptic import llm
+
+@llm(
+    system="you are a posh smart home assistant named Jarvis",
+    dry_run=True,
+    debug=True,
+)
+def jarvis(command):
+    """{command}"""
+
+@jarvis.tool
+def turn_light_on():
+    """turn light on"""
+    return True
+
+@jarvis.tool
+def get_current_weather(location: str, unit: str = "fahrenheit"):
+    """Get the current weather in a given location"""
+    return f"The weather in {location} is 45 degrees {unit}"
+
+print(jarvis("Please turn the light on and check the weather in San Francisco"))
+# ...
+# [DRY RUN]: function_name = 'turn_light_on' function_args = {}
+# [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
+# ...
+```
+
+## Resiliency
+
+`promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
+
+```python
+from tenacity import retry, wait_exponential, retry_if_exception_type
+from promptic import llm
+from litellm.exceptions import RateLimitError
+
+@retry(
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    retry=retry_if_exception_type(RateLimitError)
+)
+@llm
+def generate_summary(text):
+    """Summarize this text in 2-3 sentences: {text}"""
+
+generate_summary("Long article text here...")
+```

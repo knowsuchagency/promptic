@@ -1,0 +1,65 @@
+---
+title: "Structured Outputs"
+group: "Core Features"
+groupOrder: 0
+---
+
+## Using Pydantic Models
+
+You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
+
+
+```python
+from pydantic import BaseModel
+from promptic import llm
+
+class Forecast(BaseModel):
+    location: str
+    temperature: float
+    units: str
+
+@llm
+def get_weather(location, units: str = "fahrenheit") -> Forecast:
+    """What's the weather for {location} in {units}?"""
+
+print(get_weather("San Francisco", units="celsius"))
+# location='San Francisco' temperature=16.0 units='Celsius'
+```
+
+## Using JSON Schema
+
+Alternatively, you can use JSON Schema dictionaries for more low-level validation:
+
+```python
+from promptic import llm
+
+schema = {
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "pattern": "^[A-Z][a-z]+$",
+            "minLength": 2,
+            "maxLength": 20
+        },
+        "age": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120
+        },
+        "email": {
+            "type": "string",
+            "format": "email"
+        }
+    },
+    "required": ["name", "age"],
+    "additionalProperties": False
+}
+
+@llm(json_schema=schema, system="You generate test data.")
+def get_user_info(name: str) -> dict:
+    """Get information about {name}"""
+
+print(get_user_info("Alice"))
+# {'name': 'Alice', 'age': 25, 'email': 'alice@example.com'}
+``` 

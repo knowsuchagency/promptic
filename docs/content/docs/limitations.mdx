@@ -1,0 +1,17 @@
+---
+title: "Limitations"
+group: "Advanced Usage"
+groupOrder: 2
+---
+
+`promptic` is a lightweight abstraction layer over [litellm](https://github.com/BerriAI/litellm) and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+
+## Tool/Function Calling
+
+- Anthropic (Claude) models currently support only one tool per function
+
+## Streaming
+
+- Gemini models do not support streaming when using tools/function calls
+
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm](https://github.com/BerriAI/litellm) or the provider's SDK directly. 
