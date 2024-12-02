@@ -18,23 +18,6 @@ CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-fla
 REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
 
 
-# Override with single model if running in GitHub Actions
-if os.environ.get("GITHUB_ACTIONS") == "true":
-    required_vars = ["TEST_MODEL", "TEST_MODEL_TYPE"]
-    missing_vars = [var for var in required_vars if not os.environ.get(var)]
-    if missing_vars:
-        raise RuntimeError(
-            f"Running in GitHub Actions but missing required environment variables: {missing_vars}"
-        )
-
-    if os.environ["TEST_MODEL_TYPE"] == "cheap":
-        CHEAP_MODELS = [os.environ["TEST_MODEL"]]
-        REGULAR_MODELS = []
-    elif os.environ["TEST_MODEL_TYPE"] == "regular":
-        REGULAR_MODELS = [os.environ["TEST_MODEL"]]
-        CHEAP_MODELS = []
-
-
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_basic(model):
     @retry(
