@@ -37,4 +37,4 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           # Note: Some tests are expected to be skipped based on model capabilities
-          uv run pytest -v tests/
+          uv run pytest -v -n auto tests/
