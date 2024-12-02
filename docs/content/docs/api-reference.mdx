@@ -1,0 +1,72 @@
+---
+title: "API Reference"
+---
+
+## `llm` Decorator
+
+The main decorator for creating LLM-powered functions. Can be used as `@llm` or `@llm()` with parameters.
+
+### Parameters
+
+- `model` (str, optional): The LLM model to use. Defaults to "gpt-4o-mini".
+- `system` (str, optional): System prompt to set context for the LLM.
+- `dry_run` (bool, optional): If True, simulates tool calls without executing them. Defaults to False.
+- `debug` (bool, optional): If True, enables detailed logging. Defaults to False.
+- `memory` (bool, optional): If True, enables conversation memory using the default State implementation. Defaults to False.
+- `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
+- `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
+- `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+
+### Methods
+
+- `tool(fn)`: Decorator method to register a function as a tool that can be called by the LLM.
+- `clear()`: Clear all stored messages from memory. Raises ValueError if memory/state is not enabled.
+
+## `State` Class
+
+Base class for managing conversation memory and state. Can be extended to implement custom storage solutions.
+
+### Methods
+
+- `add_message(message: dict)`: Add a message to the conversation history.
+- `get_messages(prompt: str = None, limit: int = None) -> List[dict]`: Retrieve conversation history, optionally limited to the most recent messages and filtered by a prompt.
+- `clear()`: Clear all stored messages.
+
+### Example
+
+```python
+from pydantic import BaseModel
+from promptic import llm
+
+class Story(BaseModel):
+    title: str
+    content: str
+    style: str
+    word_count: int
+
+@llm(
+    model="gpt-4o-mini",
+    system="You are a creative writing assistant",
+    memory=True,
+    temperature=0.7,
+    max_tokens=500,
+)
+def story_assistant(command: str) -> Story:
+    """Process this writing request: {command}"""
+    
+@story_assistant.tool
+def get_writing_style():
+    """Get the current writing style preference"""
+    return "whimsical and light-hearted"
+
+@story_assistant.tool
+def count_words(text: str) -> int:
+    """Count words in the provided text"""
+    return len(text.split())
+
+story = story_assistant("Write a short story about a magical library")
+print(f"Title: {story.title}")
+print(f"Style: {story.style}")
+print(f"Words: {story.word_count}")
+print(story.content)
+``` 
