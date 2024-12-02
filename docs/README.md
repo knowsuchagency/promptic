@@ -56,6 +56,18 @@ Example `meta.json` structure:
 }
 ```
 
+
+## Deployment
+
+This site can be easily deployed to Vercel given that it's a Next.js app. To do this, you can follow this:
+
+1. Sign up for Vercel
+2. Go to [Vercel New Project](https://vercel.com/new/) and import this repository
+3. Edit the "Root Directory" field to be `./docs`
+4. Click Deploy
+
+After a few minutes it should be deployed at the URL that Vercel provides. Vercel has a generous free tier that should be plenty for a static documentation site.
+
 ## Learn More
 
 To learn more about Next.js and Fumadocs, take a look at the following resources:
