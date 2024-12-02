@@ -1,6 +1,6 @@
 "use client"
 
-import { cn, slugify } from "@/lib/utils"
+import { cn, slugify } from "@/utils/utils"
 import { LinkIcon } from "lucide-react"
 
 export default function MarkdownHeadingWithLink(

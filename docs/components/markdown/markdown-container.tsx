@@ -1,7 +1,7 @@
 import { Check, Info, Note, Tip, Warning } from "@/components/ui/callout"
 import { CodeBlock } from "@/components/ui/codeblock"
 import { ResponseField } from "@/components/ui/response-field"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/utils"
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc"
 import Link from "next/link"
 import MarkdownHeadingWithLink from "./markdown-heading-with-link"

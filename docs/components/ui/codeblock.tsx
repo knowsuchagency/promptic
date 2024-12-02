@@ -7,8 +7,8 @@ import { CheckIcon, CopyIcon, DownloadIcon } from "lucide-react"
 import { CSSProperties, FC, memo } from "react"
 import { highlight } from "sugar-high"
 
-import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard"
-import { cn } from "@/lib/utils"
+import { useCopyToClipboard } from "@/utils/hooks/use-copy-to-clipboard"
+import { cn } from "@/utils/utils"
 import { Button } from "./button"
 
 interface Props {

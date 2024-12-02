@@ -1,6 +1,6 @@
 // https://github.com/mintlify/components/blob/main/src/Callouts.tsx
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/utils"
 import { ReactNode } from "react"
 
 type CalloutProps = {
