@@ -6,7 +6,6 @@
 
 ### 90% of what you need for LLM app development. Nothing you don't.
 
-
 Promptic aims to be the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development -- the most productive and pythonic way to build LLM applications. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
 
 > “Perfection is attained, not when there is nothing more to add, but when there is nothing more to take away.”
@@ -30,7 +29,7 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` inject arguments into the prompt. You can customize the model, system prompt, and more. Most arguments are passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+Functions decorated with `@llm` use Python docstrings as natural prompt templates. A docstring is the string literal that appears right after a function definition, and promptic generates prompts by combining the docstring with the function's arguments when the function is called.
 
 ```python
 from promptic import llm
@@ -41,6 +40,9 @@ def translate(text, target_language="Chinese"):
 
 print(translate("Hello world!"))
 # 您好，世界！
+
+print(translate("Hello world!", target_language="Spanish"))
+# ¡Hola, mundo!
 
 @llm(
     model="claude-3-haiku-20240307",
@@ -145,8 +147,8 @@ def check_calendar(date: str):
     return f"Calendar checked for {date}: No conflicts found"
 
 cmd = """
-What time is it? 
-Also, can you check my calendar for tomorrow 
+What time is it?
+Also, can you check my calendar for tomorrow
 and set a reminder for a team meeting at 2pm?
 """
 
@@ -158,6 +160,7 @@ print(scheduler(cmd))
 ```
 
 ### Streaming
+
 The streaming feature allows real-time response generation, useful for long-form content or interactive applications:
 
 ```python
@@ -261,14 +264,14 @@ class RedisState(State):
         super().__init__()
         self.redis = redis_client
         self.key = "chat_history"
-    
+
     def add_message(self, message):
         self.redis.rpush(self.key, json.dumps(message))
-    
+
     def get_messages(self, limit=None):
         messages = self.redis.lrange(self.key, 0, -1)
         return [json.loads(m) for m in messages][-limit:] if limit else messages
-    
+
     def clear(self):
         self.redis.delete(self.key)
 
@@ -283,6 +286,7 @@ def persistent_chat(message):
 Authentication can be handled in three ways:
 
 1. Directly via the `api_key` parameter:
+
 ```python
 from promptic import llm
 
@@ -292,6 +296,7 @@ def my_function(text):
 ```
 
 2. Through environment variables (recommended):
+
 ```bash
 # OpenAI
 export OPENAI_API_KEY=sk-...
@@ -309,6 +314,7 @@ export AZURE_API_VERSION=...
 ```
 
 3. By setting the API key programmatically via litellm:
+
 ```python
 from litellm import litellm
 
@@ -317,11 +323,11 @@ litellm.api_key = "your-api-key-here"
 
 The supported environment variables correspond to the model provider:
 
-| Provider | Environment Variable | Model Examples |
-|----------|---------------------|----------------|
-| OpenAI | `OPENAI_API_KEY` | gpt-4o, gpt-3.5-turbo |
-| Anthropic | `ANTHROPIC_API_KEY` | claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229 |
-| Google | `GEMINI_API_KEY` | gemini/gemini-1.5-pro-latest |
+| Provider  | Environment Variable | Model Examples                                                            |
+| --------- | -------------------- | ------------------------------------------------------------------------- |
+| OpenAI    | `OPENAI_API_KEY`     | gpt-4o, gpt-3.5-turbo                                                     |
+| Anthropic | `ANTHROPIC_API_KEY`  | claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229 |
+| Google    | `GEMINI_API_KEY`     | gemini/gemini-1.5-pro-latest                                              |
 
 ## API Reference
 
@@ -376,7 +382,7 @@ class Story(BaseModel):
 )
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""
-    
+
 @story_assistant.tool
 def get_writing_style():
     """Get the current writing style preference"""
@@ -401,6 +407,7 @@ print(story_assistant("Write another story with the same style but about a time 
 `promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
 
 - **Tool/Function Calling**:
+
   - Anthropic (Claude) models currently support only one tool per function
 
 - **Streaming**:
