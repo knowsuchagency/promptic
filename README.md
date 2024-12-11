@@ -29,7 +29,7 @@ pip install promptic
 
 ### Basics
 
-Functions decorated with `@llm` use Python docstrings as natural prompt templates. A docstring is the string literal that appears right after a function definition, and promptic generates prompts by combining the docstring with the function's arguments when the function is called.
+Functions decorated with `@llm` use its docstring as a prompt template. When the function is called, promptic combines the docstring with the function's arguments to generate the prompt and returns the LLM's response.
 
 ```python
 from promptic import llm
