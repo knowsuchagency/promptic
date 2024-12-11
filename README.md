@@ -35,13 +35,13 @@ Functions decorated with `@llm` use Python docstrings as natural prompt template
 from promptic import llm
 
 @llm
-def translate(text, target_language="Chinese"):
-    """Translate '{text}' to {target_language}"""
+def translate(text, language="Chinese"):
+    """Translate '{text}' to {language}"""
 
 print(translate("Hello world!"))
 # 您好，世界！
 
-print(translate("Hello world!", target_language="Spanish"))
+print(translate("Hello world!", language="Spanish"))
 # ¡Hola, mundo!
 
 @llm(
