@@ -31,7 +31,9 @@ pip install promptic
 
 Functions decorated with `@llm` use its docstring as a prompt template. When the function is called, promptic combines the docstring with the function's arguments to generate the prompt and returns the LLM's response.
 
-```python
+<!-- embedme examples/basic.py -->
+
+```py
 from promptic import llm
 
 @llm
@@ -62,7 +64,9 @@ print(analyze_sentiment("The product was okay but shipping took forever"))
 
 You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
 
-```python
+<!-- embedme examples/structured.py -->
+
+```py
 from pydantic import BaseModel
 from promptic import llm
 
@@ -81,7 +85,9 @@ print(get_weather("San Francisco", units="celsius"))
 
 Alternatively, you can use JSON Schema dictionaries for more low-level validation:
 
-```python
+<!-- embedme examples/json_schema.py -->
+
+```py
 from promptic import llm
 
 schema = {
@@ -119,7 +125,9 @@ print(get_user_info("Alice"))
 
 Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically execute the appropriate tool calls, creating a seamless agent interaction.
 
-```python
+<!-- embedme examples/book_meeting.py -->
+
+```py
 from datetime import datetime
 
 from promptic import llm
@@ -163,7 +171,9 @@ print(scheduler(cmd))
 
 The streaming feature allows real-time response generation, useful for long-form content or interactive applications:
 
-```python
+<!-- embedme examples/streaming.py -->
+
+```py
 from promptic import llm
 
 @llm(stream=True)
@@ -180,7 +190,9 @@ print("".join(write_poem("artificial intelligence")))
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
 
-```python
+<!-- embedme examples/error_handing.py -->
+
+```py
 from promptic import llm
 
 @llm(
@@ -212,7 +224,9 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 
 `promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
-```python
+<!-- embedme examples/resiliency.py -->
+
+```py
 from tenacity import retry, wait_exponential, retry_if_exception_type
 from promptic import llm
 from litellm.exceptions import RateLimitError
@@ -232,7 +246,9 @@ generate_summary("Long article text here...")
 
 By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. Here's a practical example using Gradio to create a web-based chatbot interface:
 
-```python
+<!-- embedme examples/gradio.py -->
+
+```py
 import gradio as gr
 from promptic import llm
 
@@ -255,7 +271,9 @@ demo.launch()
 
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
 
-```python
+<!-- embedme examples/state.py -->
+
+```py
 import json
 from promptic import State, llm
 
@@ -275,10 +293,10 @@ class RedisState(State):
     def clear(self):
         self.redis.delete(self.key)
 
-
 @llm(state=RedisState(redis_client))
 def persistent_chat(message):
     """Chat: {message}"""
+
 ```
 
 ### Authentication
@@ -287,7 +305,7 @@ Authentication can be handled in three ways:
 
 1. Directly via the `api_key` parameter:
 
-```python
+```py
 from promptic import llm
 
 @llm(model="gpt-4o-mini", api_key="your-api-key-here")
@@ -298,6 +316,7 @@ def my_function(text):
 2. Through environment variables (recommended):
 
 ```bash
+
 # OpenAI
 export OPENAI_API_KEY=sk-...
 
@@ -315,7 +334,7 @@ export AZURE_API_VERSION=...
 
 3. By setting the API key programmatically via litellm:
 
-```python
+```py
 from litellm import litellm
 
 litellm.api_key = "your-api-key-here"
@@ -363,7 +382,9 @@ Base class for managing conversation memory and state. Can be extended to implem
 
 #### Example
 
-```python
+<!-- embedme examples/api_ref.py -->
+
+```py
 from pydantic import BaseModel
 from promptic import llm
 
