@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import os
 
 import pytest
-from litellm.exceptions import RateLimitError
+from litellm.exceptions import RateLimitError, InternalServerError, APIError, Timeout
 from pydantic import BaseModel
 from tenacity import (
     retry,
@@ -12,6 +12,8 @@ from tenacity import (
 )
 
 from promptic import Promptic, State, llm, promptic
+
+ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
 # Define default model lists
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
@@ -22,9 +24,9 @@ REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
 def test_basic(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model)
+    @llm(temperature=0, model=model, timeout=5)
     def president(year):
         """Who was the President of the United States in {year}?"""
 
@@ -37,9 +39,9 @@ def test_basic(model):
 def test_parens(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @promptic(temperature=0, model=model)
+    @promptic(temperature=0, model=model, timeout=5)
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
@@ -56,9 +58,9 @@ def test_pydantic(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model)
+    @llm(temperature=0, model=model, timeout=5)
     def capital(country) -> Capital:
         """What's the capital of {country}?"""
 
@@ -71,12 +73,13 @@ def test_pydantic(model):
 def test_streaming(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @llm(
         stream=True,
         model=model,
         temperature=0,
+        timeout=5,
     )
     def haiku(subject, adjective, verb="delights"):
         """Write a haiku about {subject} that is {adjective} and {verb}."""
@@ -89,9 +92,9 @@ def test_streaming(model):
 def test_system_prompt(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system="you are a snarky chatbot", temperature=0, model=model)
+    @llm(system="you are a snarky chatbot", temperature=0, model=model, timeout=5)
     def answer(question):
         """{question}"""
 
@@ -107,19 +110,20 @@ def test_agents(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @llm(
         system="you are a posh smart home assistant named Jarvis",
         temperature=0,
         model=model,
+        timeout=5,
     )
     def jarvis(command):
         """{command}"""
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @jarvis.tool
     def turn_light_on():
@@ -129,7 +133,7 @@ def test_agents(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @jarvis.tool
     def get_current_weather(location: str, unit: str = "fahrenheit"):
@@ -164,9 +168,15 @@ def test_streaming_with_tools(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(stream=True, model=model, system="you are a helpful assistant", temperature=0)
+    @llm(
+        stream=True,
+        model=model,
+        system="you are a helpful assistant",
+        temperature=0,
+        timeout=5,
+    )
     def stream_with_tools(query):
         """{query}"""
 
@@ -214,9 +224,9 @@ def test_json_schema_validation(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=schema)
+    @llm(temperature=0, model=model, json_schema=schema, timeout=5)
     def get_user_info(name: str):
         """Get information about {name}"""
 
@@ -242,9 +252,9 @@ def test_json_schema_validation(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=invalid_schema)
+    @llm(temperature=0, model=model, json_schema=invalid_schema, timeout=5)
     def get_impossible_score(name: str):
         """Get score for {name}"""
 
@@ -257,9 +267,9 @@ def test_json_schema_validation(model):
 def test_dry_run_with_tools(model, caplog):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(dry_run=True, debug=True, temperature=0, model=model)
+    @llm(dry_run=True, debug=True, temperature=0, model=model, timeout=5)
     def assistant(command):
         """{command}"""
 
@@ -279,9 +289,9 @@ def test_dry_run_with_tools(model, caplog):
 def test_debug_logging(model, caplog):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(debug=True, temperature=0, model=model)
+    @llm(debug=True, temperature=0, model=model, timeout=5)
     def debug_test(message):
         """Echo: {message}"""
 
@@ -301,19 +311,20 @@ def test_multiple_tool_calls(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @llm(
         system="You are a helpful assistant that likes to double-check things",
         temperature=0,
         model=model,
+        timeout=5,
     )
     def double_checker(query):
         """{query}"""
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @double_checker.tool
     def check_status():
@@ -355,9 +366,9 @@ def test_state_limit(model):
 def test_memory_conversation(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=True, temperature=0, model=model)
+    @llm(memory=True, temperature=0, model=model, timeout=5)
     def chat(message):
         """Chat: {message}"""
 
@@ -385,9 +396,9 @@ def test_custom_state(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(state=custom_state, temperature=0, model=model)
+    @llm(state=custom_state, temperature=0, model=model, timeout=5)
     def chat(message):
         """Chat: {message}"""
 
@@ -403,9 +414,9 @@ def test_custom_state(model):
 def test_memory_disabled(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=False, temperature=0, model=model)
+    @llm(memory=False, temperature=0, model=model, timeout=5)
     def chat(message):
         """Chat: {message}"""
 
@@ -425,11 +436,12 @@ def test_memory_with_streaming(model):
         state=state,
         stream=True,
         temperature=0,
+        timeout=5,
     )
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @p
     def simple_conversation(input_text: str) -> str:
@@ -475,15 +487,15 @@ def test_pydantic_with_tools(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model)
+    @llm(temperature=0, model=model, timeout=5)
     def get_weather_report(location: str) -> WeatherReport:
         """Create a detailed weather report for {location}"""
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @get_weather_report.tool
     def get_temperature(city: str) -> float:
@@ -492,7 +504,7 @@ def test_pydantic_with_tools(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @get_weather_report.tool
     def get_conditions(city: str) -> str:
@@ -520,9 +532,9 @@ def test_pydantic_tools_with_memory(model):
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=True, state=state, temperature=0, model=model)
+    @llm(memory=True, state=state, temperature=0, model=model, timeout=5)
     def task_tracker(command: str) -> TaskStatus:
         """Process the following task command: {command}"""
 
@@ -551,12 +563,13 @@ def test_pydantic_tools_with_memory(model):
 def test_anthropic_tool_calling():
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @llm(
         model="claude-3-haiku-20240307",
         temperature=0,
         debug=True,
+        timeout=5,
     )
     def assistant(command):
         """{command}"""
@@ -575,11 +588,12 @@ def test_anthropic_tool_calling():
 def test_anthropic_multiple_tools_error():
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
     @llm(
         model="claude-3-haiku-20240307",
         temperature=0,
+        timeout=5,
     )
     def assistant(command):
         """{command}"""
@@ -603,9 +617,9 @@ def test_anthropic_multiple_tools_error():
 def test_gemini_streaming_with_tools_error():
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(RateLimitError),
+        retry=retry_if_exception_type(ERRORS),
     )
-    @llm(stream=True, model="gemini/gemini-1.5-pro")
+    @llm(stream=True, model="gemini/gemini-1.5-pro", timeout=5)
     def assistant(command):
         """{command}"""
 
@@ -637,7 +651,7 @@ def test_mutually_exclusive_schemas(model):
 
     with pytest.raises(ValueError) as exc_info:
 
-        @llm(temperature=0, model=model, json_schema=schema)
+        @llm(temperature=0, model=model, json_schema=schema, timeout=5)
         def get_person(name: str) -> Person:
             """Get information about {name}"""
 
@@ -658,6 +672,7 @@ def test_wrapper_attributes(model):
         stream=True,
         debug=True,
         state=custom_state,
+        timeout=5,
     )
 
     @p
@@ -673,7 +688,11 @@ def test_wrapper_attributes(model):
     assert test_function.debug is True
     assert test_function.state is custom_state
 
-    assert test_function.litellm_kwargs == {"temperature": 0.7, "stream": True}
+    assert test_function.litellm_kwargs == {
+        "temperature": 0.7,
+        "stream": True,
+        "timeout": 5,
+    }
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -681,7 +700,7 @@ def test_clear_state(model):
     # Test successful clearing
     state = State()
 
-    @llm(model=model, memory=True, state=state)
+    @llm(model=model, memory=True, state=state, timeout=5)
     def chat(message):
         """Chat: {message}"""
 
@@ -695,7 +714,7 @@ def test_clear_state(model):
 
     # Test error when memory/state is disabled
 
-    @llm(model=model, memory=False)
+    @llm(model=model, memory=False, timeout=5)
     def chat_no_memory(message):
         """Chat: {message}"""
 
