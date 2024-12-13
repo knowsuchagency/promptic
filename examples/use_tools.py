@@ -1,10 +1,21 @@
+import os
+from datetime import datetime
 from promptic import llm
 
+model = os.getenv("PROMPTIC_MODEL", "claude-3-5-haiku-20241022")
+
 @llm(
-    model="gpt-4o-mini",
+    model=model,
+    debug=True,
 )
 def scheduler(command):
     """{command}"""
+
+@scheduler.tool
+def get_current_time():
+    """Get the current time"""
+    print("getting current time")
+    return datetime.now().strftime("%I:%M %p")
 
 @scheduler.tool
 def calculator(expression: str) -> float:
