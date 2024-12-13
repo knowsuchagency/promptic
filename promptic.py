@@ -89,8 +89,6 @@ class Promptic:
 
     def tool(self, fn: Callable) -> Callable:
         """Register a function as a tool that can be used by the LLM"""
-        if self.anthropic and self.tools:
-            raise ValueError("Anthropic models currently support only one tool.")
         self.tools[fn.__name__] = fn
         return fn
 
@@ -299,6 +297,7 @@ class Promptic:
                 raise ValueError("Gemini models do not support streaming with tools")
 
             while True:
+                self.logger.debug(f"request {self.model = }, {messages = }, tools = {tools}")
                 # Call the LLM with the prompt and tools
                 response = litellm.completion(
                     model=self.model,
@@ -307,6 +306,7 @@ class Promptic:
                     tool_choice="auto" if tools else None,
                     **self.litellm_kwargs,
                 )
+                self.logger.debug(f"response {response = }")
 
                 if self.litellm_kwargs.get("stream"):
                     return self._stream_response(response)
@@ -337,8 +337,8 @@ class Promptic:
                                             **function_args
                                         )
                                     except Exception as e:
-                                        self.logger.error(f"Error calling tool {function_name}: {e}")
-                                        function_response = f"Error calling tool {function_name}: {e}"
+                                        self.logger.error(f"Error calling tool {function_name}({function_args}): {e}")
+                                        function_response = f"Error calling tool {function_name}({function_args}): {e}"
                                 messages.append(
                                     {
                                         "tool_call_id": tool_call.id,
@@ -348,11 +348,6 @@ class Promptic:
                                     }
                                 )
 
-                        claude_kwargs = {}
-                        # Anthropic requires tools be explicitly set
-                        if self.anthropic and tools:
-                            claude_kwargs["tools"] = tools
-                            claude_kwargs["tool_choice"] = "auto"
                     # GPT and Claude have `stop` when conversation is complete
                     # Gemini has `stop` as a finish reason when tools are used
                     elif choice.finish_reason in ["stop", "max_tokens", "length"]:

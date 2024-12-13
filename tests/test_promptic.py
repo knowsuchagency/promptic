@@ -16,8 +16,8 @@ from promptic import Promptic, State, llm, promptic
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
 # Define default model lists
-CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
-REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
+CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
+REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -105,9 +105,6 @@ def test_system_prompt(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_agents(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -304,9 +301,6 @@ def test_debug_logging(model, caplog):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_multiple_tool_calls(model):
-    if "claude" in model:
-        pytest.skip("Anthropic models only support one tool")
-
     counter = Mock()
 
     @retry(
@@ -435,6 +429,7 @@ def test_memory_with_streaming(model):
         memory=True,
         state=state,
         stream=True,
+        debug=True,
         temperature=0,
         timeout=5,
     )
@@ -477,9 +472,6 @@ def test_memory_with_streaming(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_pydantic_with_tools(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     class WeatherReport(BaseModel):
         location: str
         temperature: float
@@ -520,9 +512,6 @@ def test_pydantic_with_tools(model):
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_pydantic_tools_with_memory(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     class TaskStatus(BaseModel):
         task_id: int
         status: str
@@ -583,34 +572,6 @@ def test_anthropic_tool_calling():
 
     assert isinstance(result, str)
     assert "12:00" in result
-
-
-def test_anthropic_multiple_tools_error():
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model="claude-3-haiku-20240307",
-        temperature=0,
-        timeout=5,
-    )
-    def assistant(command):
-        """{command}"""
-
-    @assistant.tool
-    def get_time():
-        """Get the current time"""
-        return "12:00 PM"
-
-    with pytest.raises(ValueError) as exc_info:
-
-        @assistant.tool
-        def get_weather(location: str):
-            """Get the weather for a location"""
-            return f"Sunny in {location}"
-
-    assert str(exc_info.value) == "Anthropic models currently support only one tool."
 
 
 # Add new test to verify Gemini streaming with tools raises exception
