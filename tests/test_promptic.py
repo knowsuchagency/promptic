@@ -682,3 +682,135 @@ def test_clear_state(model):
     with pytest.raises(ValueError) as exc_info:
         chat_no_memory.clear()
     assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_weather_tools_basic(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=5, debug=True)
+    def weather_assistant(command):
+        """{command}"""
+
+    @weather_assistant.tool
+    def get_location(city: str) -> dict:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return locations.get(city, {"error": "Location not found"})
+
+    @weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> dict:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:  # Northern region
+            return {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:  # Southern region
+            return {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+
+    # Test single city weather
+    result1 = weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, str)
+    assert any(word in result1.lower() for word in ["new york", "59", "sunny"])
+
+    # Test weather comparison
+    result2 = weather_assistant("Please compare the weather between New York and Miami")
+    assert isinstance(result2, str)
+    assert all(city in result2.lower() for city in ["new york", "miami"])
+    assert any(str(temp) in result2 for temp in ["59", "77"])
+
+    # Test temperature difference
+    result3 = weather_assistant(
+        "What's the temperature difference between New York and Miami?"
+    )
+    assert isinstance(result3, str)
+    assert "18" in result3  # 77 - 59 = 18 degrees difference
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+def test_weather_tools_structured(model):
+    class Location(BaseModel):
+        latitude: float
+        longitude: float
+        city: str
+
+    class Weather(BaseModel):
+        temperature: float
+        condition: str
+        humidity: float
+        wind_speed: float
+
+    class WeatherReport(BaseModel):
+        location: Location
+        weather: Weather
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=5)
+    def structured_weather_assistant(command) -> WeatherReport:
+        """{command}"""
+
+    @structured_weather_assistant.tool
+    def get_location(city: str) -> Location:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return Location(**locations.get(city, {"error": "Location not found"}))
+
+    @structured_weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> Weather:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:
+            weather_data = {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:
+            weather_data = {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+        return Weather(**weather_data)
+
+    # Test single city weather with structured output
+    result1 = structured_weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, WeatherReport)
+    assert result1.location.city == "New York"
+    assert result1.weather.temperature == 59
+    assert result1.weather.condition == "sunny"
+
+    # Test weather comparison with structured output
+    result2 = structured_weather_assistant("How's the weather in Miami right now?")
+    assert isinstance(result2, WeatherReport)
+    assert result2.location.city == "Miami"
+    assert result2.weather.temperature == 77
+    assert result2.weather.condition == "cloudy"
