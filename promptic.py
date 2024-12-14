@@ -116,8 +116,8 @@ class Promptic:
 
             parameters["properties"][name] = param_info
 
-        # Add dummy parameter for Gemini models
-        if self.gemini:
+        # Add dummy parameter for Gemini models if the function doesn't take any arguments
+        if self.gemini and not parameters.get("required"):
             parameters["properties"]["llm_invocation"] = {
                 "type": "boolean",
                 "description": "True if the function was invoked by an LLM",
@@ -297,7 +297,9 @@ class Promptic:
                 raise ValueError("Gemini models do not support streaming with tools")
 
             while True:
-                self.logger.debug(f"request {self.model = }, {messages = }, tools = {tools}")
+                self.logger.debug(
+                    f"request {self.model = }, {messages = }, tools = {tools}"
+                )
                 # Call the LLM with the prompt and tools
                 response = litellm.completion(
                     model=self.model,
@@ -337,7 +339,9 @@ class Promptic:
                                             **function_args
                                         )
                                     except Exception as e:
-                                        self.logger.error(f"Error calling tool {function_name}({function_args}): {e}")
+                                        self.logger.error(
+                                            f"Error calling tool {function_name}({function_args}): {e}"
+                                        )
                                         function_response = f"Error calling tool {function_name}({function_args}): {e}"
                                 messages.append(
                                     {
@@ -410,6 +414,7 @@ class Promptic:
                                         and "llm_invocation" in function_args
                                     ):
                                         function_args.pop("llm_invocation")
+                                    
                                     if tool_info["name"] in self.tools:
                                         if self.dry_run:
                                             self.logger.warning(
