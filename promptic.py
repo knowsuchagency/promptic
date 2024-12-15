@@ -135,8 +135,7 @@ class Promptic:
 
     def _parse_and_validate_response(self, generated_text: str, return_type: Any):
         """Parse and validate the response according to the return type"""
-        self.logger.debug(f"Parsing response: {generated_text}")
-        self.logger.debug(f"Return type: {return_type}")
+        # self.logger.debug(f"Return type: {return_type}")
 
         # Handle Pydantic model return types
         if (
@@ -296,10 +295,33 @@ class Promptic:
             if self.gemini and self.litellm_kwargs.get("stream") and self.tools:
                 raise ValueError("Gemini models do not support streaming with tools")
 
+            self.logger.debug("Chat History:")
+            for i, msg in enumerate(messages):
+                self.logger.debug(f"Message {i}:")
+                self.logger.debug(f"  Role: {msg.get('role', 'unknown')}")
+                self.logger.debug(f"  Content: {msg.get('content')}")
+                if "tool_calls" in msg:
+                    self.logger.debug("  Tool Calls:")
+                    for tool_call in msg["tool_calls"]:
+                        self.logger.debug(f"    Name: {tool_call.function.name}")
+                        self.logger.debug(
+                            f"    Arguments: {tool_call.function.arguments}"
+                        )
+                if "tool_call_id" in msg:
+                    self.logger.debug(f"  Tool Call ID: {msg['tool_call_id']}")
+                    self.logger.debug(f"  Tool Name: {msg.get('name')}")
+
+                if tools:
+                    self.logger.debug("\nAvailable Tools:")
+                    for tool in tools:
+                        self.logger.debug(
+                            f"  {tool['function']['name']}: {tool['function']['description']}"
+                        )
+
             while True:
-                self.logger.debug(
-                    f"request {self.model = }, {messages = }, tools = {tools}"
-                )
+                # self.logger.debug(
+                #     f"request {self.model = }, {messages = }, tools = {tools}"
+                # )
                 # Call the LLM with the prompt and tools
                 response = litellm.completion(
                     model=self.model,
@@ -308,7 +330,7 @@ class Promptic:
                     tool_choice="auto" if tools else None,
                     **self.litellm_kwargs,
                 )
-                self.logger.debug(f"response {response = }")
+                # self.logger.debug(f"{response = }")
 
                 if self.litellm_kwargs.get("stream"):
                     return self._stream_response(response)
@@ -414,7 +436,7 @@ class Promptic:
                                         and "llm_invocation" in function_args
                                     ):
                                         function_args.pop("llm_invocation")
-                                    
+
                                     if tool_info["name"] in self.tools:
                                         if self.dry_run:
                                             self.logger.warning(

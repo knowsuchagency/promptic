@@ -153,10 +153,8 @@ def test_agents(model):
     assert any(word in result.lower() for word in probable_weather_words)
 
 
-@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_streaming_with_tools(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
     if model.startswith(("gemini", "vertex")):  # pragma: no cover
         pytest.skip("Gemini models do not support streaming with tools")
 
@@ -684,7 +682,7 @@ def test_clear_state(model):
     assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
 
 
-@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_weather_tools_basic(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
