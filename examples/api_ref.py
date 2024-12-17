@@ -15,6 +15,7 @@ class Story(BaseModel):
     memory=True,
     temperature=0.7,
     max_tokens=800,
+    cache=False,
 )
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""

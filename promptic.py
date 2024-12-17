@@ -4,11 +4,13 @@ import logging
 import re
 from functools import wraps
 from textwrap import dedent
-from typing import Callable, Dict, Any, List, Optional
+from typing import Callable, Dict, Any, List, Optional, Union
 
 import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
+
+SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
 
 class State:
@@ -42,12 +44,13 @@ class Promptic:
     def __init__(
         self,
         model="gpt-4o-mini",
-        system: str = None,
+        system: SystemPrompt = None,
         dry_run: bool = False,
         debug: bool = False,
         memory: bool = False,
         state: Optional[State] = None,
         json_schema: Optional[Dict] = None,
+        cache: bool = True,
         **litellm_kwargs,
     ):
         self.model = model
@@ -69,6 +72,7 @@ class Promptic:
 
         if debug:
             self.logger.setLevel(logging.DEBUG)
+            litellm.set_verbose = True
         else:
             self.logger.setLevel(logging.WARNING)
 
@@ -83,6 +87,29 @@ class Promptic:
 
         self.anthropic = self.model.startswith(("claude", "anthropic"))
         self.gemini = self.model.startswith(("gemini", "vertex"))
+
+        self.cache = cache
+        self.anthropic_cached_block_limit = 4
+
+    def _set_anthropic_cache(self, messages: List[dict]):
+        """Set the cache control for the message if it is an Anthropic message"""
+        if not (self.cache and self.anthropic):
+            return messages
+
+        cached_count = 0
+
+        for msg in messages:
+            if msg.get("cache_control"):
+                cached_count += 1
+            if cached_count > self.anthropic_cached_block_limit:
+                break
+            if len(str(msg.get("content"))) * 4 > 1024:
+                msg["cache_control"] = {"type": "ephemeral"}
+                cached_count += 1
+                if cached_count > self.anthropic_cached_block_limit:
+                    break
+
+        return messages
 
     def __call__(self, fn=None):
         return self._decorator(fn) if fn else self._decorator
@@ -204,7 +231,7 @@ class Promptic:
             self.logger.debug(f"{func = }")
             self.logger.debug(f"{args = }")
             self.logger.debug(f"{kwargs = }")
-
+            self.logger.debug(f"{self.cache = }")
             if self.tools:
                 assert litellm.supports_function_calling(
                     self.model
@@ -238,13 +265,24 @@ class Promptic:
             self.logger.debug(f"{return_type = }")
 
             messages = [{"content": prompt_text, "role": "user"}]
+
             if self.system:
-                messages.insert(0, {"content": self.system, "role": "system"})
+                if isinstance(self.system, str):
+                    system_message = {"content": self.system, "role": "system"}
+                    messages.insert(0, system_message)
+                elif isinstance(self.system, list):
+                    if isinstance(self.system[0], str):
+                        system_messages = [
+                            {"content": msg, "role": "system"} for msg in self.system
+                        ]
+                        messages = system_messages + messages
+                    elif isinstance(self.system[0], dict):
+                        messages = self.system + messages
 
             # Store the user message in state before making the API call
             if self.state:
                 history = self.state.get_messages()
-                self.state.add_message({"content": prompt_text, "role": "user"})
+                self.state.add_message(messages[-1])
                 if history:  # Add previous history if it exists
                     messages = history + messages
 
@@ -264,32 +302,30 @@ class Promptic:
             ):
                 schema = return_type.model_json_schema()
                 json_schema = json.dumps(schema, indent=2)
-                messages.append(
-                    {
-                        "role": "user",
-                        "content": (
-                            "Format your response according to this JSON schema:\n"
-                            f"```json\n{json_schema}\n```\n\n"
-                            "Provide the result enclosed in triple backticks with 'json' "
-                            "on the first line. Don't put control characters in the wrong "
-                            "place or the JSON will be invalid."
-                        ),
-                    }
-                )
+                msg = {
+                    "role": "user",
+                    "content": (
+                        "Format your response according to this JSON schema:\n"
+                        f"```json\n{json_schema}\n```\n\n"
+                        "Provide the result enclosed in triple backticks with 'json' "
+                        "on the first line. Don't put control characters in the wrong "
+                        "place or the JSON will be invalid."
+                    ),
+                }
+                messages.append(msg)
             elif self.json_schema:
                 json_schema = json.dumps(self.json_schema, indent=2)
-                messages.append(
-                    {
-                        "role": "user",
-                        "content": (
-                            "Format your response according to this JSON schema:\n"
-                            f"```json\n{json_schema}\n```\n\n"
-                            "Provide the result enclosed in triple backticks with 'json' "
-                            "on the first line. Don't put control characters in the wrong "
-                            "place or the JSON will be invalid."
-                        ),
-                    }
-                )
+                msg = {
+                    "role": "user",
+                    "content": (
+                        "Format your response according to this JSON schema:\n"
+                        f"```json\n{json_schema}\n```\n\n"
+                        "Provide the result enclosed in triple backticks with 'json' "
+                        "on the first line. Don't put control characters in the wrong "
+                        "place or the JSON will be invalid."
+                    ),
+                }
+                messages.append(msg)
 
             # Add check for Gemini streaming with tools
             if self.gemini and self.litellm_kwargs.get("stream") and self.tools:
@@ -319,18 +355,14 @@ class Promptic:
                         )
 
             while True:
-                # self.logger.debug(
-                #     f"request {self.model = }, {messages = }, tools = {tools}"
-                # )
                 # Call the LLM with the prompt and tools
                 response = litellm.completion(
                     model=self.model,
-                    messages=messages,
+                    messages=self._set_anthropic_cache(messages),
                     tools=tools if tools else None,
                     tool_choice="auto" if tools else None,
                     **self.litellm_kwargs,
                 )
-                # self.logger.debug(f"{response = }")
 
                 if self.litellm_kwargs.get("stream"):
                     return self._stream_response(response)
@@ -365,14 +397,13 @@ class Promptic:
                                             f"Error calling tool {function_name}({function_args}): {e}"
                                         )
                                         function_response = f"Error calling tool {function_name}({function_args}): {e}"
-                                messages.append(
-                                    {
-                                        "tool_call_id": tool_call.id,
-                                        "role": "tool",
-                                        "name": function_name,
-                                        "content": to_json(function_response),
-                                    }
-                                )
+                                msg = {
+                                    "tool_call_id": tool_call.id,
+                                    "role": "tool",
+                                    "name": function_name,
+                                    "content": to_json(function_response),
+                                }
+                                messages.append(msg)
 
                     # GPT and Claude have `stop` when conversation is complete
                     # Gemini has `stop` as a finish reason when tools are used
@@ -496,12 +527,13 @@ def to_json(obj: Any) -> str:
 def promptic(
     fn=None,
     model="gpt-4o-mini",
-    system: str = None,
+    system: SystemPrompt = None,
     dry_run: bool = False,
     debug: bool = False,
     memory: bool = False,
     state: Optional[State] = None,
     json_schema: Optional[Dict] = None,
+    cache: bool = True,
     **litellm_kwargs,
 ):
     decorator = Promptic(
@@ -512,6 +544,7 @@ def promptic(
         memory=memory,
         state=state,
         json_schema=json_schema,
+        cache=cache,
         **litellm_kwargs,
     )
     return decorator(fn) if fn else decorator

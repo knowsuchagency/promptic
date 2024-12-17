@@ -16,7 +16,7 @@ test-parallel: format
 
 # Run a specific test
 test-fn fn:
-    uv run pytest -x -v -n auto tests/test_promptic.py::{{fn}}
+    uv run pytest -x -v -n 3 tests/test_promptic.py::{{fn}}
 
 # Run tests with coverage
 test-cov: format

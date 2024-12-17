@@ -107,6 +107,56 @@ def test_system_prompt(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_system_prompt_list_strings(model):
+    system_prompts = [
+        "you are a helpful assistant",
+        "you always provide concise answers",
+        "you speak in a formal tone",
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    def answer(question):
+        """{question}"""
+
+    result = answer("What is the capital of France?")
+    assert isinstance(result, str)
+    assert "Paris" in result
+    # Should be concise due to system prompt
+    assert len(result.split()) < 30
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_system_prompt_list_dicts(model):
+    system_prompts = [
+        {"role": "system", "content": "you are a helpful assistant"},
+        {
+            "role": "system",
+            "content": "you always provide concise answers",
+            "cache_control": {"type": "ephemeral"},
+        },
+        {"role": "system", "content": "you speak in a formal tone"},
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    def answer(question):
+        """{question}"""
+
+    result = answer("What is the capital of France?")
+    assert isinstance(result, str)
+    assert "Paris" in result
+    # Should be concise due to system prompt
+    assert len(result.split()) < 30
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_agents(model):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
@@ -831,3 +881,96 @@ def test_weather_tools_structured(model):
     assert result2.location.city == "Miami"
     assert result2.weather.temperature == 77
     assert result2.weather.condition == "cloudy"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_cache_control(model):
+    """Test cache control functionality"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, cache=True, debug=True, timeout=12)
+    def chat(message):
+        """Chat: {message}"""
+
+    # Generate a long message that should trigger cache control
+    long_message = "Please analyze this text: " + ("lorem ipsum " * 100)
+
+    # First message should have cache control for long content
+    result1 = chat(long_message)
+    assert isinstance(result1, str)
+
+    # Test with cache disabled
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, cache=False, debug=True, timeout=12)
+    def chat_no_cache(message):
+        """Chat: {message}"""
+
+    result2 = chat_no_cache(long_message)
+    assert isinstance(result2, str)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_anthropic_cache_limit(model):
+    """Test Anthropic cache block limit"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    state = State()
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=5),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, cache=True, state=state, memory=True, debug=True, timeout=12)
+    def chat(message):
+        """Chat: {message}"""
+
+    # Generate messages that will exceed the cache block limit
+    for i in range(6):  # More than anthropic_cached_block_limit
+        long_message = f"Analysis part {i}: " + ("lorem ipsum " * 100)
+        result = chat(long_message)
+        assert isinstance(result, str)
+
+    # Verify the number of cached messages doesn't exceed the limit
+    messages = state.get_messages()
+    cached_count = sum("cache_control" in msg for msg in messages)
+    assert cached_count <= 4  # anthropic_cached_block_limit
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_cache_with_system_prompts(model):
+    """Test cache behavior with system prompts"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    system_prompts = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {
+            "role": "system",
+            "content": "You always provide detailed responses",
+            "cache_control": {"type": "ephemeral"},
+        },
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, system=system_prompts, cache=True, debug=True, timeout=12)
+    def chat(message):
+        """Chat: {message}"""
+
+    long_message = "Please analyze: " + ("lorem ipsum " * 100)
+    result = chat(long_message)
+    assert isinstance(result, str)
