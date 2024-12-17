@@ -459,15 +459,6 @@ print(
 
 ```
 
-## Limitations
-
-`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
-
-- **Streaming**:
-  - Gemini models do not support streaming when using tools/function calls
-
-These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
-
 ## Contributing
 
 ### Requirements
@@ -526,5 +517,15 @@ Pre-commit hooks will automatically:
 3. Make your changes
 4. If possible, run tests and ensure all checks pass (you'll need your own API keys)
 5. Submit a pull request
+
+## Limitations
+
+`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
+
+- **Streaming**:
+  - Gemini models do not support streaming when using tools/function calls
+
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
+
 
 [litellm]: https://github.com/BerriAI/litellm
