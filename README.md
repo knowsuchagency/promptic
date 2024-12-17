@@ -291,7 +291,7 @@ with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
-demo.launch()
+# demo.launch()
 
 ```
 
@@ -429,7 +429,7 @@ class Story(BaseModel):
     system="You are a creative writing assistant",
     memory=True,
     temperature=0.7,
-    max_tokens=500,
+    max_tokens=800,
 )
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""
