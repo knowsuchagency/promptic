@@ -463,10 +463,6 @@ print(
 
 `promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
 
-- **Tool/Function Calling**:
-
-  - Anthropic (Claude) models currently support only one tool per function
-
 - **Streaming**:
   - Gemini models do not support streaming when using tools/function calls
 

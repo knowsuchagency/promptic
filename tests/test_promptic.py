@@ -19,8 +19,8 @@ from promptic import Promptic, State, llm, promptic
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
 # Define default model lists
-CHEAP_MODELS = ["gpt-4o-mini", "claude-3-haiku-20240307", "gemini/gemini-1.5-flash"]
-REGULAR_MODELS = ["gpt-4o", "claude-3.5", "gemini/gemini-1.5-pro"]
+CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
+REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -108,9 +108,6 @@ def test_system_prompt(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_agents(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -159,10 +156,8 @@ def test_agents(model):
     assert any(word in result.lower() for word in probable_weather_words)
 
 
-@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_streaming_with_tools(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
     if model.startswith(("gemini", "vertex")):  # pragma: no cover
         pytest.skip("Gemini models do not support streaming with tools")
 
@@ -307,9 +302,6 @@ def test_debug_logging(model, caplog):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_multiple_tool_calls(model):
-    if "claude" in model:
-        pytest.skip("Anthropic models only support one tool")
-
     counter = Mock()
 
     @retry(
@@ -438,6 +430,7 @@ def test_memory_with_streaming(model):
         memory=True,
         state=state,
         stream=True,
+        debug=True,
         temperature=0,
         timeout=5,
     )
@@ -480,9 +473,6 @@ def test_memory_with_streaming(model):
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_pydantic_with_tools(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     class WeatherReport(BaseModel):
         location: str
         temperature: float
@@ -523,9 +513,6 @@ def test_pydantic_with_tools(model):
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 def test_pydantic_tools_with_memory(model):
-    if "claude" in model:  # pragma: no cover
-        pytest.skip("Anthropic models only support one tool")
-
     class TaskStatus(BaseModel):
         task_id: int
         status: str
@@ -586,34 +573,6 @@ def test_anthropic_tool_calling():
 
     assert isinstance(result, str)
     assert "12:00" in result
-
-
-def test_anthropic_multiple_tools_error():
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model="claude-3-haiku-20240307",
-        temperature=0,
-        timeout=5,
-    )
-    def assistant(command):
-        """{command}"""
-
-    @assistant.tool
-    def get_time():
-        """Get the current time"""
-        return "12:00 PM"
-
-    with pytest.raises(ValueError) as exc_info:
-
-        @assistant.tool
-        def get_weather(location: str):
-            """Get the weather for a location"""
-            return f"Sunny in {location}"
-
-    assert str(exc_info.value) == "Anthropic models currently support only one tool."
 
 
 # Add new test to verify Gemini streaming with tools raises exception
@@ -740,3 +699,135 @@ def test_examples(example_file):
         pytest.skip("State example is not runnable without Redis.")
     else:
         sp.run(f"uv run {example_file}", shell=True, check=True)
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+def test_weather_tools_basic(model):
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=5, debug=True)
+    def weather_assistant(command):
+        """{command}"""
+
+    @weather_assistant.tool
+    def get_location(city: str) -> dict:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return locations.get(city, {"error": "Location not found"})
+
+    @weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> dict:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:  # Northern region
+            return {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:  # Southern region
+            return {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+
+    # Test single city weather
+    result1 = weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, str)
+    assert any(word in result1.lower() for word in ["new york", "59", "sunny"])
+
+    # Test weather comparison
+    result2 = weather_assistant("Please compare the weather between New York and Miami")
+    assert isinstance(result2, str)
+    assert all(city in result2.lower() for city in ["new york", "miami"])
+    assert any(str(temp) in result2 for temp in ["59", "77"])
+
+    # Test temperature difference
+    result3 = weather_assistant(
+        "What's the temperature difference between New York and Miami?"
+    )
+    assert isinstance(result3, str)
+    assert "18" in result3  # 77 - 59 = 18 degrees difference
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+def test_weather_tools_structured(model):
+    class Location(BaseModel):
+        latitude: float
+        longitude: float
+        city: str
+
+    class Weather(BaseModel):
+        temperature: float
+        condition: str
+        humidity: float
+        wind_speed: float
+
+    class WeatherReport(BaseModel):
+        location: Location
+        weather: Weather
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=5)
+    def structured_weather_assistant(command) -> WeatherReport:
+        """{command}"""
+
+    @structured_weather_assistant.tool
+    def get_location(city: str) -> Location:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return Location(**locations.get(city, {"error": "Location not found"}))
+
+    @structured_weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> Weather:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:
+            weather_data = {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:
+            weather_data = {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+        return Weather(**weather_data)
+
+    # Test single city weather with structured output
+    result1 = structured_weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, WeatherReport)
+    assert result1.location.city == "New York"
+    assert result1.weather.temperature == 59
+    assert result1.weather.condition == "sunny"
+
+    # Test weather comparison with structured output
+    result2 = structured_weather_assistant("How's the weather in Miami right now?")
+    assert isinstance(result2, WeatherReport)
+    assert result2.location.city == "Miami"
+    assert result2.weather.temperature == 77
+    assert result2.weather.condition == "cloudy"

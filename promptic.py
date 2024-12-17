@@ -89,8 +89,6 @@ class Promptic:
 
     def tool(self, fn: Callable) -> Callable:
         """Register a function as a tool that can be used by the LLM"""
-        if self.anthropic and self.tools:
-            raise ValueError("Anthropic models currently support only one tool.")
         self.tools[fn.__name__] = fn
         return fn
 
@@ -118,8 +116,8 @@ class Promptic:
 
             parameters["properties"][name] = param_info
 
-        # Add dummy parameter for Gemini models
-        if self.gemini:
+        # Add dummy parameter for Gemini models if the function doesn't take any arguments
+        if self.gemini and not parameters.get("required"):
             parameters["properties"]["llm_invocation"] = {
                 "type": "boolean",
                 "description": "True if the function was invoked by an LLM",
@@ -137,8 +135,7 @@ class Promptic:
 
     def _parse_and_validate_response(self, generated_text: str, return_type: Any):
         """Parse and validate the response according to the return type"""
-        self.logger.debug(f"Parsing response: {generated_text}")
-        self.logger.debug(f"Return type: {return_type}")
+        # self.logger.debug(f"Return type: {return_type}")
 
         # Handle Pydantic model return types
         if (
@@ -298,68 +295,92 @@ class Promptic:
             if self.gemini and self.litellm_kwargs.get("stream") and self.tools:
                 raise ValueError("Gemini models do not support streaming with tools")
 
-            # Call the LLM with the prompt and tools
-            response = litellm.completion(
-                model=self.model,
-                messages=messages,
-                tools=tools if tools else None,
-                tool_choice="auto" if tools else None,
-                **self.litellm_kwargs,
-            )
+            self.logger.debug("Chat History:")
+            for i, msg in enumerate(messages):
+                self.logger.debug(f"Message {i}:")
+                self.logger.debug(f"  Role: {msg.get('role', 'unknown')}")
+                self.logger.debug(f"  Content: {msg.get('content')}")
+                if "tool_calls" in msg:
+                    self.logger.debug("  Tool Calls:")
+                    for tool_call in msg["tool_calls"]:
+                        self.logger.debug(f"    Name: {tool_call.function.name}")
+                        self.logger.debug(
+                            f"    Arguments: {tool_call.function.arguments}"
+                        )
+                if "tool_call_id" in msg:
+                    self.logger.debug(f"  Tool Call ID: {msg['tool_call_id']}")
+                    self.logger.debug(f"  Tool Name: {msg.get('name')}")
 
-            if self.litellm_kwargs.get("stream"):
-                return self._stream_response(response)
-
-            # Handle tool calls if present
-            if (
-                hasattr(response.choices[0].message, "tool_calls")
-                and response.choices[0].message.tool_calls
-            ):
-                tool_calls = response.choices[0].message.tool_calls
-                messages.append(response.choices[0].message)
-
-                for tool_call in tool_calls:
-                    function_name = tool_call.function.name
-                    if function_name in self.tools:
-                        function_args = json.loads(tool_call.function.arguments)
-                        if self.gemini and "llm_invocation" in function_args:
-                            function_args.pop("llm_invocation")
-                        if self.dry_run:
-                            self.logger.warning(
-                                f"[DRY RUN]: {function_name = } {function_args = }"
-                            )
-                            function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
-                        else:
-                            function_response = self.tools[function_name](
-                                **function_args
-                            )
-                        messages.append(
-                            {
-                                "tool_call_id": tool_call.id,
-                                "role": "tool",
-                                "name": function_name,
-                                "content": str(function_response),
-                            }
+                if tools:
+                    self.logger.debug("\nAvailable Tools:")
+                    for tool in tools:
+                        self.logger.debug(
+                            f"  {tool['function']['name']}: {tool['function']['description']}"
                         )
 
-                claude_kwargs = {}
-                # Anthropic requires tools be explicitly set
-                if self.anthropic and tools:
-                    claude_kwargs["tools"] = tools
-                    claude_kwargs["tool_choice"] = "auto"
-
-                # Get final response after tool calls
-                final_response = litellm.completion(
+            while True:
+                # self.logger.debug(
+                #     f"request {self.model = }, {messages = }, tools = {tools}"
+                # )
+                # Call the LLM with the prompt and tools
+                response = litellm.completion(
                     model=self.model,
                     messages=messages,
+                    tools=tools if tools else None,
+                    tool_choice="auto" if tools else None,
                     **self.litellm_kwargs,
-                    **claude_kwargs,
                 )
-                generated_text = final_response.choices[0].message.content
-            else:
-                generated_text = response["choices"][0]["message"]["content"]
+                # self.logger.debug(f"{response = }")
 
-            return self._parse_and_validate_response(generated_text, return_type)
+                if self.litellm_kwargs.get("stream"):
+                    return self._stream_response(response)
+
+                for choice in response.choices:
+                    # Handle tool calls if present
+                    if (
+                        hasattr(choice.message, "tool_calls")
+                        and choice.message.tool_calls
+                    ):
+                        tool_calls = choice.message.tool_calls
+                        messages.append(choice.message)
+
+                        for tool_call in tool_calls:
+                            function_name = tool_call.function.name
+                            if function_name in self.tools:
+                                function_args = json.loads(tool_call.function.arguments)
+                                if self.gemini and "llm_invocation" in function_args:
+                                    function_args.pop("llm_invocation")
+                                if self.dry_run:
+                                    self.logger.warning(
+                                        f"[DRY RUN]: {function_name = } {function_args = }"
+                                    )
+                                    function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
+                                else:
+                                    try:
+                                        function_response = self.tools[function_name](
+                                            **function_args
+                                        )
+                                    except Exception as e:
+                                        self.logger.error(
+                                            f"Error calling tool {function_name}({function_args}): {e}"
+                                        )
+                                        function_response = f"Error calling tool {function_name}({function_args}): {e}"
+                                messages.append(
+                                    {
+                                        "tool_call_id": tool_call.id,
+                                        "role": "tool",
+                                        "name": function_name,
+                                        "content": to_json(function_response),
+                                    }
+                                )
+
+                    # GPT and Claude have `stop` when conversation is complete
+                    # Gemini has `stop` as a finish reason when tools are used
+                    elif choice.finish_reason in ["stop", "max_tokens", "length"]:
+                        generated_text = choice.message.content
+                        return self._parse_and_validate_response(
+                            generated_text, return_type
+                        )
 
         # Add methods explicitly
         wrapper.tool = self.tool
@@ -415,6 +436,7 @@ class Promptic:
                                         and "llm_invocation" in function_args
                                     ):
                                         function_args.pop("llm_invocation")
+
                                     if tool_info["name"] in self.tools:
                                         if self.dry_run:
                                             self.logger.warning(
@@ -458,6 +480,17 @@ class Promptic:
         if not self.memory or not self.state:
             raise ValueError("Cannot clear state: memory/state is not enabled")
         self.state.clear()
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, o: Any) -> Any:
+        if hasattr(o, "__dict__"):
+            return o.__dict__
+        return str(o)
+
+
+def to_json(obj: Any) -> str:
+    return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
 def promptic(
