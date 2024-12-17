@@ -14,3 +14,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      
+      - id: just-check
+        name: Check embedme
+        entry: npx embedme --verify README.md
+        language: system
+        pass_filenames: false
+        always_run: true
