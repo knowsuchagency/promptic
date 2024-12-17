@@ -15,9 +15,8 @@ Promptic aims to be the "[requests](https://requests.readthedocs.io/en/latest/)"
 - 🎯 Type-safe structured outputs with Pydantic
 - 🤖 Easy-to-build agents with function calling
 - 🔄 Streaming support for real-time responses
+- 📚 Automatic prompt caching for supported models
 - 💾 Built-in conversation memory
-- 🛠️ Error handling and retries
-- 🔌 Extensible state management
 
 ## Installation
 
@@ -31,9 +30,10 @@ pip install promptic
 
 Functions decorated with `@llm` use its docstring as a prompt template. When the function is called, promptic combines the docstring with the function's arguments to generate the prompt and returns the LLM's response.
 
-<!-- embedme examples/basic.py -->
 
 ```py
+# examples/basic.py
+
 from promptic import llm
 
 
@@ -69,9 +69,10 @@ print(analyze_sentiment("The product was okay but shipping took forever"))
 
 You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
 
-<!-- embedme examples/structured.py -->
 
 ```py
+# examples/structured.py
+
 from pydantic import BaseModel
 from promptic import llm
 
@@ -94,9 +95,10 @@ print(get_weather("San Francisco", units="celsius"))
 
 Alternatively, you can use JSON Schema dictionaries for more low-level validation:
 
-<!-- embedme examples/json_schema.py -->
 
 ```py
+# examples/json_schema.py
+
 from promptic import llm
 
 schema = {
@@ -130,9 +132,10 @@ print(get_user_info("Alice"))
 
 Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically execute the appropriate tool calls, creating a seamless agent interaction.
 
-<!-- embedme examples/book_meeting.py -->
 
 ```py
+# examples/book_meeting.py
+
 from datetime import datetime
 
 from promptic import llm
@@ -182,9 +185,9 @@ print(scheduler(cmd))
 
 The streaming feature allows real-time response generation, useful for long-form content or interactive applications:
 
-<!-- embedme examples/streaming.py -->
-
 ```py
+# examples/streaming.py
+
 from promptic import llm
 
 
@@ -204,9 +207,9 @@ print("".join(write_poem("artificial intelligence")))
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
 
-<!-- embedme examples/error_handing.py -->
-
 ```py
+# examples/error_handing.py
+
 from promptic import llm
 
 
@@ -243,9 +246,10 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 
 `promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
-<!-- embedme examples/resiliency.py -->
 
 ```py
+# examples/resiliency.py
+
 from tenacity import retry, wait_exponential, retry_if_exception_type
 from promptic import llm
 from litellm.exceptions import RateLimitError
@@ -268,9 +272,9 @@ generate_summary("Long article text here...")
 
 By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. Here's a practical example using Gradio to create a web-based chatbot interface:
 
-<!-- embedme examples/memory.py -->
-
 ```py
+# examples/memory.py
+
 import gradio as gr
 from promptic import llm
 
@@ -297,9 +301,10 @@ with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
 
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
 
-<!-- embedme examples/state.py -->
 
 ```py
+# examples/state.py
+
 import json
 from promptic import State, llm
 
@@ -326,6 +331,54 @@ def persistent_chat(message):
     """Chat: {message}"""
 
 ```
+
+### Caching
+
+For Anthropic models (Claude), promptic provides intelligent caching control to optimize context window usage and improve performance. By default, caching is enabled but can be disabled if needed. OpenAI models cache by default. Anthropic charges for cache writes, but tokens that are read from the cache are less expensive.
+
+
+```py
+# examples/caching.py
+
+from promptic import llm
+
+# imagine these are long legal documents
+legal_document, another_legal_document = (
+    "a legal document about Sam",
+    "a legal document about Jane",
+)
+
+system_prompts = [
+    "You are a helpful legal assistant",
+    "You provide detailed responses based on the provided context",
+    f"legal document 1: '{legal_document}'",
+    f"legal document 2: '{another_legal_document}'",
+]
+
+
+@llm(
+    system=system_prompts,
+    cache=True,  # this is the default
+)
+def legal_chat(message):
+    """{message}"""
+
+
+print(legal_chat("which legal document is about Sam?"))
+# The legal document about Sam is "legal document 1."
+
+```
+
+
+When caching is enabled:
+- Long messages (>1KB) are automatically marked as ephemeral to optimize context window usage
+- A maximum of 4 message blocks can be cached at once
+- System prompts can include explicit cache control
+
+Further reading:
+- https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching#cache-limitations
+- https://docs.litellm.ai/docs/completion/prompt_caching
+
 
 ### Authentication
 
@@ -385,12 +438,23 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 #### Parameters
 
 - `model` (str, optional): The LLM model to use. Defaults to "gpt-4o-mini".
-- `system` (str, optional): System prompt to set context for the LLM.
+- `system` (str | list[str] | list[dict], optional): System prompt(s) to set context for the LLM. Can be:
+  - A single string: `system="You are a helpful assistant"`
+  - A list of strings: `system=["You are a helpful assistant", "You speak formally"]`
+  - A list of message dictionaries:
+    ```python
+    system=[
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": "Please be concise", "cache_control": {"type": "ephemeral"}},
+        {"role": "assistant", "content": "I will be concise"}
+    ]
+    ```
 - `dry_run` (bool, optional): If True, simulates tool calls without executing them. Defaults to False.
 - `debug` (bool, optional): If True, enables detailed logging. Defaults to False.
 - `memory` (bool, optional): If True, enables conversation memory using the default State implementation. Defaults to False.
 - `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
 - `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
+- `cache` (bool, optional): If True, enables prompt caching. Defaults to True.
 - `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods
@@ -410,9 +474,10 @@ Base class for managing conversation memory and state. Can be extended to implem
 
 #### Example
 
-<!-- embedme examples/api_ref.py -->
 
 ```py
+# examples/api_ref.py
+
 from pydantic import BaseModel
 from promptic import llm
 
@@ -430,6 +495,7 @@ class Story(BaseModel):
     memory=True,
     temperature=0.7,
     max_tokens=800,
+    cache=False,
 )
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""
@@ -458,15 +524,6 @@ print(
 )
 
 ```
-
-## Limitations
-
-`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
-
-- **Streaming**:
-  - Gemini models do not support streaming when using tools/function calls
-
-These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
 ## Contributing
 
@@ -513,18 +570,14 @@ just format  # Format code with ruff
 just embedme  # Update code examples in README
 ```
 
-Pre-commit hooks will automatically:
+## Limitations
 
-- Format code
-- Update embedded examples in README
-- Verify README examples are up to date
+`promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
 
-### Pull Requests
+- **Streaming**:
+  - Gemini models do not support streaming when using tools/function calls
 
-1. Fork the repository
-2. Create a new branch for your feature
-3. Make your changes
-4. If possible, run tests and ensure all checks pass (you'll need your own API keys)
-5. Submit a pull request
+These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
+
 
 [litellm]: https://github.com/BerriAI/litellm
