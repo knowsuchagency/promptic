@@ -31,12 +31,16 @@ pip install promptic
 
 Functions decorated with `@llm` use its docstring as a prompt template. When the function is called, promptic combines the docstring with the function's arguments to generate the prompt and returns the LLM's response.
 
-```python
+<!-- embedme examples/basic.py -->
+
+```py
 from promptic import llm
+
 
 @llm
 def translate(text, language="Chinese"):
     """Translate '{text}' to {language}"""
+
 
 print(translate("Hello world!"))
 # 您好，世界！
@@ -44,44 +48,55 @@ print(translate("Hello world!"))
 print(translate("Hello world!", language="Spanish"))
 # ¡Hola, mundo!
 
+
 @llm(
     model="claude-3-haiku-20240307",
-    system="You are a customer service analyst. Provide clear sentiment analysis with key points."
+    system="You are a customer service analyst. Provide clear sentiment analysis with key points.",
 )
 def analyze_sentiment(text):
     """Analyze the sentiment of this customer feedback: {text}"""
+
 
 print(analyze_sentiment("The product was okay but shipping took forever"))
 # Sentiment: Mixed/Negative
 # Key points:
 # - Neutral product satisfaction
 # - Significant dissatisfaction with shipping time
+
 ```
 
 ### Structured Outputs
 
 You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
 
-```python
+<!-- embedme examples/structured.py -->
+
+```py
 from pydantic import BaseModel
 from promptic import llm
+
 
 class Forecast(BaseModel):
     location: str
     temperature: float
     units: str
 
+
 @llm
 def get_weather(location, units: str = "fahrenheit") -> Forecast:
     """What's the weather for {location} in {units}?"""
 
+
 print(get_weather("San Francisco", units="celsius"))
 # location='San Francisco' temperature=16.0 units='Celsius'
+
 ```
 
 Alternatively, you can use JSON Schema dictionaries for more low-level validation:
 
-```python
+<!-- embedme examples/json_schema.py -->
+
+```py
 from promptic import llm
 
 schema = {
@@ -91,42 +106,42 @@ schema = {
             "type": "string",
             "pattern": "^[A-Z][a-z]+$",
             "minLength": 2,
-            "maxLength": 20
+            "maxLength": 20,
         },
-        "age": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 120
-        },
-        "email": {
-            "type": "string",
-            "format": "email"
-        }
+        "age": {"type": "integer", "minimum": 0, "maximum": 120},
+        "email": {"type": "string", "format": "email"},
     },
     "required": ["name", "age"],
-    "additionalProperties": False
+    "additionalProperties": False,
 }
+
 
 @llm(json_schema=schema, system="You generate test data.")
 def get_user_info(name: str) -> dict:
     """Get information about {name}"""
 
+
 print(get_user_info("Alice"))
 # {'name': 'Alice', 'age': 25, 'email': 'alice@example.com'}
+
 ```
 
 ### Agents
 
 Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically execute the appropriate tool calls, creating a seamless agent interaction.
 
-```python
+<!-- embedme examples/book_meeting.py -->
+
+```py
 from datetime import datetime
 
 from promptic import llm
 
+
 @llm(model="gpt-4o")
 def scheduler(command):
     """{command}"""
+
 
 @scheduler.tool
 def get_current_time():
@@ -134,17 +149,20 @@ def get_current_time():
     print("getting current time")
     return datetime.now().strftime("%I:%M %p")
 
+
 @scheduler.tool
 def add_reminder(task: str, time: str):
     """Add a reminder for a specific task and time"""
     print(f"adding reminder: {task} at {time}")
     return f"Reminder set: {task} at {time}"
 
+
 @scheduler.tool
 def check_calendar(date: str):
     """Check calendar for a specific date"""
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
+
 
 cmd = """
 What time is it?
@@ -157,31 +175,40 @@ print(scheduler(cmd))
 # checking calendar for 2023-10-05
 # adding reminder: Team meeting at 2023-10-05T14:00:00
 # The current time is 3:48 PM. I checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM tomorrow.
+
 ```
 
 ### Streaming
 
 The streaming feature allows real-time response generation, useful for long-form content or interactive applications:
 
-```python
+<!-- embedme examples/streaming.py -->
+
+```py
 from promptic import llm
+
 
 @llm(stream=True)
 def write_poem(topic):
     """Write a haiku about {topic}."""
 
+
 print("".join(write_poem("artificial intelligence")))
 # Binary thoughts hum,
 # Electron minds awake, learn,
 # Future thinking now.
+
 ```
 
 ### Error Handling and Dry Runs
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
 
-```python
+<!-- embedme examples/error_handing.py -->
+
+```py
 from promptic import llm
+
 
 @llm(
     system="you are a posh smart home assistant named Jarvis",
@@ -191,54 +218,67 @@ from promptic import llm
 def jarvis(command):
     """{command}"""
 
+
 @jarvis.tool
 def turn_light_on():
     """turn light on"""
     return True
+
 
 @jarvis.tool
 def get_current_weather(location: str, unit: str = "fahrenheit"):
     """Get the current weather in a given location"""
     return f"The weather in {location} is 45 degrees {unit}"
 
+
 print(jarvis("Please turn the light on and check the weather in San Francisco"))
 # ...
 # [DRY RUN]: function_name = 'turn_light_on' function_args = {}
 # [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
 # ...
+
 ```
 
 ### Resiliency
 
 `promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
-```python
+<!-- embedme examples/resiliency.py -->
+
+```py
 from tenacity import retry, wait_exponential, retry_if_exception_type
 from promptic import llm
 from litellm.exceptions import RateLimitError
 
+
 @retry(
     wait=wait_exponential(multiplier=1, min=4, max=10),
-    retry=retry_if_exception_type(RateLimitError)
+    retry=retry_if_exception_type(RateLimitError),
 )
 @llm
 def generate_summary(text):
     """Summarize this text in 2-3 sentences: {text}"""
 
+
 generate_summary("Long article text here...")
+
 ```
 
 ### Memory and State Management
 
 By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. Here's a practical example using Gradio to create a web-based chatbot interface:
 
-```python
+<!-- embedme examples/memory.py -->
+
+```py
 import gradio as gr
 from promptic import llm
+
 
 @llm(memory=True, stream=True)
 def assistant(message):
     """{message}"""
+
 
 def predict(message, history):
     partial_message = ""
@@ -246,18 +286,23 @@ def predict(message, history):
         partial_message += str(chunk)
         yield partial_message
 
+
 with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
-demo.launch()
+# demo.launch()
+
 ```
 
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
 
-```python
+<!-- embedme examples/state.py -->
+
+```py
 import json
 from promptic import State, llm
+
 
 class RedisState(State):
     def __init__(self, redis_client):
@@ -279,6 +324,7 @@ class RedisState(State):
 @llm(state=RedisState(redis_client))
 def persistent_chat(message):
     """Chat: {message}"""
+
 ```
 
 ### Authentication
@@ -287,7 +333,7 @@ Authentication can be handled in three ways:
 
 1. Directly via the `api_key` parameter:
 
-```python
+```py
 from promptic import llm
 
 @llm(model="gpt-4o-mini", api_key="your-api-key-here")
@@ -298,6 +344,7 @@ def my_function(text):
 2. Through environment variables (recommended):
 
 ```bash
+
 # OpenAI
 export OPENAI_API_KEY=sk-...
 
@@ -315,7 +362,7 @@ export AZURE_API_VERSION=...
 
 3. By setting the API key programmatically via litellm:
 
-```python
+```py
 from litellm import litellm
 
 litellm.api_key = "your-api-key-here"
@@ -363,9 +410,12 @@ Base class for managing conversation memory and state. Can be extended to implem
 
 #### Example
 
-```python
+<!-- embedme examples/api_ref.py -->
+
+```py
 from pydantic import BaseModel
 from promptic import llm
+
 
 class Story(BaseModel):
     title: str
@@ -373,25 +423,29 @@ class Story(BaseModel):
     style: str
     word_count: int
 
+
 @llm(
     model="gpt-4o-mini",
     system="You are a creative writing assistant",
     memory=True,
     temperature=0.7,
-    max_tokens=500,
+    max_tokens=800,
 )
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""
+
 
 @story_assistant.tool
 def get_writing_style():
     """Get the current writing style preference"""
     return "whimsical and light-hearted"
 
+
 @story_assistant.tool
 def count_words(text: str) -> int:
     """Count words in the provided text"""
     return len(text.split())
+
 
 story = story_assistant("Write a short story about a magical library")
 print(f"Title: {story.title}")
@@ -399,7 +453,10 @@ print(f"Style: {story.style}")
 print(f"Words: {story.word_count}")
 print(story.content)
 
-print(story_assistant("Write another story with the same style but about a time traveler"))
+print(
+    story_assistant("Write another story with the same style but about a time traveler")
+)
+
 ```
 
 ## Limitations
@@ -411,8 +468,63 @@ print(story_assistant("Write another story with the same style but about a time 
 
 These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
-## License
+## Contributing
 
-`promptic` is open-source software licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+### Requirements
+
+Install the following tools prior to development:
+
+- Python 3.11+
+- Node.js 18+
+- [uv](https://docs.astral.sh/uv/)
+- [just](https://github.com/casey/just)
+
+### Development Setup
+
+1. Install development dependencies:
+
+```bash
+uv sync
+```
+
+2. Install pre-commit hooks:
+
+```bash
+pre-commit install
+```
+
+3. View development recipes:
+
+```bash
+just -l
+```
+
+### Code Style and Documentation
+
+The project uses:
+
+- [ruff](https://github.com/astral-sh/ruff) for code formatting
+- [embedme](https://github.com/zakhenry/embedme) to maintain code examples in the README
+
+To format code and update documentation:
+
+```bash
+just format  # Format code with ruff
+just embedme  # Update code examples in README
+```
+
+Pre-commit hooks will automatically:
+
+- Format code
+- Update embedded examples in README
+- Verify README examples are up to date
+
+### Pull Requests
+
+1. Fork the repository
+2. Create a new branch for your feature
+3. Make your changes
+4. If possible, run tests and ensure all checks pass (you'll need your own API keys)
+5. Submit a pull request
 
 [litellm]: https://github.com/BerriAI/litellm

@@ -19,7 +19,7 @@ dependencies = [
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
-version = "2.2.0"
+version = "2.2.1"
 readme = "README.md"
 requires-python = ">=3.11"
 
@@ -32,6 +32,7 @@ dev-dependencies = [
     "pytest>=8.3.3",
     "pytest-xdist>=3.6.1",
     "tenacity~=9.0.0",
+    "pre-commit>=4.0.1",
 ]
 
 [tool.pytest.ini_options]
