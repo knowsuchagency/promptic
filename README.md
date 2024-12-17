@@ -525,51 +525,6 @@ print(
 
 ```
 
-## Contributing
-
-### Requirements
-
-Install the following tools prior to development:
-
-- Python 3.11+
-- Node.js 18+
-- [uv](https://docs.astral.sh/uv/)
-- [just](https://github.com/casey/just)
-
-### Development Setup
-
-1. Install development dependencies:
-
-```bash
-uv sync
-```
-
-2. Install pre-commit hooks:
-
-```bash
-pre-commit install
-```
-
-3. View development recipes:
-
-```bash
-just -l
-```
-
-### Code Style and Documentation
-
-The project uses:
-
-- [ruff](https://github.com/astral-sh/ruff) for code formatting
-- [embedme](https://github.com/zakhenry/embedme) to maintain code examples in the README
-
-To format code and update documentation:
-
-```bash
-just format  # Format code with ruff
-just embedme  # Update code examples in README
-```
-
 ## Limitations
 
 `promptic` is a lightweight abstraction layer over [litellm][litellm] and its various LLM providers. As such, there are some provider-specific limitations that are beyond the scope of what the library addresses:
@@ -579,5 +534,9 @@ just embedme  # Update code examples in README
 
 These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 [litellm]: https://github.com/BerriAI/litellm
