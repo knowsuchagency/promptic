@@ -36,9 +36,11 @@ Functions decorated with `@llm` use its docstring as a prompt template. When the
 ```py
 from promptic import llm
 
+
 @llm
 def translate(text, language="Chinese"):
     """Translate '{text}' to {language}"""
+
 
 print(translate("Hello world!"))
 # 您好，世界！
@@ -46,18 +48,21 @@ print(translate("Hello world!"))
 print(translate("Hello world!", language="Spanish"))
 # ¡Hola, mundo!
 
+
 @llm(
     model="claude-3-haiku-20240307",
-    system="You are a customer service analyst. Provide clear sentiment analysis with key points."
+    system="You are a customer service analyst. Provide clear sentiment analysis with key points.",
 )
 def analyze_sentiment(text):
     """Analyze the sentiment of this customer feedback: {text}"""
+
 
 print(analyze_sentiment("The product was okay but shipping took forever"))
 # Sentiment: Mixed/Negative
 # Key points:
 # - Neutral product satisfaction
 # - Significant dissatisfaction with shipping time
+
 ```
 
 ### Structured Outputs
@@ -70,17 +75,21 @@ You can use Pydantic models to ensure the LLM returns data in exactly the struct
 from pydantic import BaseModel
 from promptic import llm
 
+
 class Forecast(BaseModel):
     location: str
     temperature: float
     units: str
 
+
 @llm
 def get_weather(location, units: str = "fahrenheit") -> Forecast:
     """What's the weather for {location} in {units}?"""
 
+
 print(get_weather("San Francisco", units="celsius"))
 # location='San Francisco' temperature=16.0 units='Celsius'
+
 ```
 
 Alternatively, you can use JSON Schema dictionaries for more low-level validation:
@@ -97,28 +106,24 @@ schema = {
             "type": "string",
             "pattern": "^[A-Z][a-z]+$",
             "minLength": 2,
-            "maxLength": 20
+            "maxLength": 20,
         },
-        "age": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 120
-        },
-        "email": {
-            "type": "string",
-            "format": "email"
-        }
+        "age": {"type": "integer", "minimum": 0, "maximum": 120},
+        "email": {"type": "string", "format": "email"},
     },
     "required": ["name", "age"],
-    "additionalProperties": False
+    "additionalProperties": False,
 }
+
 
 @llm(json_schema=schema, system="You generate test data.")
 def get_user_info(name: str) -> dict:
     """Get information about {name}"""
 
+
 print(get_user_info("Alice"))
 # {'name': 'Alice', 'age': 25, 'email': 'alice@example.com'}
+
 ```
 
 ### Agents
@@ -132,9 +137,11 @@ from datetime import datetime
 
 from promptic import llm
 
+
 @llm(model="gpt-4o")
 def scheduler(command):
     """{command}"""
+
 
 @scheduler.tool
 def get_current_time():
@@ -142,17 +149,20 @@ def get_current_time():
     print("getting current time")
     return datetime.now().strftime("%I:%M %p")
 
+
 @scheduler.tool
 def add_reminder(task: str, time: str):
     """Add a reminder for a specific task and time"""
     print(f"adding reminder: {task} at {time}")
     return f"Reminder set: {task} at {time}"
 
+
 @scheduler.tool
 def check_calendar(date: str):
     """Check calendar for a specific date"""
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
+
 
 cmd = """
 What time is it?
@@ -165,6 +175,7 @@ print(scheduler(cmd))
 # checking calendar for 2023-10-05
 # adding reminder: Team meeting at 2023-10-05T14:00:00
 # The current time is 3:48 PM. I checked your calendar for tomorrow, and there are no conflicts. I've also set a reminder for your team meeting at 2 PM tomorrow.
+
 ```
 
 ### Streaming
@@ -176,14 +187,17 @@ The streaming feature allows real-time response generation, useful for long-form
 ```py
 from promptic import llm
 
+
 @llm(stream=True)
 def write_poem(topic):
     """Write a haiku about {topic}."""
+
 
 print("".join(write_poem("artificial intelligence")))
 # Binary thoughts hum,
 # Electron minds awake, learn,
 # Future thinking now.
+
 ```
 
 ### Error Handling and Dry Runs
@@ -195,6 +209,7 @@ Dry runs allow you to see which tools will be called and their arguments without
 ```py
 from promptic import llm
 
+
 @llm(
     system="you are a posh smart home assistant named Jarvis",
     dry_run=True,
@@ -203,21 +218,25 @@ from promptic import llm
 def jarvis(command):
     """{command}"""
 
+
 @jarvis.tool
 def turn_light_on():
     """turn light on"""
     return True
+
 
 @jarvis.tool
 def get_current_weather(location: str, unit: str = "fahrenheit"):
     """Get the current weather in a given location"""
     return f"The weather in {location} is 45 degrees {unit}"
 
+
 print(jarvis("Please turn the light on and check the weather in San Francisco"))
 # ...
 # [DRY RUN]: function_name = 'turn_light_on' function_args = {}
 # [DRY RUN]: function_name = 'get_current_weather' function_args = {'location': 'San Francisco'}
 # ...
+
 ```
 
 ### Resiliency
@@ -231,30 +250,35 @@ from tenacity import retry, wait_exponential, retry_if_exception_type
 from promptic import llm
 from litellm.exceptions import RateLimitError
 
+
 @retry(
     wait=wait_exponential(multiplier=1, min=4, max=10),
-    retry=retry_if_exception_type(RateLimitError)
+    retry=retry_if_exception_type(RateLimitError),
 )
 @llm
 def generate_summary(text):
     """Summarize this text in 2-3 sentences: {text}"""
 
+
 generate_summary("Long article text here...")
+
 ```
 
 ### Memory and State Management
 
 By default, each function call is independent and stateless. Setting `memory=True` enables built-in conversation memory, allowing the LLM to maintain context across multiple interactions. Here's a practical example using Gradio to create a web-based chatbot interface:
 
-<!-- embedme examples/gradio.py -->
+<!-- embedme examples/memory.py -->
 
 ```py
 import gradio as gr
 from promptic import llm
 
+
 @llm(memory=True, stream=True)
 def assistant(message):
     """{message}"""
+
 
 def predict(message, history):
     partial_message = ""
@@ -262,11 +286,13 @@ def predict(message, history):
         partial_message += str(chunk)
         yield partial_message
 
+
 with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     # ensure clearing the chat window clears the chat history
     demo.chatbot.clear(assistant.clear)
 
 demo.launch()
+
 ```
 
 For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
@@ -276,6 +302,7 @@ For custom storage solutions, you can extend the `State` class to implement pers
 ```py
 import json
 from promptic import State, llm
+
 
 class RedisState(State):
     def __init__(self, redis_client):
@@ -292,6 +319,7 @@ class RedisState(State):
 
     def clear(self):
         self.redis.delete(self.key)
+
 
 @llm(state=RedisState(redis_client))
 def persistent_chat(message):
@@ -388,11 +416,13 @@ Base class for managing conversation memory and state. Can be extended to implem
 from pydantic import BaseModel
 from promptic import llm
 
+
 class Story(BaseModel):
     title: str
     content: str
     style: str
     word_count: int
+
 
 @llm(
     model="gpt-4o-mini",
@@ -404,15 +434,18 @@ class Story(BaseModel):
 def story_assistant(command: str) -> Story:
     """Process this writing request: {command}"""
 
+
 @story_assistant.tool
 def get_writing_style():
     """Get the current writing style preference"""
     return "whimsical and light-hearted"
 
+
 @story_assistant.tool
 def count_words(text: str) -> int:
     """Count words in the provided text"""
     return len(text.split())
+
 
 story = story_assistant("Write a short story about a magical library")
 print(f"Title: {story.title}")
@@ -420,7 +453,10 @@ print(f"Style: {story.style}")
 print(f"Words: {story.word_count}")
 print(story.content)
 
-print(story_assistant("Write another story with the same style but about a time traveler"))
+print(
+    story_assistant("Write another story with the same style but about a time traveler")
+)
+
 ```
 
 ## Limitations

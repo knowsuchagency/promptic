@@ -2,9 +2,11 @@ from datetime import datetime
 
 from promptic import llm
 
+
 @llm(model="gpt-4o")
 def scheduler(command):
     """{command}"""
+
 
 @scheduler.tool
 def get_current_time():
@@ -12,17 +14,20 @@ def get_current_time():
     print("getting current time")
     return datetime.now().strftime("%I:%M %p")
 
+
 @scheduler.tool
 def add_reminder(task: str, time: str):
     """Add a reminder for a specific task and time"""
     print(f"adding reminder: {task} at {time}")
     return f"Reminder set: {task} at {time}"
 
+
 @scheduler.tool
 def check_calendar(date: str):
     """Check calendar for a specific date"""
     print(f"checking calendar for {date}")
     return f"Calendar checked for {date}: No conflicts found"
+
 
 cmd = """
 What time is it?

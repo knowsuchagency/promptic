@@ -1,6 +1,7 @@
 import json
 from promptic import State, llm
 
+
 class RedisState(State):
     def __init__(self, redis_client):
         super().__init__()
@@ -16,6 +17,7 @@ class RedisState(State):
 
     def clear(self):
         self.redis.delete(self.key)
+
 
 @llm(state=RedisState(redis_client))
 def persistent_chat(message):

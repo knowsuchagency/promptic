@@ -1,6 +1,9 @@
 import logging
 from unittest.mock import Mock
-import os
+import subprocess as sp
+from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import sys
 
 import pytest
 from litellm.exceptions import RateLimitError, InternalServerError, APIError, Timeout
@@ -721,3 +724,19 @@ def test_clear_state(model):
     with pytest.raises(ValueError) as exc_info:
         chat_no_memory.clear()
     assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
+
+
+def _get_example_files():
+    """Get all example Python files."""
+    return map(str, Path("examples").glob("*.py"))
+
+
+@pytest.mark.parametrize("example_file", _get_example_files())
+def test_examples(example_file):
+    """Run each example file."""
+    if example_file == "examples/memory.py":
+        sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
+    elif example_file == "examples/state.py":
+        pytest.skip("State example is not runnable without Redis.")
+    else:
+        sp.run(f"uv run {example_file}", shell=True, check=True)
