@@ -10,6 +10,8 @@ import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 
+__version__ = "3.0.0"
+
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
 
