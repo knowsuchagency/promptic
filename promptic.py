@@ -209,6 +209,11 @@ class Promptic:
                 self.state.add_message({"content": generated_text, "role": "assistant"})
             return generated_text
 
+    @classmethod
+    def decorate(cls, func: Callable = None, **kwargs):
+        instance = cls(**kwargs)
+        return instance._decorator(func) if func else instance
+
     def _decorator(self, func: Callable):
         return_type = func.__annotations__.get("return")
         if (
@@ -524,30 +529,4 @@ def to_json(obj: Any) -> str:
     return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
-def promptic(
-    fn=None,
-    model="gpt-4o-mini",
-    system: SystemPrompt = None,
-    dry_run: bool = False,
-    debug: bool = False,
-    memory: bool = False,
-    state: Optional[State] = None,
-    json_schema: Optional[Dict] = None,
-    cache: bool = True,
-    **litellm_kwargs,
-):
-    decorator = Promptic(
-        model=model,
-        system=system,
-        dry_run=dry_run,
-        debug=debug,
-        memory=memory,
-        state=state,
-        json_schema=json_schema,
-        cache=cache,
-        **litellm_kwargs,
-    )
-    return decorator(fn) if fn else decorator
-
-
-llm = promptic
+llm = Promptic.decorate
