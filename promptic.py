@@ -55,6 +55,20 @@ class Promptic:
         cache: bool = True,
         **litellm_kwargs,
     ):
+        """Initialize a new Promptic instance.
+
+        Args:
+            model (str, optional): The LLM model to use. Defaults to "gpt-4o-mini".
+            system (SystemPrompt, optional): System prompt(s) to prepend to all conversations.
+                Can be a string, list of strings, or list of message dictionaries. Defaults to None.
+            dry_run (bool, optional): If True, tools will not be executed. Defaults to False.
+            debug (bool, optional): Enable debug logging. Defaults to False.
+            memory (bool, optional): Enable conversation memory. Defaults to False.
+            state (State, optional): Custom state instance for memory management. Defaults to None.
+            json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
+            cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
+            **litellm_kwargs: Additional keyword arguments passed to litellm.completion().
+        """
         self.model = model
         self.system = system
         self.dry_run = dry_run
