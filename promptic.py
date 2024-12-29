@@ -227,6 +227,7 @@ class Promptic:
 
     @classmethod
     def decorate(cls, func: Callable = None, **kwargs):
+        """See Promptic.__init__ for valid kwargs."""
         instance = cls(**kwargs)
         return instance._decorator(func) if func else instance
 
