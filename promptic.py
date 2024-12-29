@@ -10,6 +10,8 @@ import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 
+__version__ = "3.0.0"
+
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
 
@@ -53,6 +55,20 @@ class Promptic:
         cache: bool = True,
         **litellm_kwargs,
     ):
+        """Initialize a new Promptic instance.
+
+        Args:
+            model (str, optional): The LLM model to use. Defaults to "gpt-4o-mini".
+            system (SystemPrompt, optional): System prompt(s) to prepend to all conversations.
+                Can be a string, list of strings, or list of message dictionaries. Defaults to None.
+            dry_run (bool, optional): If True, tools will not be executed. Defaults to False.
+            debug (bool, optional): Enable debug logging. Defaults to False.
+            memory (bool, optional): Enable conversation memory. Defaults to False.
+            state (State, optional): Custom state instance for memory management. Defaults to None.
+            json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
+            cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
+            **litellm_kwargs: Additional keyword arguments passed to litellm.completion().
+        """
         self.model = model
         self.system = system
         self.dry_run = dry_run
@@ -208,6 +224,12 @@ class Promptic:
             if self.state:
                 self.state.add_message({"content": generated_text, "role": "assistant"})
             return generated_text
+
+    @classmethod
+    def decorate(cls, func: Callable = None, **kwargs):
+        """See Promptic.__init__ for valid kwargs."""
+        instance = cls(**kwargs)
+        return instance._decorator(func) if func else instance
 
     def _decorator(self, func: Callable):
         return_type = func.__annotations__.get("return")
@@ -524,30 +546,4 @@ def to_json(obj: Any) -> str:
     return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
-def promptic(
-    fn=None,
-    model="gpt-4o-mini",
-    system: SystemPrompt = None,
-    dry_run: bool = False,
-    debug: bool = False,
-    memory: bool = False,
-    state: Optional[State] = None,
-    json_schema: Optional[Dict] = None,
-    cache: bool = True,
-    **litellm_kwargs,
-):
-    decorator = Promptic(
-        model=model,
-        system=system,
-        dry_run=dry_run,
-        debug=debug,
-        memory=memory,
-        state=state,
-        json_schema=json_schema,
-        cache=cache,
-        **litellm_kwargs,
-    )
-    return decorator(fn) if fn else decorator
-
-
-llm = promptic
+llm = Promptic.decorate

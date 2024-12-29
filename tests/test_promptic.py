@@ -14,7 +14,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from promptic import Promptic, State, llm, promptic
+from promptic import Promptic, State, llm
 
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
@@ -44,7 +44,7 @@ def test_parens(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @promptic(temperature=0, model=model, timeout=5)
+    @llm(temperature=0, model=model, timeout=5)
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
