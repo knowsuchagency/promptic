@@ -20,7 +20,7 @@ jobs:
       - name: Get Version
         id: get_version
         run: |
-          VERSION=$(grep "version = " pyproject.toml | cut -d'"' -f2)
+          VERSION=$(grep "__version__ = " promptic.py | cut -d'"' -f2)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Release
