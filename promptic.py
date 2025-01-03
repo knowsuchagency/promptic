@@ -286,7 +286,9 @@ class Promptic:
 
             self.logger.debug(f"{return_type = }")
 
-            messages = [{"content": prompt_text, "role": "user"}]
+            # Create the user message
+            user_message = {"content": prompt_text, "role": "user"}
+            messages = [user_message]
 
             if self.system:
                 if isinstance(self.system, str):
@@ -301,7 +303,7 @@ class Promptic:
                     elif isinstance(self.system[0], dict):
                         messages = self.system + messages
 
-            # Store the system messages in state first if they exist
+            # Store messages in state if enabled
             if self.state:
                 if self.system:
                     # Add system messages to state if they're not already there
@@ -321,10 +323,10 @@ class Promptic:
                                 for msg in self.system:
                                     self.state.add_message(msg)
 
-                    # Then store the user message
-                    self.state.add_message(messages[-1])
-                    history = self.state.get_messages()
-                    messages = history
+                # Store user message before starting stream or regular completion
+                self.state.add_message(user_message)
+                history = self.state.get_messages()
+                messages = history
 
             # Add tools if any are registered
             tools = None

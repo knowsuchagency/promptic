@@ -480,7 +480,6 @@ def test_memory_with_streaming(model):
         memory=True,
         state=state,
         stream=True,
-        debug=True,
         temperature=0,
         timeout=5,
     )
@@ -500,7 +499,7 @@ def test_memory_with_streaming(model):
     response = "".join(list(response_stream))
 
     # Verify first exchange is stored (both user and assistant messages)
-    assert len(state.get_messages()) == 2
+    assert len(state.get_messages()) == 2, f"Messages: {state.get_messages()}"
     assert state.get_messages()[0]["role"] == "user"
     assert state.get_messages()[1]["role"] == "assistant"
     assert state.get_messages()[1]["content"] == response
@@ -1064,6 +1063,7 @@ def test_message_order_with_memory(model):
         memory=True,
         temperature=0,
         timeout=5,
+        debug=True,
     )
     def chat(message):
         """Chat: {message}"""
@@ -1073,7 +1073,7 @@ def test_message_order_with_memory(model):
     messages = state.get_messages()
 
     # Check initial message order
-    assert len(messages) == 5  # 3 system + 1 docstring (user) + 1 user + 1 assistant
+    assert len(messages) == 5  # 3 system + 1 user + 1 assistant
     assert messages[0]["role"] == "system"
     assert messages[0]["content"] == system_prompts[0]
     assert messages[1]["role"] == "system"
@@ -1089,7 +1089,7 @@ def test_message_order_with_memory(model):
     messages = state.get_messages()
 
     # Check message order after second interaction
-    assert len(messages) == 7  # 3 system + 1 docstring (user) + 2 user + 2 assistant
+    assert len(messages) == 7  # 3 system + 2 user + 2 assistant
     # System messages should still be first
     assert messages[0]["role"] == "system"
     assert messages[0]["content"] == system_prompts[0]
