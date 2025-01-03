@@ -10,7 +10,7 @@ import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 
-__version__ = "3.0.0"
+__version__ = "4.0.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -286,7 +286,9 @@ class Promptic:
 
             self.logger.debug(f"{return_type = }")
 
-            messages = [{"content": prompt_text, "role": "user"}]
+            # Create the user message
+            user_message = {"content": prompt_text, "role": "user"}
+            messages = [user_message]
 
             if self.system:
                 if isinstance(self.system, str):
@@ -301,12 +303,30 @@ class Promptic:
                     elif isinstance(self.system[0], dict):
                         messages = self.system + messages
 
-            # Store the user message in state before making the API call
+            # Store messages in state if enabled
             if self.state:
+                if self.system:
+                    # Add system messages to state if they're not already there
+                    state_messages = self.state.get_messages()
+                    if not state_messages or state_messages[0]["role"] != "system":
+                        if isinstance(self.system, str):
+                            self.state.add_message(
+                                {"content": self.system, "role": "system"}
+                            )
+                        elif isinstance(self.system, list):
+                            if isinstance(self.system[0], str):
+                                for msg in self.system:
+                                    self.state.add_message(
+                                        {"content": msg, "role": "system"}
+                                    )
+                            elif isinstance(self.system[0], dict):
+                                for msg in self.system:
+                                    self.state.add_message(msg)
+
+                # Store user message before starting stream or regular completion
+                self.state.add_message(user_message)
                 history = self.state.get_messages()
-                self.state.add_message(messages[-1])
-                if history:  # Add previous history if it exists
-                    messages = history + messages
+                messages = history
 
             # Add tools if any are registered
             tools = None
