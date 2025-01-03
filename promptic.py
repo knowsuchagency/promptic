@@ -10,7 +10,7 @@ import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -193,7 +193,7 @@ class Promptic:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
-                return return_type.model_validate_json(json_result)
+                return return_type.model_validate(json.loads(json_result))
             raise ValueError("Failed to extract JSON result from the generated text.")
 
         # Handle json_schema if provided
