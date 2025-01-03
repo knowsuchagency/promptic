@@ -974,3 +974,134 @@ def test_cache_with_system_prompts(model):
     long_message = "Please analyze: " + ("lorem ipsum " * 100)
     result = chat(long_message)
     assert isinstance(result, str)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_system_prompt_order(model):
+    """Test that system prompts are always first in the message list"""
+    state = State()
+    system_prompt = "You are a helpful test assistant"
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompt,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # First interaction
+    chat("Hello")
+    messages = state.get_messages()
+
+    # Verify system message is first
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompt
+
+    # Second interaction should still have system message first
+    chat("How are you?")
+    messages = state.get_messages()
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompt
+
+    # Test with list of system prompts
+    state.clear()
+    system_prompts = [
+        "You are a helpful assistant",
+        "You always provide concise answers",
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompts,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+    )
+    def chat2(message):
+        """Chat: {message}"""
+
+    chat2("Hello")
+    messages = state.get_messages()
+
+    # Verify both system messages are first, in order
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_message_order_with_memory(model):
+    """Test that messages maintain correct order with memory enabled"""
+    state = State()
+    system_prompts = [
+        "You are a helpful assistant",
+        "You always provide concise answers",
+        "You speak in a formal tone",
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompts,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # First interaction
+    chat("Hello")
+    messages = state.get_messages()
+
+    # Check initial message order
+    assert len(messages) == 5  # 3 system + 1 docstring (user) + 1 user + 1 assistant
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+    assert messages[2]["role"] == "system"
+    assert messages[2]["content"] == system_prompts[2]
+    assert messages[3]["role"] == "user"
+    assert "Hello" in messages[3]["content"]
+    assert messages[4]["role"] == "assistant"
+
+    # Second interaction
+    chat("How are you?")
+    messages = state.get_messages()
+
+    # Check message order after second interaction
+    assert len(messages) == 7  # 3 system + 1 docstring (user) + 2 user + 2 assistant
+    # System messages should still be first
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+    assert messages[2]["role"] == "system"
+    assert messages[2]["content"] == system_prompts[2]
+    # First interaction messages
+    assert messages[3]["role"] == "user"
+    assert "Hello" in messages[3]["content"]
+    assert messages[4]["role"] == "assistant"
+    # Second interaction messages
+    assert messages[5]["role"] == "user"
+    assert "How are you?" in messages[5]["content"]
+    assert messages[6]["role"] == "assistant"
