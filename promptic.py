@@ -106,24 +106,65 @@ class Promptic:
 
         self.cache = cache
         self.anthropic_cached_block_limit = 4
+        self.cached_count = 0
+
+        self.tool_definitions = None
+
+    @property
+    def system_messages(self):
+        result = []
+
+        if not self.system:
+            return result
+        if isinstance(self.system, str):
+            result = [{"content": self.system, "role": "system"}]
+        elif isinstance(self.system, list) and isinstance(self.system[0], dict):
+            result = self.system
+        elif isinstance(self.system, list) and isinstance(self.system[0], str):
+            result = [{"content": msg, "role": "system"} for msg in self.system]
+        else:
+            raise ValueError("Invalid system prompt")
+
+        result = self._set_anthropic_cache(result)
+
+        return result
+
+    def _completion(self, messages: list[dict], **kwargs):
+        new_messages = self._set_anthropic_cache(messages)
+        previous_messages = self.state.get_messages() if self.state else []
+
+        result = litellm.completion(
+            model=self.model,
+            messages=self.system_messages + previous_messages + new_messages,
+            tools=self.tool_definitions,
+            tool_choice="auto" if self.tool_definitions else None,
+            **(self.litellm_kwargs | kwargs),
+        )
+        if self.state:
+            for msg in new_messages:
+                self.state.add_message(msg)
+        return result
+
+    def message(self, message: str, **kwargs):
+        messages = [{"content": message, "role": "user"}]
+        response = self._completion(messages, **kwargs)
+        content = response.choices[0].message.content
+        return self._parse_and_validate_response(content)
 
     def _set_anthropic_cache(self, messages: List[dict]):
         """Set the cache control for the message if it is an Anthropic message"""
         if not (self.cache and self.anthropic):
             return messages
 
-        cached_count = 0
+        if self.cached_count == self.anthropic_cached_block_limit:
+            return messages
 
         for msg in messages:
             if msg.get("cache_control"):
-                cached_count += 1
-            if cached_count > self.anthropic_cached_block_limit:
-                break
+                self.cached_count += 1
             if len(str(msg.get("content"))) * 4 > 1024:
                 msg["cache_control"] = {"type": "ephemeral"}
-                cached_count += 1
-                if cached_count > self.anthropic_cached_block_limit:
-                    break
+                self.cached_count += 1
 
         return messages
 
@@ -176,16 +217,14 @@ class Promptic:
             },
         }
 
-    def _parse_and_validate_response(self, generated_text: str, return_type: Any):
+    def _parse_and_validate_response(
+        self, generated_text: str, pydantic_model=None, json_schema=None
+    ):
         """Parse and validate the response according to the return type"""
         # self.logger.debug(f"Return type: {return_type}")
 
         # Handle Pydantic model return types
-        if (
-            return_type
-            and inspect.isclass(return_type)
-            and issubclass(return_type, BaseModel)
-        ):
+        if pydantic_model:
             match = self.result_regex.search(generated_text)
             if match:
                 json_result = match.group(1)
@@ -193,11 +232,11 @@ class Promptic:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
-                return return_type.model_validate(json.loads(json_result))
+                return pydantic_model.model_validate(json.loads(json_result))
             raise ValueError("Failed to extract JSON result from the generated text.")
 
         # Handle json_schema if provided
-        elif self.json_schema:
+        elif json_schema:
             match = self.result_regex.search(generated_text)
             if not match:
                 raise ValueError(
@@ -233,6 +272,7 @@ class Promptic:
 
     def _decorator(self, func: Callable):
         return_type = func.__annotations__.get("return")
+
         if (
             return_type
             and inspect.isclass(return_type)
@@ -254,10 +294,20 @@ class Promptic:
             self.logger.debug(f"{args = }")
             self.logger.debug(f"{kwargs = }")
             self.logger.debug(f"{self.cache = }")
+
             if self.tools:
                 assert litellm.supports_function_calling(
                     self.model
                 ), f"Model {self.model} does not support function calling"
+
+            self.tool_definitions = (
+                [
+                    self._generate_tool_definition(tool_fn)
+                    for tool_fn in self.tools.values()
+                ]
+                if self.tools
+                else None
+            )
 
             # Get the function's docstring as the prompt
             prompt_template = dedent(func.__doc__)
@@ -289,52 +339,6 @@ class Promptic:
             # Create the user message
             user_message = {"content": prompt_text, "role": "user"}
             messages = [user_message]
-
-            if self.system:
-                if isinstance(self.system, str):
-                    system_message = {"content": self.system, "role": "system"}
-                    messages.insert(0, system_message)
-                elif isinstance(self.system, list):
-                    if isinstance(self.system[0], str):
-                        system_messages = [
-                            {"content": msg, "role": "system"} for msg in self.system
-                        ]
-                        messages = system_messages + messages
-                    elif isinstance(self.system[0], dict):
-                        messages = self.system + messages
-
-            # Store messages in state if enabled
-            if self.state:
-                if self.system:
-                    # Add system messages to state if they're not already there
-                    state_messages = self.state.get_messages()
-                    if not state_messages or state_messages[0]["role"] != "system":
-                        if isinstance(self.system, str):
-                            self.state.add_message(
-                                {"content": self.system, "role": "system"}
-                            )
-                        elif isinstance(self.system, list):
-                            if isinstance(self.system[0], str):
-                                for msg in self.system:
-                                    self.state.add_message(
-                                        {"content": msg, "role": "system"}
-                                    )
-                            elif isinstance(self.system[0], dict):
-                                for msg in self.system:
-                                    self.state.add_message(msg)
-
-                # Store user message before starting stream or regular completion
-                self.state.add_message(user_message)
-                history = self.state.get_messages()
-                messages = history
-
-            # Add tools if any are registered
-            tools = None
-            if self.tools:
-                tools = [
-                    self._generate_tool_definition(tool_fn)
-                    for tool_fn in self.tools.values()
-                ]
 
             # Add schema instructions before any LLM call if return type requires it
             if (
@@ -389,22 +393,16 @@ class Promptic:
                     self.logger.debug(f"  Tool Call ID: {msg['tool_call_id']}")
                     self.logger.debug(f"  Tool Name: {msg.get('name')}")
 
-                if tools:
+                if self.tool_definitions:
                     self.logger.debug("\nAvailable Tools:")
-                    for tool in tools:
+                    for tool in self.tool_definitions:
                         self.logger.debug(
                             f"  {tool['function']['name']}: {tool['function']['description']}"
                         )
 
             while True:
                 # Call the LLM with the prompt and tools
-                response = litellm.completion(
-                    model=self.model,
-                    messages=self._set_anthropic_cache(messages),
-                    tools=tools if tools else None,
-                    tool_choice="auto" if tools else None,
-                    **self.litellm_kwargs,
-                )
+                response = self._completion(messages)
 
                 if self.litellm_kwargs.get("stream"):
                     return self._stream_response(response)
@@ -452,7 +450,7 @@ class Promptic:
                     elif choice.finish_reason in ["stop", "max_tokens", "length"]:
                         generated_text = choice.message.content
                         return self._parse_and_validate_response(
-                            generated_text, return_type
+                            generated_text, return_type, self.json_schema
                         )
 
         # Add methods explicitly

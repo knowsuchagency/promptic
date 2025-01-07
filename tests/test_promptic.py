@@ -930,7 +930,14 @@ def test_anthropic_cache_limit(model):
         wait=wait_exponential(multiplier=1, min=4, max=5),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, cache=True, state=state, memory=True, debug=True, timeout=12)
+    @llm(
+        model=model,
+        cache=True,
+        state=state,
+        memory=True,
+        # debug=True,
+        timeout=12,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -1105,3 +1112,37 @@ def test_message_order_with_memory(model):
     assert messages[5]["role"] == "user"
     assert "How are you?" in messages[5]["content"]
     assert messages[6]["role"] == "assistant"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_message_method(model):
+    """Test the direct message method of Promptic"""
+    # Test basic message functionality
+    p = Promptic(model=model, temperature=0, timeout=5)
+    result = p.message("What is the capital of France?")
+    assert isinstance(result, str)
+    assert "Paris" in result
+
+    # Test with memory enabled
+    p_with_memory = Promptic(model=model, memory=True, temperature=0, timeout=5)
+
+    # First message
+    result1 = p_with_memory.message("What is the capital of France?")
+    assert "Paris" in result1
+
+    # Second message should have context from first
+    result2 = p_with_memory.message("What did I just ask about?")
+    assert any(
+        [word in result2.lower() for word in ["france", "paris"]]
+    ), p_with_memory.state.get_messages()
+
+    # Verify messages are stored in state
+    assert (
+        len(p_with_memory.state.get_messages()) == 4
+    )  # 2 user messages + 2 assistant responses
+    messages = p_with_memory.state.get_messages()
+    assert messages[0]["role"] == "user"
+    assert "France" in messages[0]["content"]
+    assert messages[1]["role"] == "assistant"
+    assert messages[2]["role"] == "user"
+    assert messages[3]["role"] == "assistant"
