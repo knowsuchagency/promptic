@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
+
 import inspect
 import json
 import logging
@@ -9,8 +13,9 @@ from typing import Callable, Dict, Any, List, Optional, Union
 import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
+from litellm.utils import CustomStreamWrapper
 
-__version__ = "4.0.1"
+__version__ = "4.1.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -127,27 +132,46 @@ class Promptic:
 
         result = self._set_anthropic_cache(result)
 
+        if self.state and not self.state.get_messages():
+            for msg in result:
+                self.state.add_message(msg)
+
         return result
 
     def _completion(self, messages: list[dict], **kwargs):
         new_messages = self._set_anthropic_cache(messages)
         previous_messages = self.state.get_messages() if self.state else []
 
+        completion_messages = self.system_messages + previous_messages + new_messages
+
+        cached_count = 0
+
+        for msg in completion_messages:
+            if msg.get("cache_control"):
+                if cached_count == self.anthropic_cached_block_limit:
+                    msg.pop("cache_control")
+                else:
+                    cached_count += 1
+
         result = litellm.completion(
             model=self.model,
-            messages=self.system_messages + previous_messages + new_messages,
+            messages=completion_messages,
             tools=self.tool_definitions,
             tool_choice="auto" if self.tool_definitions else None,
             **(self.litellm_kwargs | kwargs),
         )
+
         if self.state:
             for msg in new_messages:
                 self.state.add_message(msg)
+
         return result
 
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
+        if isinstance(response, CustomStreamWrapper):
+            return self._stream_response(response)
         content = response.choices[0].message.content
         return self._parse_and_validate_response(content)
 
@@ -156,15 +180,9 @@ class Promptic:
         if not (self.cache and self.anthropic):
             return messages
 
-        if self.cached_count == self.anthropic_cached_block_limit:
-            return messages
-
         for msg in messages:
-            if msg.get("cache_control"):
-                self.cached_count += 1
             if len(str(msg.get("content"))) * 4 > 1024:
                 msg["cache_control"] = {"type": "ephemeral"}
-                self.cached_count += 1
 
         return messages
 
@@ -218,13 +236,12 @@ class Promptic:
         }
 
     def _parse_and_validate_response(
-        self, generated_text: str, pydantic_model=None, json_schema=None
+        self, generated_text: str, return_type=None, json_schema=None
     ):
         """Parse and validate the response according to the return type"""
-        # self.logger.debug(f"Return type: {return_type}")
 
         # Handle Pydantic model return types
-        if pydantic_model:
+        if return_type and issubclass(return_type, BaseModel):
             match = self.result_regex.search(generated_text)
             if match:
                 json_result = match.group(1)
@@ -232,7 +249,7 @@ class Promptic:
                     self.state.add_message(
                         {"content": json_result, "role": "assistant"}
                     )
-                return pydantic_model.model_validate(json.loads(json_result))
+                return return_type.model_validate(json.loads(json_result))
             raise ValueError("Failed to extract JSON result from the generated text.")
 
         # Handle json_schema if provided
@@ -450,12 +467,15 @@ class Promptic:
                     elif choice.finish_reason in ["stop", "max_tokens", "length"]:
                         generated_text = choice.message.content
                         return self._parse_and_validate_response(
-                            generated_text, return_type, self.json_schema
+                            generated_text,
+                            return_type=return_type,
+                            json_schema=self.json_schema,
                         )
 
         # Add methods explicitly
         wrapper.tool = self.tool
         wrapper.clear = self.clear
+        wrapper.message = self.message
 
         # Automatically expose all other attributes from self
         for attr_name, attr_value in self.__dict__.items():

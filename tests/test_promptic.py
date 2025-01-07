@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
+
 import logging
 from unittest.mock import Mock
 import subprocess as sp
@@ -1006,9 +1010,8 @@ def test_system_prompt_order(model):
     # First interaction
     chat("Hello")
     messages = state.get_messages()
-
     # Verify system message is first
-    assert messages[0]["role"] == "system"
+    assert messages[0]["role"] == "system", messages
     assert messages[0]["content"] == system_prompt
 
     # Second interaction should still have system message first
