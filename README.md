@@ -30,7 +30,6 @@ pip install promptic
 
 Functions decorated with `@llm` use its docstring as a prompt template. When the function is called, promptic combines the docstring with the function's arguments to generate the prompt and returns the LLM's response.
 
-
 ```py
 # examples/basic.py
 
@@ -69,7 +68,6 @@ print(analyze_sentiment("The product was okay but shipping took forever"))
 
 You can use Pydantic models to ensure the LLM returns data in exactly the structure you expect. Simply define a Pydantic model and use it as the return type annotation on your decorated function. The LLM's response will be automatically validated against your model schema and returned as a Pydantic object.
 
-
 ```py
 # examples/structured.py
 
@@ -94,7 +92,6 @@ print(get_weather("San Francisco", units="celsius"))
 ```
 
 Alternatively, you can use JSON Schema dictionaries for more low-level validation:
-
 
 ```py
 # examples/json_schema.py
@@ -131,7 +128,6 @@ print(get_user_info("Alice"))
 ### Agents
 
 Functions decorated with `@llm.tool` become tools that the LLM can invoke to perform actions or retrieve information. The LLM will automatically execute the appropriate tool calls, creating a seamless agent interaction.
-
 
 ```py
 # examples/book_meeting.py
@@ -246,7 +242,6 @@ print(jarvis("Please turn the light on and check the weather in San Francisco"))
 
 `promptic` pairs perfectly with [tenacity](https://github.com/jd/tenacity) for handling rate limits, temporary API failures, and more.
 
-
 ```py
 # examples/resiliency.py
 
@@ -296,11 +291,51 @@ with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
     demo.chatbot.clear(assistant.clear)
 
 # demo.launch()
+```
+
+---
+
+Note, calling a decorated function will always execute the prompt template. For more direct control over conversations, you can use the `.message()` method to send follow-up messages without re-executing the prompt template:
+
+
+```py
+# examples/direct_messaging.py
+
+from promptic import llm
+
+
+@llm(
+    system="You are a knowledgeable history teacher.",
+    model="gpt-4o-mini",
+    memory=True,
+    stream=True,
+)
+def history_chat(era: str, region: str):
+    """Tell me a fun fact about the history of {region} during the {era} period."""
+
+
+response = history_chat("medieval", "Japan")
+for chunk in response:
+    print(chunk, end="")
+
+for chunk in history_chat.message(
+    "In one sentence, was the most popular person there at the time?"
+):
+    print(chunk, end="")
+
+for chunk in history_chat.message("In one sentence, who was their main rival?"):
+    print(chunk, end="")
 
 ```
 
-For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
+The `.message()` method is particularly useful when:
+- You have a decorated function with parameters but want to ask follow-up questions
+- You want to maintain conversation context without re-executing the prompt template
+- You need more direct control over the conversation flow while keeping memory intact
 
+---
+
+For custom storage solutions, you can extend the `State` class to implement persistence in any database or storage system:
 
 ```py
 # examples/state.py
@@ -336,7 +371,6 @@ def persistent_chat(message):
 
 For Anthropic models (Claude), promptic provides intelligent caching control to optimize context window usage and improve performance. By default, caching is enabled but can be disabled if needed. OpenAI models cache by default. Anthropic charges for cache writes, but tokens that are read from the cache are less expensive.
 
-
 ```py
 # examples/caching.py
 
@@ -369,16 +403,16 @@ print(legal_chat("which legal document is about Sam?"))
 
 ```
 
-
 When caching is enabled:
+
 - Long messages (>1KB) are automatically marked as ephemeral to optimize context window usage
 - A maximum of 4 message blocks can be cached at once
 - System prompts can include explicit cache control
 
 Further reading:
+
 - https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching#cache-limitations
 - https://docs.litellm.ai/docs/completion/prompt_caching
-
 
 ### Authentication
 
@@ -474,7 +508,6 @@ Base class for managing conversation memory and state. Can be extended to implem
 
 #### Example
 
-
 ```py
 # examples/api_ref.py
 
@@ -533,7 +566,6 @@ print(
   - Gemini models do not support streaming when using tools/function calls
 
 These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
-
 
 ## Contributing
 
