@@ -170,10 +170,12 @@ class Promptic:
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
-        if hasattr(response, "__iter__") and not isinstance(response, (str, bytes)):
+
+        if "stream" in self.litellm_kwargs | kwargs:
             return self._stream_response(response)
-        content = response.choices[0].message.content
-        return self._parse_and_validate_response(content)
+        else:
+            content = response.choices[0].message.content
+            return self._parse_and_validate_response(content)
 
     def _set_anthropic_cache(self, messages: List[dict]):
         """Set the cache control for the message if it is an Anthropic message"""
