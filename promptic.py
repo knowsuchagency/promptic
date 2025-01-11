@@ -15,7 +15,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm.utils import CustomStreamWrapper
 
-__version__ = "4.1.1"
+__version__ = "4.1.2"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -171,7 +171,7 @@ class Promptic:
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
 
-        if "stream" in self.litellm_kwargs | kwargs:
+        if (self.litellm_kwargs | kwargs).get("stream"):
             return self._stream_response(response)
         else:
             content = response.choices[0].message.content
