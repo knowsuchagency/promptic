@@ -1135,9 +1135,9 @@ def test_message_method(model):
 
     # Second message should have context from first
     result2 = p_with_memory.message("What did I just ask about?")
-    assert any(
-        [word in result2.lower() for word in ["france", "paris"]]
-    ), p_with_memory.state.get_messages()
+    assert any([word in result2.lower() for word in ["france", "paris"]]), (
+        p_with_memory.state.get_messages()
+    )
 
     # Verify messages are stored in state
     assert (

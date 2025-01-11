@@ -15,7 +15,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm.utils import CustomStreamWrapper
 
-__version__ = "4.1.0"
+__version__ = "4.1.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -170,7 +170,7 @@ class Promptic:
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
-        if isinstance(response, CustomStreamWrapper):
+        if hasattr(response, "__iter__") and not isinstance(response, (str, bytes)):
             return self._stream_response(response)
         content = response.choices[0].message.content
         return self._parse_and_validate_response(content)
@@ -313,9 +313,9 @@ class Promptic:
             self.logger.debug(f"{self.cache = }")
 
             if self.tools:
-                assert litellm.supports_function_calling(
-                    self.model
-                ), f"Model {self.model} does not support function calling"
+                assert litellm.supports_function_calling(self.model), (
+                    f"Model {self.model} does not support function calling"
+                )
 
             self.tool_definitions = (
                 [
