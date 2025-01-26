@@ -1091,7 +1091,10 @@ def test_message_order_with_memory(model):
     assert messages[2]["role"] == "system"
     assert messages[2]["content"] == system_prompts[2]
     assert messages[3]["role"] == "user"
-    assert "Hello" in messages[3]["content"]
+    assert isinstance(messages[3]["content"], list)
+    assert len(messages[3]["content"]) == 1
+    assert messages[3]["content"][0]["type"] == "text"
+    assert "Hello" in messages[3]["content"][0]["text"]
     assert messages[4]["role"] == "assistant"
 
     # Second interaction
@@ -1109,11 +1112,17 @@ def test_message_order_with_memory(model):
     assert messages[2]["content"] == system_prompts[2]
     # First interaction messages
     assert messages[3]["role"] == "user"
-    assert "Hello" in messages[3]["content"]
+    assert isinstance(messages[3]["content"], list)
+    assert len(messages[3]["content"]) == 1
+    assert messages[3]["content"][0]["type"] == "text"
+    assert "Hello" in messages[3]["content"][0]["text"]
     assert messages[4]["role"] == "assistant"
     # Second interaction messages
     assert messages[5]["role"] == "user"
-    assert "How are you?" in messages[5]["content"]
+    assert isinstance(messages[5]["content"], list)
+    assert len(messages[5]["content"]) == 1
+    assert messages[5]["content"][0]["type"] == "text"
+    assert "How are you?" in messages[5]["content"][0]["text"]
     assert messages[6]["role"] == "assistant"
 
 
