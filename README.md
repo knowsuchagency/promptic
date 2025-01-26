@@ -8,7 +8,7 @@
 
 Promptic aims to be the "[requests](https://requests.readthedocs.io/en/latest/)" of LLM development -- the most productive and pythonic way to build LLM applications. It leverages [LiteLLM][litellm], so you're never locked in to an LLM provider and can switch to the latest and greatest with a single line of code. Promptic gets out of your way so you can focus entirely on building features.
 
-> “Perfection is attained, not when there is nothing more to add, but when there is nothing more to take away.”
+> "Perfection is attained, not when there is nothing more to add, but when there is nothing more to take away."
 
 ### At a glance
 
@@ -61,6 +61,37 @@ print(analyze_sentiment("The product was okay but shipping took forever"))
 # Key points:
 # - Neutral product satisfaction
 # - Significant dissatisfaction with shipping time
+```
+
+### Image Support
+
+Promptic supports image inputs through the `ImageBytes` type. By defining an argument as `ImageBytes`, image data is automatically converted to base64 format and sent to the LLM.
+
+```py
+# examples/image_support.py
+
+from promptic import llm, ImageBytes
+
+
+@llm(model="gpt-4o")  # Use a vision-capable model
+def describe_image(image: ImageBytes):
+    """What's in this image?"""
+
+
+with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
+    image_data = ImageBytes(f.read())
+
+print(describe_image(image_data))
+# The image features an illustration of a cheerful orange with glasses sitting on a laptop. There are small, sparkling stars surrounding the orange. Below the illustration, it says "Orange County AI."
+
+
+@llm(model="gpt-4o")
+def analyze_image_feature(image: ImageBytes, feature: str):
+    """Tell me about the {feature} in this image in a sentence or less."""
+
+
+print(analyze_image_feature(image_data, "colors"))
+# The image features vibrant orange, green, and black colors against a light background.
 
 ```
 
@@ -297,7 +328,6 @@ with gr.ChatInterface(title="Promptic Chatbot Demo", fn=predict) as demo:
 
 Note, calling a decorated function will always execute the prompt template. For more direct control over conversations, you can use the `.message()` method to send follow-up messages without re-executing the prompt template:
 
-
 ```py
 # examples/direct_messaging.py
 
@@ -329,6 +359,7 @@ for chunk in history_chat.message("In one sentence, who was their main rival?"):
 ```
 
 The `.message()` method is particularly useful when:
+
 - You have a decorated function with parameters but want to ask follow-up questions
 - You want to maintain conversation context without re-executing the prompt template
 - You need more direct control over the conversation flow while keeping memory intact

@@ -163,3 +163,4 @@ cython_debug/
 
 test.py
 .aider*
+.DS_Store
