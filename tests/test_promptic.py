@@ -18,7 +18,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from promptic import Promptic, State, llm
+from promptic import ImageBytes, Promptic, State, llm
 
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
@@ -1149,3 +1149,60 @@ def test_message_method(model):
     assert messages[1]["role"] == "assistant"
     assert messages[2]["role"] == "user"
     assert messages[3]["role"] == "assistant"
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+def test_image_support(model):
+    """Test image support functionality with different formats"""
+    # if not model.startswith(("gpt-4", "claude-3")):  # pragma: no cover
+    #     pytest.skip("Model does not support vision")
+
+    class ImageDescription(BaseModel):
+        content: str
+        colors: list[str]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=10)
+    def analyze_image(image: ImageBytes) -> ImageDescription:
+        """Describe this image and list its main colors"""
+
+    # Test with both JPEG and PNG formats
+    for ext in ["jpeg", "png"]:
+        with open(f"tests/fixtures/ocai-logo.{ext}", "rb") as f:
+            image_data = ImageBytes(f.read())
+
+        result = analyze_image(image_data)
+        assert isinstance(result, ImageDescription)
+        assert len(result.content) > 0
+        assert len(result.colors) > 0
+        assert any("orange" in color.lower() for color in result.colors)
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+def test_image_with_prompt(model):
+    """Test image analysis with specific prompting"""
+    # if not model.startswith(("gpt-4", "claude-3")):  # pragma: no cover
+    #     pytest.skip("Model does not support vision")
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(temperature=0, model=model, timeout=10)
+    def analyze_image_feature(image: ImageBytes, feature: str):
+        """Tell me about the {feature} in this image"""
+
+    with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
+        image_data = ImageBytes(f.read())
+
+    # Test specific feature analysis
+    color_result = analyze_image_feature(image_data, "colors")
+    assert isinstance(color_result, str)
+    assert any(color in color_result.lower() for color in ["orange", "white", "black"])
+
+    text_result = analyze_image_feature(image_data, "text or letters")
+    assert isinstance(text_result, str)
+    assert "ai" in text_result.lower() or "oc" in text_result.lower()

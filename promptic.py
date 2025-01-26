@@ -6,6 +6,8 @@ import inspect
 import json
 import logging
 import re
+import base64
+import mimetypes
 from functools import wraps
 from textwrap import dedent
 from typing import Callable, Dict, Any, List, Optional, Union
@@ -15,9 +17,11 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm.utils import CustomStreamWrapper
 
-__version__ = "4.1.2"
+__version__ = "4.2.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
+
+ImageBytes = bytes
 
 
 class State:
@@ -345,19 +349,50 @@ class Promptic:
             arg_values.update(zip(arg_names, args))
             arg_values.update(kwargs)
 
+            # Extract image arguments
+            image_args = {}
+            for name, param in sig.parameters.items():
+                if param.annotation == ImageBytes and name in arg_values:
+                    image_args[name] = arg_values.pop(name)
+
             self.logger.debug(f"{arg_values = }")
 
             # Replace {name} placeholders with argument values
             prompt_text = prompt_template.format(**arg_values)
 
+            # Create the user message with text and images
+            content = [{"type": "text", "text": prompt_text}]
+
+            # Add image content
+            for img_bytes in image_args.values():
+                img_b64_str = base64.b64encode(img_bytes).decode("utf-8")
+                # Use more specific MIME type detection for Anthropic models
+                if self.anthropic:
+                    # Check for PNG signature
+                    if img_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+                        img_type = "image/png"
+                    # Check for JPEG signature
+                    elif img_bytes.startswith(b"\xff\xd8"):
+                        img_type = "image/jpeg"
+                    else:
+                        img_type = "image/jpeg"  # fallback
+                else:
+                    img_type = mimetypes.guess_type("dummy.jpeg")[0] or "image/jpeg"
+
+                content.append(
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{img_type};base64,{img_b64_str}"},
+                    }
+                )
+
+            user_message = {"content": content, "role": "user"}
+            messages = [user_message]
+
             # Check if the function has a return type hint of a Pydantic model
             return_type = func.__annotations__.get("return")
 
             self.logger.debug(f"{return_type = }")
-
-            # Create the user message
-            user_message = {"content": prompt_text, "role": "user"}
-            messages = [user_message]
 
             # Add schema instructions before any LLM call if return type requires it
             if (
