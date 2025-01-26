@@ -366,7 +366,7 @@ class Promptic:
             # Add image content
             for img_bytes in image_args.values():
                 img_b64_str = base64.b64encode(img_bytes).decode("utf-8")
-                # Use more specific MIME type detection for Anthropic models
+
                 if self.anthropic:
                     # Check for PNG signature
                     if img_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
@@ -377,7 +377,7 @@ class Promptic:
                     else:
                         img_type = "image/jpeg"  # fallback
                 else:
-                    img_type = mimetypes.guess_type("dummy.jpeg")[0] or "image/jpeg"
+                    img_type = "image/jpeg"  # default for non-Anthropic models
 
                 content.append(
                     {
