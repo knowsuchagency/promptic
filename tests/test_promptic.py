@@ -1194,7 +1194,7 @@ def test_image_functionality(model):
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(temperature=0, model=model, timeout=10)
-    def analyze_image_feature(image: ImageBytes, feature: str):
+    def analyze_image_feature(img: ImageBytes, feature: str):
         """Tell me about the {feature} in this image"""
 
     with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
