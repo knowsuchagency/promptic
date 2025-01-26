@@ -6,20 +6,17 @@ def describe_image(image: ImageBytes):
     """What's in this image?"""
 
 
-# Load image bytes
 with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
     image_data = ImageBytes(f.read())
 
-# Single image
 print(describe_image(image_data))
+# The image features an illustration of a cheerful orange with glasses sitting on a laptop. There are small, sparkling stars surrounding the orange. Below the illustration, it says "Orange County AI."
 
-print("-" * 100)
 
-
-# Mixed content
 @llm(model="gpt-4o")
 def analyze_image_feature(image: ImageBytes, feature: str):
-    """Tell me about the {feature} in this image"""
+    """Tell me about the {feature} in this image in a sentence or less."""
 
 
 print(analyze_image_feature(image_data, "colors"))
+# The image features vibrant orange, green, and black colors against a light background.
