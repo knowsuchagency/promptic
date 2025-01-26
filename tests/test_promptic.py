@@ -1152,11 +1152,10 @@ def test_message_method(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_image_support(model):
-    """Test image support functionality with different formats"""
-    # if not model.startswith(("gpt-4", "claude-3")):  # pragma: no cover
-    #     pytest.skip("Model does not support vision")
+def test_image_functionality(model):
+    """Test image support functionality with different formats and prompting"""
 
+    # Test structured output with ImageDescription
     class ImageDescription(BaseModel):
         content: str
         colors: list[str]
@@ -1180,13 +1179,7 @@ def test_image_support(model):
         assert len(result.colors) > 0
         assert any("orange" in color.lower() for color in result.colors)
 
-
-@pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_image_with_prompt(model):
-    """Test image analysis with specific prompting"""
-    # if not model.startswith(("gpt-4", "claude-3")):  # pragma: no cover
-    #     pytest.skip("Model does not support vision")
-
+    # Test free-form prompting
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
