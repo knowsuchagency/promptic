@@ -710,11 +710,23 @@ def test_wrapper_attributes(model):
     assert test_function.debug is True
     assert test_function.state is custom_state
 
-    assert test_function.litellm_kwargs == {
+    assert test_function.client_kwargs == {  # Updated assertion
         "temperature": 0.7,
         "stream": True,
         "timeout": 5,
     }
+
+# Add new test for deprecated parameter warning
+def test_deprecated_litellm_kwargs():
+    with pytest.warns(DeprecationWarning) as record:
+        p = Promptic(
+            model="test-model",
+            litellm_kwargs={"temperature": 0.7}
+        )
+
+    assert len(record) == 1
+    assert "litellm_kwargs is deprecated" in str(record[0].message)
+    assert p.client_kwargs == {"temperature": 0.7}
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -1372,3 +1384,84 @@ def test_llm_setup():
     result = test_override("hello")
     assert mock_client.calls[1]["model"] == "override-model"
     assert mock_client.calls[1]["temperature"] == 0.5
+
+
+def test_custom_client_function_calling_support():
+    """Test that custom clients can implement their own function calling support check"""
+    class CustomClient:
+        def completion(self, *args, **kwargs):
+            return Mock(
+                choices=[
+                    Mock(
+                        message=Mock(
+                            content="response",
+                            tool_calls=[]  # Add empty tool_calls list
+                        ),
+                        finish_reason="stop"
+                    )
+                ]
+            )
+
+        def supports_function_calling(self, model):
+            return model.startswith("custom-")
+
+    client = CustomClient()
+
+    # Should work with supported model
+    @llm(model="custom-model", client=client)
+    def supported(command):
+        """Test command: {command}"""
+
+    @supported.tool
+    def test_tool():
+        """Test tool"""
+        return "test"
+
+    result = supported("test")
+    assert isinstance(result, str)
+
+    # Should fail with unsupported model
+    with pytest.raises(ValueError) as exc_info:
+        @llm(model="unsupported-model", client=client)
+        def unsupported(command):
+            """Test command: {command}"""
+
+        @unsupported.tool
+        def test_tool2():
+            """Test tool"""
+            return "test"
+
+        unsupported("test")
+
+    assert "does not support function calling" in str(exc_info.value)
+
+    # Should fall back to litellm for clients without supports_function_calling
+    class SimpleClient:
+        def completion(self, *args, **kwargs):
+            return Mock(
+                choices=[
+                    Mock(
+                        message=Mock(
+                            content="response",
+                            tool_calls=[]  # Add empty tool_calls list
+                        ),
+                        finish_reason="stop"
+                    )
+                ]
+            )
+
+    simple_client = SimpleClient()
+
+    @llm(model="gpt-4o", client=simple_client)  # A model we know supports function calling
+    def fallback(command):
+        """Test command: {command}"""
+
+    @fallback.tool
+    def test_tool3():
+        """Test tool"""
+        return "test"
+
+    result = fallback("test")
+    assert isinstance(result, str)
+
+# ...existing code...

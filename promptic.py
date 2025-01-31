@@ -63,7 +63,7 @@ class Promptic:
         json_schema: Optional[Dict] = None,
         cache: bool = True,
         client=litellm,  # Add client parameter
-        **litellm_kwargs,
+        **kwargs,
     ):
         """Initialize a new Promptic instance.
 
@@ -78,12 +78,23 @@ class Promptic:
             json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
             client: Client that matches litellm's completion signature. Defaults to litellm.
-            **litellm_kwargs: Additional keyword arguments passed to client.completion().
+            **kwargs: Additional keyword arguments passed to client.completion().
         """
+        # Handle deprecated litellm_kwargs
+        if 'litellm_kwargs' in kwargs:
+            warnings.warn(
+                "litellm_kwargs is deprecated and will be removed in a future version. "
+                "Use client_kwargs instead.",
+                DeprecationWarning,
+                stacklevel=2
+            )
+            self.client_kwargs = kwargs.pop('litellm_kwargs')
+        else:
+            self.client_kwargs = kwargs
+
         self.model = model
         self.system = system
         self.dry_run = dry_run
-        self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
         self.json_schema = json_schema
         self.client = client
@@ -165,7 +176,7 @@ class Promptic:
             messages=completion_messages,
             tools=self.tool_definitions,
             tool_choice="auto" if self.tool_definitions else None,
-            **(self.litellm_kwargs | kwargs),
+            **(self.client_kwargs | kwargs),
         )
 
         if self.state:
@@ -178,7 +189,7 @@ class Promptic:
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
 
-        if (self.litellm_kwargs | kwargs).get("stream"):
+        if (self.client_kwargs | kwargs).get("stream"):
             return self._stream_response(response)
         else:
             content = response.choices[0].message.content
@@ -314,7 +325,7 @@ class Promptic:
             self.logger.debug(f"{self.model = }")
             self.logger.debug(f"{self.system = }")
             self.logger.debug(f"{self.dry_run = }")
-            self.logger.debug(f"{self.litellm_kwargs = }")
+            self.logger.debug(f"{self.client_kwargs = }")  # Updated log message
             self.logger.debug(f"{self.tools = }")
             self.logger.debug(f"{func = }")
             self.logger.debug(f"{args = }")
@@ -322,9 +333,15 @@ class Promptic:
             self.logger.debug(f"{self.cache = }")
 
             if self.tools:
-                assert litellm.supports_function_calling(self.model), (
-                    f"Model {self.model} does not support function calling"
+                # Replace litellm with client for function calling support check
+                supports_function_calling = (
+                    getattr(self.client, "supports_function_calling", None)
+                    or getattr(litellm, "supports_function_calling", None)
                 )
+                if not supports_function_calling or not supports_function_calling(self.model):
+                    raise ValueError(
+                        f"Model {self.model} does not support function calling or client doesn't implement supports_function_calling"
+                    )
 
             self.tool_definitions = (
                 [
@@ -431,7 +448,7 @@ class Promptic:
                 messages.append(msg)
 
             # Add check for Gemini streaming with tools
-            if self.gemini and self.litellm_kwargs.get("stream") and self.tools:
+            if self.gemini and self.client_kwargs.get("stream") and self.tools:
                 raise ValueError("Gemini models do not support streaming with tools")
 
             self.logger.debug("Chat History:")
@@ -461,7 +478,7 @@ class Promptic:
                 # Call the LLM with the prompt and tools
                 response = self._completion(messages)
 
-                if self.litellm_kwargs.get("stream"):
+                if self.client_kwargs.get("stream"):
                     return self._stream_response(response)
 
                 for choice in response.choices:
