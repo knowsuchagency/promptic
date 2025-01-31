@@ -8,9 +8,10 @@ import logging
 import re
 import base64
 import mimetypes
+from abc import ABC, abstractmethod
 from functools import wraps
 from textwrap import dedent
-from typing import Callable, Dict, Any, List, Optional, Union
+from typing import Callable, Dict, Any, List, Optional, Union, Iterator
 
 import litellm
 from jsonschema import validate as validate_json_schema
@@ -661,6 +662,52 @@ def llm_setup(**default_kwargs):
             setattr(custom_decorator, attr_name, getattr(llm, attr_name))
 
     return custom_decorator
+
+
+class LLMClient(ABC):
+    """Abstract base class for LLM clients.
+
+    Any client implementation must provide these methods to be compatible with Promptic.
+    """
+
+    @abstractmethod
+    def completion(
+        self,
+        model: str,
+        messages: list[dict],
+        stream: bool = False,
+        tools: Optional[list[dict]] = None,
+        tool_choice: Optional[str] = None,
+        **kwargs
+    ) -> Union[Any, Iterator[Any]]:
+        """Execute a completion request.
+
+        Args:
+            model: The model identifier to use
+            messages: List of conversation messages
+            stream: Whether to stream the response
+            tools: Optional list of tool definitions
+            tool_choice: Optional tool selection strategy
+            **kwargs: Additional model-specific parameters
+
+        Returns:
+            A completion response object or iterator for streaming TODO type this
+        """
+        pass
+
+    @abstractmethod
+    def supports_function_calling(self, model: str) -> bool:
+        """Check if a model supports function/tool calling.
+
+        Args:
+            model: The model identifier to check
+
+        Returns:
+            True if the model supports function calling
+        """
+        False
+
+
 
 # Original llm decorator remains unchanged
 llm = Promptic.decorate

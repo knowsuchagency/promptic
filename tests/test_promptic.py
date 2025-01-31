@@ -18,7 +18,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from promptic import ImageBytes, Promptic, State, llm
+from promptic import ImageBytes, Promptic, State, llm, LLMClient
 
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
@@ -1463,5 +1463,117 @@ def test_custom_client_function_calling_support():
 
     result = fallback("test")
     assert isinstance(result, str)
+
+# ...existing code...
+
+class TestClient(LLMClient):
+    """Test implementation of LLMClient"""
+    def __init__(self, responses=None):
+        self.responses = responses or ["Mock response"]
+        self.calls = []
+
+    def completion(self, model, messages, stream=False, tools=None, tool_choice=None, **kwargs):
+        self.calls.append({
+            "model": model,
+            "messages": messages,
+            "stream": stream,
+            "tools": tools,
+            "tool_choice": tool_choice,
+            **kwargs
+        })
+
+        if stream:
+            def stream_response():
+                words = self.responses[0].split()
+                for word in words:
+                    yield type(
+                        "Delta",
+                        (),
+                        {
+                            "choices": [
+                                type(
+                                    "Choice",
+                                    (),
+                                    {
+                                        "delta": type(
+                                            "DeltaContent", (), {"content": word + " "}
+                                        ),
+                                        "finish_reason": None,
+                                    },
+                                )
+                            ]
+                        },
+                    )
+                yield type(
+                    "Delta",
+                    (),
+                    {
+                        "choices": [
+                            type(
+                                "Choice",
+                                (),
+                                {
+                                    "delta": type("DeltaContent", (), {"content": ""}),
+                                    "finish_reason": "stop",
+                                },
+                            )
+                        ]
+                    },
+                )
+            return stream_response()
+
+        return type(
+            "Response",
+            (),
+            {
+                "choices": [
+                    type(
+                        "Choice",
+                        (),
+                        {
+                            "message": type(
+                                "Message",
+                                (),
+                                {
+                                    "content": self.responses[0],
+                                    "tool_calls": [],
+                                }
+                            ),
+                            "finish_reason": "stop",
+                        },
+                    )
+                ]
+            },
+        )
+
+    def supports_function_calling(self, model):
+        return model.startswith("custom-") or model.startswith("gpt-")
+
+def test_llm_client_implementation():
+    """Test that LLMClient can be properly implemented"""
+    client = TestClient(responses=["Test response"])
+
+    # Test basic completion
+    result = client.completion("test-model", [{"role": "user", "content": "hello"}])
+    assert len(client.calls) == 1
+    assert client.calls[0]["model"] == "test-model"
+
+    # Test streaming
+    responses = []
+    for chunk in client.completion(
+        "test-model",
+        [{"role": "user", "content": "hello"}],
+        stream=True
+    ):
+        assert hasattr(chunk.choices[0], "delta")
+        if chunk.choices[0].delta.content:
+            responses.append(chunk.choices[0].delta.content)
+
+    assert "".join(responses).strip() == "Test response"
+
+    # Test function calling support
+    assert client.supports_function_calling("custom-model")
+    assert client.supports_function_calling("gpt-4")
+    assert not client.supports_function_calling("other-model")
 
 # ...existing code...
