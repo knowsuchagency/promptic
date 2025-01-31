@@ -40,3 +40,18 @@ To format code and update documentation:
 just format  # Format code with ruff
 just embedme  # Update code examples in README
 ```
+
+### Docker Development
+A Dockerfile is provided if you prefer to develop inside a container.
+
+To get started build the container:
+
+```bash
+docker build -t promptic .
+```
+
+You can then run `just` commands on the image
+
+```bash
+docker run --rm promptic test
+```
