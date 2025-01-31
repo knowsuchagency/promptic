@@ -53,5 +53,5 @@ docker build -t promptic .
 You can then run `just` commands on the image
 
 ```bash
-docker run --rm promptic test
+docker run --rm --env-file .env promptic test
 ```
