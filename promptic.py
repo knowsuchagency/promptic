@@ -82,14 +82,14 @@ class Promptic:
             **kwargs: Additional keyword arguments passed to client.completion().
         """
         # Handle deprecated litellm_kwargs
-        if 'litellm_kwargs' in kwargs:
+        if "litellm_kwargs" in kwargs:
             warnings.warn(
                 "litellm_kwargs is deprecated and will be removed in a future version. "
                 "Use client_kwargs instead.",
                 DeprecationWarning,
-                stacklevel=2
+                stacklevel=2,
             )
-            self.client_kwargs = kwargs.pop('litellm_kwargs')
+            self.client_kwargs = kwargs.pop("litellm_kwargs")
         else:
             self.client_kwargs = kwargs
 
@@ -335,11 +335,12 @@ class Promptic:
 
             if self.tools:
                 # Replace litellm with client for function calling support check
-                supports_function_calling = (
-                    getattr(self.client, "supports_function_calling", None)
-                    or getattr(litellm, "supports_function_calling", None)
-                )
-                if not supports_function_calling or not supports_function_calling(self.model):
+                supports_function_calling = getattr(
+                    self.client, "supports_function_calling", None
+                ) or getattr(litellm, "supports_function_calling", None)
+                if not supports_function_calling or not supports_function_calling(
+                    self.model
+                ):
                     raise ValueError(
                         f"Model {self.model} does not support function calling or client doesn't implement supports_function_calling"
                     )
@@ -651,6 +652,7 @@ def llm_setup(**default_kwargs):
     Returns:
         A customized llm decorator with the specified defaults.
     """
+
     def custom_decorator(func=None, **kwargs):
         # Merge kwargs with defaults, allowing kwargs to override defaults
         merged_kwargs = {**default_kwargs, **kwargs}
@@ -658,7 +660,7 @@ def llm_setup(**default_kwargs):
 
     # Copy all attributes from the original llm decorator
     for attr_name in dir(llm):
-        if not attr_name.startswith('_'):  # Skip private attributes
+        if not attr_name.startswith("_"):  # Skip private attributes
             setattr(custom_decorator, attr_name, getattr(llm, attr_name))
 
     return custom_decorator
@@ -678,7 +680,7 @@ class LLMClient(ABC):
         stream: bool = False,
         tools: Optional[list[dict]] = None,
         tool_choice: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[Any, Iterator[Any]]:
         """Execute a completion request.
 
@@ -706,7 +708,6 @@ class LLMClient(ABC):
             True if the model supports function calling
         """
         False
-
 
 
 # Original llm decorator remains unchanged

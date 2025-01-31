@@ -26,12 +26,14 @@ ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 CHEAP_MODELS = [
     pytest.param("gpt-4o-mini", id="gpt_4o_mini"),
     pytest.param("claude-3-5-haiku-20241022", id="claude_haiku"),
-    pytest.param("gemini/gemini-1.5-flash", id="gemini_flash"),]
+    pytest.param("gemini/gemini-1.5-flash", id="gemini_flash"),
+]
 
 REGULAR_MODELS = [
     pytest.param("gpt-4o", id="gpt_4o"),
     pytest.param("claude-3-5-sonnet-20241022", id="claude_sonnet"),
-    pytest.param("gemini/gemini-1.5-pro", id="gemini_pro"),]
+    pytest.param("gemini/gemini-1.5-pro", id="gemini_pro"),
+]
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -716,13 +718,11 @@ def test_wrapper_attributes(model):
         "timeout": 5,
     }
 
+
 # Add new test for deprecated parameter warning
 def test_deprecated_litellm_kwargs():
     with pytest.warns(DeprecationWarning) as record:
-        p = Promptic(
-            model="test-model",
-            litellm_kwargs={"temperature": 0.7}
-        )
+        p = Promptic(model="test-model", litellm_kwargs={"temperature": 0.7})
 
     assert len(record) == 1
     assert "litellm_kwargs is deprecated" in str(record[0].message)
@@ -1361,11 +1361,7 @@ def test_llm_setup():
     mock_client = MockClient(responses=["Custom model response"])
 
     # Create a custom decorator with preset values
-    custom_llm = llm_setup(
-        model="custom-model",
-        temperature=0.5,
-        client=mock_client
-    )
+    custom_llm = llm_setup(model="custom-model", temperature=0.5, client=mock_client)
 
     # Test with default values
     @custom_llm
@@ -1388,6 +1384,7 @@ def test_llm_setup():
 
 def test_custom_client_function_calling_support():
     """Test that custom clients can implement their own function calling support check"""
+
     class CustomClient:
         def completion(self, *args, **kwargs):
             return Mock(
@@ -1395,9 +1392,9 @@ def test_custom_client_function_calling_support():
                     Mock(
                         message=Mock(
                             content="response",
-                            tool_calls=[]  # Add empty tool_calls list
+                            tool_calls=[],  # Add empty tool_calls list
                         ),
-                        finish_reason="stop"
+                        finish_reason="stop",
                     )
                 ]
             )
@@ -1422,6 +1419,7 @@ def test_custom_client_function_calling_support():
 
     # Should fail with unsupported model
     with pytest.raises(ValueError) as exc_info:
+
         @llm(model="unsupported-model", client=client)
         def unsupported(command):
             """Test command: {command}"""
@@ -1443,16 +1441,18 @@ def test_custom_client_function_calling_support():
                     Mock(
                         message=Mock(
                             content="response",
-                            tool_calls=[]  # Add empty tool_calls list
+                            tool_calls=[],  # Add empty tool_calls list
                         ),
-                        finish_reason="stop"
+                        finish_reason="stop",
                     )
                 ]
             )
 
     simple_client = SimpleClient()
 
-    @llm(model="gpt-4o", client=simple_client)  # A model we know supports function calling
+    @llm(
+        model="gpt-4o", client=simple_client
+    )  # A model we know supports function calling
     def fallback(command):
         """Test command: {command}"""
 
@@ -1464,25 +1464,33 @@ def test_custom_client_function_calling_support():
     result = fallback("test")
     assert isinstance(result, str)
 
+
 # ...existing code...
+
 
 class TestClient(LLMClient):
     """Test implementation of LLMClient"""
+
     def __init__(self, responses=None):
         self.responses = responses or ["Mock response"]
         self.calls = []
 
-    def completion(self, model, messages, stream=False, tools=None, tool_choice=None, **kwargs):
-        self.calls.append({
-            "model": model,
-            "messages": messages,
-            "stream": stream,
-            "tools": tools,
-            "tool_choice": tool_choice,
-            **kwargs
-        })
+    def completion(
+        self, model, messages, stream=False, tools=None, tool_choice=None, **kwargs
+    ):
+        self.calls.append(
+            {
+                "model": model,
+                "messages": messages,
+                "stream": stream,
+                "tools": tools,
+                "tool_choice": tool_choice,
+                **kwargs,
+            }
+        )
 
         if stream:
+
             def stream_response():
                 words = self.responses[0].split()
                 for word in words:
@@ -1520,6 +1528,7 @@ class TestClient(LLMClient):
                         ]
                     },
                 )
+
             return stream_response()
 
         return type(
@@ -1537,7 +1546,7 @@ class TestClient(LLMClient):
                                 {
                                     "content": self.responses[0],
                                     "tool_calls": [],
-                                }
+                                },
                             ),
                             "finish_reason": "stop",
                         },
@@ -1548,6 +1557,7 @@ class TestClient(LLMClient):
 
     def supports_function_calling(self, model):
         return model.startswith("custom-") or model.startswith("gpt-")
+
 
 def test_llm_client_implementation():
     """Test that LLMClient can be properly implemented"""
@@ -1561,9 +1571,7 @@ def test_llm_client_implementation():
     # Test streaming
     responses = []
     for chunk in client.completion(
-        "test-model",
-        [{"role": "user", "content": "hello"}],
-        stream=True
+        "test-model", [{"role": "user", "content": "hello"}], stream=True
     ):
         assert hasattr(chunk.choices[0], "delta")
         if chunk.choices[0].delta.content:
@@ -1575,5 +1583,6 @@ def test_llm_client_implementation():
     assert client.supports_function_calling("custom-model")
     assert client.supports_function_calling("gpt-4")
     assert not client.supports_function_calling("other-model")
+
 
 # ...existing code...
