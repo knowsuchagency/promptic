@@ -1342,3 +1342,33 @@ def test_custom_client_with_tools(model):
     assert len(mock_client.calls) == 1
     assert mock_client.calls[0]["model"] == model
     assert "tools" in mock_client.calls[0]
+
+
+def test_llm_setup():
+    """Test the llm_setup function for creating customized decorators"""
+    mock_client = MockClient(responses=["Custom model response"])
+
+    # Create a custom decorator with preset values
+    custom_llm = llm_setup(
+        model="custom-model",
+        temperature=0.5,
+        client=mock_client
+    )
+
+    # Test with default values
+    @custom_llm
+    def test_defaults(prompt):
+        """Test prompt: {prompt}"""
+
+    result = test_defaults("hello")
+    assert mock_client.calls[0]["model"] == "custom-model"
+    assert mock_client.calls[0]["temperature"] == 0.5
+
+    # Test overriding defaults
+    @custom_llm(model="override-model")
+    def test_override(prompt):
+        """Test prompt: {prompt}"""
+
+    result = test_override("hello")
+    assert mock_client.calls[1]["model"] == "override-model"
+    assert mock_client.calls[1]["temperature"] == 0.5

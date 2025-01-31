@@ -624,4 +624,26 @@ def to_json(obj: Any) -> str:
     return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
+def llm_setup(**default_kwargs):
+    """Create a customized llm decorator with preset default values.
+
+    Args:
+        **default_kwargs: Default keyword arguments for the Promptic constructor.
+
+    Returns:
+        A customized llm decorator with the specified defaults.
+    """
+    def custom_decorator(func=None, **kwargs):
+        # Merge kwargs with defaults, allowing kwargs to override defaults
+        merged_kwargs = {**default_kwargs, **kwargs}
+        return Promptic.decorate(func, **merged_kwargs)
+
+    # Copy all attributes from the original llm decorator
+    for attr_name in dir(llm):
+        if not attr_name.startswith('_'):  # Skip private attributes
+            setattr(custom_decorator, attr_name, getattr(llm, attr_name))
+
+    return custom_decorator
+
+# Original llm decorator remains unchanged
 llm = Promptic.decorate
