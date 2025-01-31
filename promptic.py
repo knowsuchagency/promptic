@@ -62,6 +62,7 @@ class Promptic:
         state: Optional[State] = None,
         json_schema: Optional[Dict] = None,
         cache: bool = True,
+        client=litellm,  # Add client parameter
         **litellm_kwargs,
     ):
         """Initialize a new Promptic instance.
@@ -76,7 +77,8 @@ class Promptic:
             state (State, optional): Custom state instance for memory management. Defaults to None.
             json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
-            **litellm_kwargs: Additional keyword arguments passed to litellm.completion().
+            client: Client that matches litellm's completion signature. Defaults to litellm.
+            **litellm_kwargs: Additional keyword arguments passed to client.completion().
         """
         self.model = model
         self.system = system
@@ -84,6 +86,7 @@ class Promptic:
         self.litellm_kwargs = litellm_kwargs
         self.tools: Dict[str, Callable] = {}
         self.json_schema = json_schema
+        self.client = client
 
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
@@ -157,7 +160,7 @@ class Promptic:
                 else:
                     cached_count += 1
 
-        result = litellm.completion(
+        result = self.client.completion(  # Use injected client
             model=self.model,
             messages=completion_messages,
             tools=self.tool_definitions,

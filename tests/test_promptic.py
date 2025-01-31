@@ -23,8 +23,15 @@ from promptic import ImageBytes, Promptic, State, llm
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
 # Define default model lists
-CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
-REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
+CHEAP_MODELS = [
+    pytest.param("gpt-4o-mini", id="gpt_4o_mini"),
+    pytest.param("claude-3-5-haiku-20241022", id="claude_haiku"),
+    pytest.param("gemini/gemini-1.5-flash", id="gemini_flash"),]
+
+REGULAR_MODELS = [
+    pytest.param("gpt-4o", id="gpt_4o"),
+    pytest.param("claude-3-5-sonnet-20241022", id="claude_sonnet"),
+    pytest.param("gemini/gemini-1.5-pro", id="gemini_pro"),]
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -1208,3 +1215,130 @@ def test_image_functionality(model):
     text_result = analyze_image_feature(image_data, "text or letters")
     assert isinstance(text_result, str)
     assert "ai" in text_result.lower() or "oc" in text_result.lower()
+
+
+class MockClient:
+    """Mock LLM client that matches litellm's completion signature"""
+
+    def __init__(self, responses=None):
+        self.responses = responses or ["Mock response"]
+        self.calls = []
+
+    def completion(self, model, messages, **kwargs):
+        self.calls.append({"model": model, "messages": messages, **kwargs})
+
+        # Handle streaming
+        if kwargs.get("stream", False):
+
+            def stream_response():
+                # Split response into words for streaming simulation
+                words = self.responses[0].split()
+                for word in words:
+                    yield type(
+                        "Delta",
+                        (),
+                        {
+                            "choices": [
+                                type(
+                                    "Choice",
+                                    (),
+                                    {
+                                        "delta": type(
+                                            "DeltaContent", (), {"content": word + " "}
+                                        ),
+                                        "finish_reason": None,
+                                    },
+                                )
+                            ]
+                        },
+                    )
+                # Send final chunk with finish_reason
+                yield type(
+                    "Delta",
+                    (),
+                    {
+                        "choices": [
+                            type(
+                                "Choice",
+                                (),
+                                {
+                                    "delta": type("DeltaContent", (), {"content": ""}),
+                                    "finish_reason": "stop",
+                                },
+                            )
+                        ]
+                    },
+                )
+
+            return stream_response()
+
+        # Handle non-streaming
+        return type(
+            "Response",
+            (),
+            {
+                "choices": [
+                    type(
+                        "Choice",
+                        (),
+                        {
+                            "message": type(
+                                "Message", (), {"content": self.responses[0]}
+                            ),
+                            "finish_reason": "stop",
+                        },
+                    )
+                ]
+            },
+        )
+
+
+# Update test_custom_client to test both streaming and non-streaming
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_custom_client(model):
+    """Test that Promptic accepts a custom client"""
+    mock_client = MockClient(responses=["The capital of France is Paris"])
+
+    # Test non-streaming
+    @llm(model=model, client=mock_client)
+    def capital(country):
+        """What's the capital of {country}?"""
+
+    result = capital("France")
+    assert "Paris" in result
+    assert len(mock_client.calls) == 1
+    assert mock_client.calls[0]["model"] == model
+    assert any("France" in str(m) for m in mock_client.calls[0]["messages"])
+
+    # Test streaming
+    @llm(model=model, client=mock_client, stream=True)
+    def capital_stream(country):
+        """What's the capital of {country}?"""
+
+    result = "".join(capital_stream("France"))
+    assert "Paris" in result
+    assert len(mock_client.calls) == 2
+    assert mock_client.calls[1]["stream"] is True
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_custom_client_with_tools(model):
+    """Test that custom client works with tools"""
+    mock_client = MockClient()
+    mock_tool = Mock(return_value="Tool result")
+
+    @llm(model=model, client=mock_client)
+    def assistant(command):
+        """{command}"""
+
+    @assistant.tool
+    def test_tool():
+        """Test tool"""
+        return mock_tool()
+
+    result = assistant("Run the test tool")
+
+    # Verify the mock client was called
+    assert len(mock_client.calls) == 1
+    assert mock_client.calls[0]["model"] == model
+    assert "tools" in mock_client.calls[0]
