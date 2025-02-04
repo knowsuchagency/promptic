@@ -709,6 +709,37 @@ class LLMClient(ABC):
         """
         False
 
+class ObservedClient(LLMClient):
+    """This client uses langfuse (https://langfuse.com) decoration and their patched openai client to
+    record generation observations. langfuse Envars (https://langfuse.com/docs/get-started) are required."""
+    def __init__(self, baseurl: Optional[str] = None, supports_function_calling: Optional[bool] = True):
+        from langfuse.decorators import observe
+        from langfuse.openai import openai
+        self.observe = observe
+        self.openai = openai
+        self.supports_function_calling = supports_function_calling
+
+        if baseurl is not None:
+            self.openai.base_url = baseurl
+
+
+
+    def completion(self, model, messages, stream = False, tools = None, tool_choice = None, **kwargs):
+
+        @self.observe
+        def _completion(model, messages, stream, tools, tool_choice, **kwargs):
+            return self.openai.chat.completions.create(
+                model=model,
+                messages=messages,
+                stream=stream,
+                tools=tools,
+                tool_choice=tool_choice,
+                **kwargs
+            )
+        return _completion(model, messages, stream, tools, tool_choice, **kwargs)
+
+    def supports_function_calling(self, model: str) -> bool:
+        return self.supports_function_calling # TODO: for now we'll leave this pythonic, but ideally there's a lookup callback you can pass in
 
 # Original llm decorator remains unchanged
 llm = Promptic.decorate
