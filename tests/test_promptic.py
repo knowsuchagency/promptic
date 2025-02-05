@@ -146,7 +146,7 @@ def test_system_prompt(model, create_completion_fn):
         system="you are a snarky chatbot",
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def answer(question):
@@ -232,7 +232,13 @@ def test_system_prompt_list_dicts(model, create_completion_fn):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_agents(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_agents(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -242,6 +248,7 @@ def test_agents(model):
         temperature=0,
         model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def jarvis(command):
         """{command}"""
@@ -282,7 +289,13 @@ def test_agents(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_streaming_with_tools(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_streaming_with_tools(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     if model.startswith(("gemini", "vertex")):  # pragma: no cover
         pytest.skip("Gemini models do not support streaming with tools")
 
@@ -299,6 +312,7 @@ def test_streaming_with_tools(model):
         system="you are a helpful assistant",
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def stream_with_tools(query):
         """{query}"""
@@ -323,7 +337,13 @@ def test_streaming_with_tools(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_json_schema_validation(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_json_schema_validation(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     schema = {
         "type": "object",
         "properties": {
@@ -349,7 +369,13 @@ def test_json_schema_validation(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=schema, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        json_schema=schema,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def get_user_info(name: str):
         """Get information about {name}"""
 
@@ -377,7 +403,13 @@ def test_json_schema_validation(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=invalid_schema, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        json_schema=invalid_schema,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def get_impossible_score(name: str):
         """Get score for {name}"""
 
@@ -387,12 +419,25 @@ def test_json_schema_validation(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_dry_run_with_tools(model, caplog):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_dry_run_with_tools(model, create_completion_fn, caplog):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(dry_run=True, debug=True, temperature=0, model=model, timeout=5)
+    @llm(
+        dry_run=True,
+        debug=True,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def assistant(command):
         """{command}"""
 
@@ -435,6 +480,70 @@ def test_debug_logging(model, create_completion_fn, caplog):
 
     assert any("model =" in record.message for record in caplog.records)
     assert any("hello" in record.message for record in caplog.records)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_multiple_tool_calls(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    counter = Mock()
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        system="You are a helpful assistant that likes to double-check things",
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+    def double_checker(query):
+        """{query}"""
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @double_checker.tool
+    def check_status():
+        """Check the current status"""
+        counter()
+        return "Status OK"
+
+    double_checker("Please check the status twice to be sure")
+    # Ensure we tested an even number of times with retries
+    assert counter.call_count // 2 * 2 == counter.call_count
+    assert counter.call_count >= 2  # At least called twice
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_state_basic(model):
+    state = State()
+    message = {"role": "user", "content": "Hello"}
+
+    state.add_message(message)
+    assert state.get_messages() == [message]
+
+    state.clear()
+    assert state.get_messages() == []
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_state_limit(model):
+    state = State()
+    messages = [{"role": "user", "content": f"Message {i}"} for i in range(3)]
+
+    for msg in messages:
+        state.add_message(msg)
+
+    assert state.get_messages(limit=2) == messages[-2:]
+    assert state.get_messages() == messages
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
@@ -597,419 +706,112 @@ def test_memory_with_streaming(model, create_completion_fn):
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
 )
-def test_cache_control(model, create_completion_fn):
-    """Test cache control functionality"""
-    # Skip test for non-Anthropic models
-    if not model.startswith(("claude", "anthropic")):
-        pytest.skip("Cache control only applies to Anthropic models")
+def test_pydantic_with_tools(model, create_completion_fn):
     if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
         pytest.skip("Non-GPT models are not supported with OpenAI client")
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model=model,
-        cache=True,
-        debug=True,
-        timeout=12,
-        create_completion_fn=create_completion_fn,
-    )
-    def chat(message):
-        """Chat: {message}"""
-
-    # Generate a long message that should trigger cache control
-    long_message = "Please analyze this text: " + ("lorem ipsum " * 100)
-
-    # First message should have cache control for long content
-    result1 = chat(long_message)
-    assert isinstance(result1, str)
-
-    # Test with cache disabled
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model=model,
-        cache=False,
-        debug=True,
-        timeout=12,
-        create_completion_fn=create_completion_fn,
-    )
-    def chat_no_cache(message):
-        """Chat: {message}"""
-
-    result2 = chat_no_cache(long_message)
-    assert isinstance(result2, str)
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-@pytest.mark.parametrize(
-    "create_completion_fn", [openai_completion_fn, litellm_completion]
-)
-def test_anthropic_cache_limit(model, create_completion_fn):
-    """Test Anthropic cache block limit"""
-    # Skip test for non-Anthropic models
-    if not model.startswith(("claude", "anthropic")):
-        pytest.skip("Cache control only applies to Anthropic models")
-    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
-        pytest.skip("Non-GPT models are not supported with OpenAI client")
-
-    state = State()
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=5),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model=model,
-        cache=True,
-        state=state,
-        memory=True,
-        # debug=True,
-        timeout=12,
-        create_completion_fn=create_completion_fn,
-    )
-    def chat(message):
-        """Chat: {message}"""
-
-    # Generate messages that will exceed the cache block limit
-    for i in range(6):  # More than anthropic_cached_block_limit
-        long_message = f"Analysis part {i}: " + ("lorem ipsum " * 100)
-        result = chat(long_message)
-        assert isinstance(result, str)
-
-    # Verify the number of cached messages doesn't exceed the limit
-    messages = state.get_messages()
-    cached_count = sum("cache_control" in msg for msg in messages)
-    assert cached_count <= 4  # anthropic_cached_block_limit
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-@pytest.mark.parametrize(
-    "create_completion_fn", [openai_completion_fn, litellm_completion]
-)
-def test_cache_with_system_prompts(model, create_completion_fn):
-    """Test cache behavior with system prompts"""
-    # Skip test for non-Anthropic models
-    if not model.startswith(("claude", "anthropic")):
-        pytest.skip("Cache control only applies to Anthropic models")
-    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
-        pytest.skip("Non-GPT models are not supported with OpenAI client")
-
-    system_prompts = [
-        {"role": "system", "content": "You are a helpful assistant"},
-        {
-            "role": "system",
-            "content": "You always provide detailed responses",
-            "cache_control": {"type": "ephemeral"},
-        },
-    ]
+    class WeatherReport(BaseModel):
+        location: str
+        temperature: float
+        conditions: str
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        model=model,
-        system=system_prompts,
-        cache=True,
-        debug=True,
-        timeout=12,
-        create_completion_fn=create_completion_fn,
-    )
-    def chat(message):
-        """Chat: {message}"""
-
-    long_message = "Please analyze: " + ("lorem ipsum " * 100)
-    result = chat(long_message)
-    assert isinstance(result, str)
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_order(model):
-    """Test that system prompts are always first in the message list"""
-    state = State()
-    system_prompt = "You are a helpful test assistant"
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(
-        model=model,
-        system=system_prompt,
-        state=state,
-        memory=True,
         temperature=0,
+        model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
-    def chat(message):
-        """Chat: {message}"""
-
-    # First interaction
-    chat("Hello")
-    messages = state.get_messages()
-    # Verify system message is first
-    assert messages[0]["role"] == "system", messages
-    assert messages[0]["content"] == system_prompt
-
-    # Second interaction should still have system message first
-    chat("How are you?")
-    messages = state.get_messages()
-    assert messages[0]["role"] == "system"
-    assert messages[0]["content"] == system_prompt
-
-    # Test with list of system prompts
-    state.clear()
-    system_prompts = [
-        "You are a helpful assistant",
-        "You always provide concise answers",
-    ]
+    def get_weather_report(location: str) -> WeatherReport:
+        """Create a detailed weather report for {location}"""
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(
-        model=model,
-        system=system_prompts,
-        state=state,
-        memory=True,
-        temperature=0,
-        timeout=5,
-    )
-    def chat2(message):
-        """Chat: {message}"""
-
-    chat2("Hello")
-    messages = state.get_messages()
-
-    # Verify both system messages are first, in order
-    assert messages[0]["role"] == "system"
-    assert messages[0]["content"] == system_prompts[0]
-    assert messages[1]["role"] == "system"
-    assert messages[1]["content"] == system_prompts[1]
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_message_order_with_memory(model):
-    """Test that messages maintain correct order with memory enabled"""
-    state = State()
-    system_prompts = [
-        "You are a helpful assistant",
-        "You always provide concise answers",
-        "You speak in a formal tone",
-    ]
+    @get_weather_report.tool
+    def get_temperature(city: str) -> float:
+        """Get the temperature for a city"""
+        return 72.5
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(
-        model=model,
-        system=system_prompts,
-        state=state,
-        memory=True,
-        temperature=0,
-        timeout=5,
-        debug=True,
-    )
-    def chat(message):
-        """Chat: {message}"""
+    @get_weather_report.tool
+    def get_conditions(city: str) -> str:
+        """Get the weather conditions for a city"""
+        return "Sunny with light clouds"
 
-    # First interaction
-    chat("Hello")
-    messages = state.get_messages()
-
-    # Check initial message order
-    assert len(messages) == 5  # 3 system + 1 user + 1 assistant
-    assert messages[0]["role"] == "system"
-    assert messages[0]["content"] == system_prompts[0]
-    assert messages[1]["role"] == "system"
-    assert messages[1]["content"] == system_prompts[1]
-    assert messages[2]["role"] == "system"
-    assert messages[2]["content"] == system_prompts[2]
-    assert messages[3]["role"] == "user"
-    assert isinstance(messages[3]["content"], list)
-    assert len(messages[3]["content"]) == 1
-    assert messages[3]["content"][0]["type"] == "text"
-    assert "Hello" in messages[3]["content"][0]["text"]
-    assert messages[4]["role"] == "assistant"
-
-    # Second interaction
-    chat("How are you?")
-    messages = state.get_messages()
-
-    # Check message order after second interaction
-    assert len(messages) == 7  # 3 system + 2 user + 2 assistant
-    # System messages should still be first
-    assert messages[0]["role"] == "system"
-    assert messages[0]["content"] == system_prompts[0]
-    assert messages[1]["role"] == "system"
-    assert messages[1]["content"] == system_prompts[1]
-    assert messages[2]["role"] == "system"
-    assert messages[2]["content"] == system_prompts[2]
-    # First interaction messages
-    assert messages[3]["role"] == "user"
-    assert isinstance(messages[3]["content"], list)
-    assert len(messages[3]["content"]) == 1
-    assert messages[3]["content"][0]["type"] == "text"
-    assert "Hello" in messages[3]["content"][0]["text"]
-    assert messages[4]["role"] == "assistant"
-    # Second interaction messages
-    assert messages[5]["role"] == "user"
-    assert isinstance(messages[5]["content"], list)
-    assert len(messages[5]["content"]) == 1
-    assert messages[5]["content"][0]["type"] == "text"
-    assert "How are you?" in messages[5]["content"][0]["text"]
-    assert messages[6]["role"] == "assistant"
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_message_method(model):
-    """Test the direct message method of Promptic"""
-    # Test basic message functionality
-    p = Promptic(model=model, temperature=0, timeout=5)
-    result = p.message("What is the capital of France?")
-    assert isinstance(result, str)
-    assert "Paris" in result
-
-    # Test with memory enabled
-    p_with_memory = Promptic(model=model, memory=True, temperature=0, timeout=5)
-
-    # First message
-    result1 = p_with_memory.message("What is the capital of France?")
-    assert "Paris" in result1
-
-    # Second message should have context from first
-    result2 = p_with_memory.message("What did I just ask about?")
-    assert any([word in result2.lower() for word in ["france", "paris"]]), (
-        p_with_memory.state.get_messages()
-    )
-
-    # Verify messages are stored in state
-    assert (
-        len(p_with_memory.state.get_messages()) == 4
-    )  # 2 user messages + 2 assistant responses
-    messages = p_with_memory.state.get_messages()
-    assert messages[0]["role"] == "user"
-    assert "France" in messages[0]["content"]
-    assert messages[1]["role"] == "assistant"
-    assert messages[2]["role"] == "user"
-    assert messages[3]["role"] == "assistant"
+    result = get_weather_report("San Francisco")
+    assert isinstance(result, WeatherReport)
+    assert "San Francisco" in result.location
+    assert isinstance(result.temperature, float)
+    assert isinstance(result.conditions, str)
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_image_functionality(model):
-    """Test image support functionality with different formats and prompting"""
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_pydantic_tools_with_memory(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
-    # Test structured output with ImageDescription
-    class ImageDescription(BaseModel):
-        content: str
-        colors: list[str]
+    class TaskStatus(BaseModel):
+        task_id: int
+        status: str
+        last_update: str
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(temperature=0, model=model, timeout=10)
-    def analyze_image(image: ImageBytes) -> ImageDescription:
-        """Describe this image and list its main colors"""
-
-    # Test with both JPEG and PNG formats
-    for ext in ["jpeg", "png"]:
-        with open(f"tests/fixtures/ocai-logo.{ext}", "rb") as f:
-            image_data = ImageBytes(f.read())
-
-        result = analyze_image(image_data)
-        assert isinstance(result, ImageDescription)
-        assert len(result.content) > 0
-        assert len(result.colors) > 0
-        assert any("orange" in color.lower() for color in result.colors)
-
-    # Test free-form prompting
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(temperature=0, model=model, timeout=10)
-    def analyze_image_feature(img: ImageBytes, feature: str):
-        """Tell me about the {feature} in this image"""
-
-    with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
-        image_data = ImageBytes(f.read())
-
-    # Test specific feature analysis
-    color_result = analyze_image_feature(image_data, "colors")
-    assert isinstance(color_result, str)
-    assert any(color in color_result.lower() for color in ["orange", "white", "black"])
-
-    text_result = analyze_image_feature(image_data, "text or letters")
-    assert isinstance(text_result, str)
-    assert "ai" in text_result.lower() or "oc" in text_result.lower()
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_state_basic(model):
     state = State()
-    message = {"role": "user", "content": "Hello"}
-
-    state.add_message(message)
-    assert state.get_messages() == [message]
-
-    state.clear()
-    assert state.get_messages() == []
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_state_limit(model):
-    state = State()
-    messages = [{"role": "user", "content": f"Message {i}"} for i in range(3)]
-
-    for msg in messages:
-        state.add_message(msg)
-
-    assert state.get_messages(limit=2) == messages[-2:]
-    assert state.get_messages() == messages
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_multiple_tool_calls(model):
-    counter = Mock()
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        system="You are a helpful assistant that likes to double-check things",
+        memory=True,
+        state=state,
         temperature=0,
         model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
-    def double_checker(query):
-        """{query}"""
+    def task_tracker(command: str) -> TaskStatus:
+        """Process the following task command: {command}"""
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @double_checker.tool
-    def check_status():
-        """Check the current status"""
-        counter()
-        return "Status OK"
+    @task_tracker.tool
+    def get_task_status(task_id: int) -> str:
+        """Get the current status of a task"""
+        return "in_progress"
 
-    double_checker("Please check the status twice to be sure")
-    # Ensure we tested an even number of times with retries
-    assert counter.call_count // 2 * 2 == counter.call_count
-    assert counter.call_count >= 2  # At least called twice
+    @task_tracker.tool
+    def get_last_update(task_id: int) -> str:
+        """Get the last update timestamp for a task"""
+        return "2024-03-15 10:00 AM"
+
+    # First interaction
+    result1 = task_tracker("Check status of task 123")
+    assert isinstance(result1, TaskStatus)
+    assert result1.task_id == 123
+    assert result1.status == "in_progress"
+
+    # Second interaction should have context from the first
+    result2 = task_tracker("What was the last task we checked?")
+    assert isinstance(result2, TaskStatus)
+    assert result2.task_id == 123  # Should reference the previous task
 
 
-def test_anthropic_tool_calling():
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_anthropic_tool_calling(create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -1019,6 +821,7 @@ def test_anthropic_tool_calling():
         temperature=0,
         debug=True,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def assistant(command):
         """{command}"""
@@ -1035,12 +838,20 @@ def test_anthropic_tool_calling():
 
 
 # Add new test to verify Gemini streaming with tools raises exception
-def test_gemini_streaming_with_tools_error():
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_gemini_streaming_with_tools_error(create_completion_fn):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(stream=True, model="gemini/gemini-1.5-pro", timeout=5)
+    @llm(
+        stream=True,
+        model="gemini/gemini-1.5-pro",
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def assistant(command):
         """{command}"""
 
@@ -1060,9 +871,6 @@ def test_gemini_streaming_with_tools_error():
     "create_completion_fn", [openai_completion_fn, litellm_completion]
 )
 def test_mutually_exclusive_schemas(model, create_completion_fn):
-    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
-        pytest.skip("Non-GPT models are not supported with OpenAI client")
-
     schema = {
         "type": "object",
         "properties": {
@@ -1146,10 +954,6 @@ def test_clear_state(model, create_completion_fn):
     # Test successful clearing
     state = State()
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
     @llm(
         model=model,
         memory=True,
@@ -1171,7 +975,10 @@ def test_clear_state(model, create_completion_fn):
     # Test error when memory/state is disabled
 
     @llm(
-        model=model, memory=False, timeout=5, create_completion_fn=create_completion_fn
+        model=model,
+        memory=False,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def chat_no_memory(message):
         """Chat: {message}"""
@@ -1297,7 +1104,10 @@ def test_weather_tools_structured(model, create_completion_fn):
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def structured_weather_assistant(command) -> WeatherReport:
         """{command}"""
@@ -1347,3 +1157,412 @@ def test_weather_tools_structured(model, create_completion_fn):
     assert result2.location.city == "Miami"
     assert result2.weather.temperature == 77
     assert result2.weather.condition == "cloudy"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_control(model, create_completion_fn):
+    """Test cache control functionality"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        cache=True,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # Generate a long message that should trigger cache control
+    long_message = "Please analyze this text: " + ("lorem ipsum " * 100)
+
+    # First message should have cache control for long content
+    result1 = chat(long_message)
+    assert isinstance(result1, str)
+
+    # Test with cache disabled
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        cache=False,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat_no_cache(message):
+        """Chat: {message}"""
+
+    result2 = chat_no_cache(long_message)
+    assert isinstance(result2, str)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_anthropic_cache_limit(model, create_completion_fn):
+    """Test Anthropic cache block limit"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    state = State()
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=5),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        cache=True,
+        state=state,
+        memory=True,
+        # debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # Generate messages that will exceed the cache block limit
+    for i in range(6):  # More than anthropic_cached_block_limit
+        long_message = f"Analysis part {i}: " + ("lorem ipsum " * 100)
+        result = chat(long_message)
+        assert isinstance(result, str)
+
+    # Verify the number of cached messages doesn't exceed the limit
+    messages = state.get_messages()
+    cached_count = sum("cache_control" in msg for msg in messages)
+    assert cached_count <= 4  # anthropic_cached_block_limit
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_with_system_prompts(model, create_completion_fn):
+    """Test cache behavior with system prompts"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    system_prompts = [
+        {"role": "system", "content": "You are a helpful assistant"},
+        {
+            "role": "system",
+            "content": "You always provide detailed responses",
+            "cache_control": {"type": "ephemeral"},
+        },
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompts,
+        cache=True,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    long_message = "Please analyze: " + ("lorem ipsum " * 100)
+    result = chat(long_message)
+    assert isinstance(result, str)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_order(model, create_completion_fn):
+    """Test that system prompts are always first in the message list"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    state = State()
+    system_prompt = "You are a helpful test assistant"
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompt,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # First interaction
+    chat("Hello")
+    messages = state.get_messages()
+    # Verify system message is first
+    assert messages[0]["role"] == "system", messages
+    assert messages[0]["content"] == system_prompt
+
+    # Second interaction should still have system message first
+    chat("How are you?")
+    messages = state.get_messages()
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompt
+
+    # Test with list of system prompts
+    state.clear()
+    system_prompts = [
+        "You are a helpful assistant",
+        "You always provide concise answers",
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompts,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat2(message):
+        """Chat: {message}"""
+
+    chat2("Hello")
+    messages = state.get_messages()
+
+    # Verify both system messages are first, in order
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_message_order_with_memory(model, create_completion_fn):
+    """Test that messages maintain correct order with memory enabled"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    state = State()
+    system_prompts = [
+        "You are a helpful assistant",
+        "You always provide concise answers",
+        "You speak in a formal tone",
+    ]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        system=system_prompts,
+        state=state,
+        memory=True,
+        temperature=0,
+        timeout=5,
+        debug=True,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # First interaction
+    chat("Hello")
+    messages = state.get_messages()
+
+    # Check initial message order
+    assert len(messages) == 5  # 3 system + 1 user + 1 assistant
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+    assert messages[2]["role"] == "system"
+    assert messages[2]["content"] == system_prompts[2]
+    assert messages[3]["role"] == "user"
+    assert isinstance(messages[3]["content"], list)
+    assert len(messages[3]["content"]) == 1
+    assert messages[3]["content"][0]["type"] == "text"
+    assert "Hello" in messages[3]["content"][0]["text"]
+    assert messages[4]["role"] == "assistant"
+
+    # Second interaction
+    chat("How are you?")
+    messages = state.get_messages()
+
+    # Check message order after second interaction
+    assert len(messages) == 7  # 3 system + 2 user + 2 assistant
+    # System messages should still be first
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == system_prompts[0]
+    assert messages[1]["role"] == "system"
+    assert messages[1]["content"] == system_prompts[1]
+    assert messages[2]["role"] == "system"
+    assert messages[2]["content"] == system_prompts[2]
+    # First interaction messages
+    assert messages[3]["role"] == "user"
+    assert isinstance(messages[3]["content"], list)
+    assert len(messages[3]["content"]) == 1
+    assert messages[3]["content"][0]["type"] == "text"
+    assert "Hello" in messages[3]["content"][0]["text"]
+    assert messages[4]["role"] == "assistant"
+    # Second interaction messages
+    assert messages[5]["role"] == "user"
+    assert isinstance(messages[5]["content"], list)
+    assert len(messages[5]["content"]) == 1
+    assert messages[5]["content"][0]["type"] == "text"
+    assert "How are you?" in messages[5]["content"][0]["text"]
+    assert messages[6]["role"] == "assistant"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_message_method(model, create_completion_fn):
+    """Test the direct message method of Promptic"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    # Test basic message functionality
+    p = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+    result = p.message("What is the capital of France?")
+    assert isinstance(result, str)
+    assert "Paris" in result
+
+    # Test with memory enabled
+    p_with_memory = Promptic(
+        model=model,
+        memory=True,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+
+    # First message
+    result1 = p_with_memory.message("What is the capital of France?")
+    assert "Paris" in result1
+
+    # Second message should have context from first
+    result2 = p_with_memory.message("What did I just ask about?")
+    assert any([word in result2.lower() for word in ["france", "paris"]]), (
+        p_with_memory.state.get_messages()
+    )
+
+    # Verify messages are stored in state
+    assert (
+        len(p_with_memory.state.get_messages()) == 4
+    )  # 2 user messages + 2 assistant responses
+    messages = p_with_memory.state.get_messages()
+    assert messages[0]["role"] == "user"
+    assert "France" in messages[0]["content"]
+    assert messages[1]["role"] == "assistant"
+    assert messages[2]["role"] == "user"
+    assert messages[3]["role"] == "assistant"
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_image_functionality(model, create_completion_fn):
+    """Test image support functionality with different formats and prompting"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    # Test structured output with ImageDescription
+    class ImageDescription(BaseModel):
+        content: str
+        colors: list[str]
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=10,
+        create_completion_fn=create_completion_fn,
+    )
+    def analyze_image(image: ImageBytes) -> ImageDescription:
+        """Describe this image and list its main colors"""
+
+    # Test with both JPEG and PNG formats
+    for ext in ["jpeg", "png"]:
+        with open(f"tests/fixtures/ocai-logo.{ext}", "rb") as f:
+            image_data = ImageBytes(f.read())
+
+        result = analyze_image(image_data)
+        assert isinstance(result, ImageDescription)
+        assert len(result.content) > 0
+        assert len(result.colors) > 0
+        assert any("orange" in color.lower() for color in result.colors)
+
+    # Test free-form prompting
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=10,
+        create_completion_fn=create_completion_fn,
+    )
+    def analyze_image_feature(img: ImageBytes, feature: str):
+        """Tell me about the {feature} in this image"""
+
+    with open("tests/fixtures/ocai-logo.jpeg", "rb") as f:
+        image_data = ImageBytes(f.read())
+
+    # Test specific feature analysis
+    color_result = analyze_image_feature(image_data, "colors")
+    assert isinstance(color_result, str)
+    assert any(color in color_result.lower() for color in ["orange", "white", "black"])
+
+    text_result = analyze_image_feature(image_data, "text or letters")
+    assert isinstance(text_result, str)
+    assert "ai" in text_result.lower() or "oc" in text_result.lower()
