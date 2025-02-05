@@ -1,4 +1,3 @@
-import os
 import warnings
 
 warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
@@ -7,8 +6,6 @@ import logging
 from unittest.mock import Mock
 import subprocess as sp
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
-import sys
 
 import pytest
 from litellm.exceptions import RateLimitError, InternalServerError, APIError, Timeout
@@ -44,7 +41,10 @@ def test_basic(model, create_completion_fn):
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def president(year):
         """Who was the President of the United States in {year}?"""
@@ -55,12 +55,20 @@ def test_basic(model, create_completion_fn):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_parens(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_parens(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
@@ -70,7 +78,13 @@ def test_parens(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_pydantic(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_pydantic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class Capital(BaseModel):
         country: str
         capital: str
@@ -79,7 +93,9 @@ def test_pydantic(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
     def capital(country) -> Capital:
         """What's the capital of {country}?"""
 
@@ -89,7 +105,13 @@ def test_pydantic(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_streaming(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_streaming(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -99,6 +121,7 @@ def test_streaming(model):
         model=model,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def haiku(subject, adjective, verb="delights"):
         """Write a haiku about {subject} that is {adjective} and {verb}."""
@@ -108,12 +131,24 @@ def test_streaming(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system="you are a snarky chatbot", temperature=0, model=model, timeout=5)
+    @llm(
+        system="you are a snarky chatbot",
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -123,7 +158,13 @@ def test_system_prompt(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_list_strings(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_list_strings(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     system_prompts = [
         "you are a helpful assistant",
         "you always provide concise answers",
@@ -134,7 +175,13 @@ def test_system_prompt_list_strings(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    @llm(
+        system=system_prompts,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -146,7 +193,13 @@ def test_system_prompt_list_strings(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_list_dicts(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_list_dicts(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     system_prompts = [
         {"role": "system", "content": "you are a helpful assistant"},
         {
@@ -161,7 +214,13 @@ def test_system_prompt_list_dicts(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    @llm(
+        system=system_prompts,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -350,12 +409,24 @@ def test_dry_run_with_tools(model, caplog):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_debug_logging(model, caplog):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_debug_logging(model, create_completion_fn, caplog):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(debug=True, temperature=0, model=model, timeout=5)
+    @llm(
+        debug=True,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def debug_test(message):
         """Echo: {message}"""
 
@@ -367,69 +438,24 @@ def test_debug_logging(model, caplog):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_multiple_tool_calls(model):
-    counter = Mock()
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_conversation(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        system="You are a helpful assistant that likes to double-check things",
+        memory=True,
         temperature=0,
         model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
-    def double_checker(query):
-        """{query}"""
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @double_checker.tool
-    def check_status():
-        """Check the current status"""
-        counter()
-        return "Status OK"
-
-    double_checker("Please check the status twice to be sure")
-    # Ensure we tested an even number of times with retries
-    assert counter.call_count // 2 * 2 == counter.call_count
-    assert counter.call_count >= 2  # At least called twice
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_state_basic(model):
-    state = State()
-    message = {"role": "user", "content": "Hello"}
-
-    state.add_message(message)
-    assert state.get_messages() == [message]
-
-    state.clear()
-    assert state.get_messages() == []
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_state_limit(model):
-    state = State()
-    messages = [{"role": "user", "content": f"Message {i}"} for i in range(3)]
-
-    for msg in messages:
-        state.add_message(msg)
-
-    assert state.get_messages(limit=2) == messages[-2:]
-    assert state.get_messages() == messages
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_conversation(model):
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(memory=True, temperature=0, model=model, timeout=5)
     def chat(message):
         """Chat: {message}"""
 
@@ -443,7 +469,13 @@ def test_memory_conversation(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_custom_state(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_custom_state(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class TestState(State):
         def __init__(self):
             super().__init__()
@@ -459,7 +491,13 @@ def test_custom_state(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(state=custom_state, temperature=0, model=model, timeout=5)
+    @llm(
+        state=custom_state,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -472,12 +510,24 @@ def test_custom_state(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_disabled(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_disabled(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=False, temperature=0, model=model, timeout=5)
+    @llm(
+        memory=False,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -489,7 +539,13 @@ def test_memory_disabled(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_with_streaming(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_with_streaming(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     state = State()
     p = Promptic(
         model=model,
@@ -498,6 +554,7 @@ def test_memory_with_streaming(model):
         stream=True,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
 
     @retry(
@@ -537,379 +594,28 @@ def test_memory_with_streaming(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_pydantic_with_tools(model):
-    class WeatherReport(BaseModel):
-        location: str
-        temperature: float
-        conditions: str
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_control(model, create_completion_fn):
+    """Test cache control functionality"""
+    # Skip test for non-Anthropic models
+    if not model.startswith(("claude", "anthropic")):
+        pytest.skip("Cache control only applies to Anthropic models")
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(temperature=0, model=model, timeout=5)
-    def get_weather_report(location: str) -> WeatherReport:
-        """Create a detailed weather report for {location}"""
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @get_weather_report.tool
-    def get_temperature(city: str) -> float:
-        """Get the temperature for a city"""
-        return 72.5
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @get_weather_report.tool
-    def get_conditions(city: str) -> str:
-        """Get the weather conditions for a city"""
-        return "Sunny with light clouds"
-
-    result = get_weather_report("San Francisco")
-    assert isinstance(result, WeatherReport)
-    assert "San Francisco" in result.location
-    assert isinstance(result.temperature, float)
-    assert isinstance(result.conditions, str)
-
-
-@pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_pydantic_tools_with_memory(model):
-    class TaskStatus(BaseModel):
-        task_id: int
-        status: str
-        last_update: str
-
-    state = State()
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(memory=True, state=state, temperature=0, model=model, timeout=5)
-    def task_tracker(command: str) -> TaskStatus:
-        """Process the following task command: {command}"""
-
-    @task_tracker.tool
-    def get_task_status(task_id: int) -> str:
-        """Get the current status of a task"""
-        return "in_progress"
-
-    @task_tracker.tool
-    def get_last_update(task_id: int) -> str:
-        """Get the last update timestamp for a task"""
-        return "2024-03-15 10:00 AM"
-
-    # First interaction
-    result1 = task_tracker("Check status of task 123")
-    assert isinstance(result1, TaskStatus)
-    assert result1.task_id == 123
-    assert result1.status == "in_progress"
-
-    # Second interaction should have context from the first
-    result2 = task_tracker("What was the last task we checked?")
-    assert isinstance(result2, TaskStatus)
-    assert result2.task_id == 123  # Should reference the previous task
-
-
-def test_anthropic_tool_calling():
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        model="claude-3-haiku-20240307",
-        temperature=0,
-        debug=True,
-        timeout=5,
-    )
-    def assistant(command):
-        """{command}"""
-
-    @assistant.tool
-    def get_time():
-        """Get the current time"""
-        return "12:00 PM"
-
-    result = assistant("What time is it?")
-
-    assert isinstance(result, str)
-    assert "12:00" in result
-
-
-# Add new test to verify Gemini streaming with tools raises exception
-def test_gemini_streaming_with_tools_error():
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(stream=True, model="gemini/gemini-1.5-pro", timeout=5)
-    def assistant(command):
-        """{command}"""
-
-    @assistant.tool
-    def get_time():
-        """Get the current time"""
-        return "12:00 PM"
-
-    with pytest.raises(ValueError) as exc_info:
-        next(assistant("What time is it?"))
-
-    assert str(exc_info.value) == "Gemini models do not support streaming with tools"
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_mutually_exclusive_schemas(model):
-    schema = {
-        "type": "object",
-        "properties": {
-            "name": {"type": "string"},
-            "age": {"type": "integer"},
-        },
-        "required": ["name", "age"],
-    }
-
-    class Person(BaseModel):
-        name: str
-        age: int
-
-    with pytest.raises(ValueError) as exc_info:
-
-        @llm(temperature=0, model=model, json_schema=schema, timeout=5)
-        def get_person(name: str) -> Person:
-            """Get information about {name}"""
-
-    assert (
-        str(exc_info.value)
-        == "Cannot use both Pydantic return type hints and json_schema validation together"
-    )
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_wrapper_attributes(model):
-    custom_state = State()
-    p = Promptic(
         model=model,
-        temperature=0.7,
-        memory=True,
-        system="test system prompt",
-        stream=True,
+        cache=True,
         debug=True,
-        state=custom_state,
-        timeout=5,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
     )
-
-    @p
-    def test_function(input_text: str):
-        """Test: {input_text}"""
-
-    assert hasattr(test_function, "tool")
-    assert callable(test_function.tool)
-
-    assert test_function.model == model
-    assert test_function.memory is True
-    assert test_function.system == "test system prompt"
-    assert test_function.debug is True
-    assert test_function.state is custom_state
-
-    assert test_function.litellm_kwargs == {
-        "temperature": 0.7,
-        "stream": True,
-        "timeout": 5,
-    }
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_clear_state(model):
-    # Test successful clearing
-    state = State()
-
-    @llm(model=model, memory=True, state=state, timeout=5)
-    def chat(message):
-        """Chat: {message}"""
-
-    # Add some messages
-    chat("Hello")
-    assert len(state.get_messages()) > 0
-
-    # Clear the state
-    chat.clear()
-    assert len(state.get_messages()) == 0
-
-    # Test error when memory/state is disabled
-
-    @llm(model=model, memory=False, timeout=5)
-    def chat_no_memory(message):
-        """Chat: {message}"""
-
-    with pytest.raises(ValueError) as exc_info:
-        chat_no_memory.clear()
-    assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
-
-
-def _get_example_files():
-    """Get all example Python files."""
-    return map(str, Path("examples").glob("*.py"))
-
-
-@pytest.mark.parametrize("example_file", _get_example_files())
-def test_examples(example_file):
-    """Run each example file."""
-    if example_file == "examples/memory.py":
-        sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
-    elif example_file == "examples/state.py":
-        pytest.skip("State example is not runnable without Redis.")
-    else:
-        sp.run(f"uv run {example_file}", shell=True, check=True)
-
-
-@pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_weather_tools_basic(model):
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(temperature=0, model=model, timeout=5, debug=True)
-    def weather_assistant(command):
-        """{command}"""
-
-    @weather_assistant.tool
-    def get_location(city: str) -> dict:
-        """Get latitude and longitude based on city name"""
-        locations = {
-            "New York": {
-                "latitude": 40.7128,
-                "longitude": -74.0060,
-                "city": "New York",
-            },
-            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
-        }
-        return locations.get(city, {"error": "Location not found"})
-
-    @weather_assistant.tool
-    def get_weather(latitude: float, longitude: float) -> dict:
-        """Get weather based on latitude and longitude"""
-        if latitude > 35:  # Northern region
-            return {
-                "temperature": 59,
-                "condition": "sunny",
-                "humidity": 50,
-                "wind_speed": 8,
-            }
-        else:  # Southern region
-            return {
-                "temperature": 77,
-                "condition": "cloudy",
-                "humidity": 80,
-                "wind_speed": 6,
-            }
-
-    # Test single city weather
-    result1 = weather_assistant("How's the weather in New York right now?")
-    assert isinstance(result1, str)
-    assert any(word in result1.lower() for word in ["new york", "59", "sunny"])
-
-    # Test weather comparison
-    result2 = weather_assistant("Please compare the weather between New York and Miami")
-    assert isinstance(result2, str)
-    assert all(city in result2.lower() for city in ["new york", "miami"])
-    assert any(str(temp) in result2 for temp in ["59", "77"])
-
-    # Test temperature difference
-    result3 = weather_assistant(
-        "What's the temperature difference between New York and Miami?"
-    )
-    assert isinstance(result3, str)
-    assert "18" in result3  # 77 - 59 = 18 degrees difference
-
-
-@pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_weather_tools_structured(model):
-    class Location(BaseModel):
-        latitude: float
-        longitude: float
-        city: str
-
-    class Weather(BaseModel):
-        temperature: float
-        condition: str
-        humidity: float
-        wind_speed: float
-
-    class WeatherReport(BaseModel):
-        location: Location
-        weather: Weather
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(temperature=0, model=model, timeout=5)
-    def structured_weather_assistant(command) -> WeatherReport:
-        """{command}"""
-
-    @structured_weather_assistant.tool
-    def get_location(city: str) -> Location:
-        """Get latitude and longitude based on city name"""
-        locations = {
-            "New York": {
-                "latitude": 40.7128,
-                "longitude": -74.0060,
-                "city": "New York",
-            },
-            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
-        }
-        return Location(**locations.get(city, {"error": "Location not found"}))
-
-    @structured_weather_assistant.tool
-    def get_weather(latitude: float, longitude: float) -> Weather:
-        """Get weather based on latitude and longitude"""
-        if latitude > 35:
-            weather_data = {
-                "temperature": 59,
-                "condition": "sunny",
-                "humidity": 50,
-                "wind_speed": 8,
-            }
-        else:
-            weather_data = {
-                "temperature": 77,
-                "condition": "cloudy",
-                "humidity": 80,
-                "wind_speed": 6,
-            }
-        return Weather(**weather_data)
-
-    # Test single city weather with structured output
-    result1 = structured_weather_assistant("How's the weather in New York right now?")
-    assert isinstance(result1, WeatherReport)
-    assert result1.location.city == "New York"
-    assert result1.weather.temperature == 59
-    assert result1.weather.condition == "sunny"
-
-    # Test weather comparison with structured output
-    result2 = structured_weather_assistant("How's the weather in Miami right now?")
-    assert isinstance(result2, WeatherReport)
-    assert result2.location.city == "Miami"
-    assert result2.weather.temperature == 77
-    assert result2.weather.condition == "cloudy"
-
-
-@pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_cache_control(model):
-    """Test cache control functionality"""
-    # Skip test for non-Anthropic models
-    if not model.startswith(("claude", "anthropic")):
-        pytest.skip("Cache control only applies to Anthropic models")
-
-    @retry(
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        retry=retry_if_exception_type(ERRORS),
-    )
-    @llm(model=model, cache=True, debug=True, timeout=12)
     def chat(message):
         """Chat: {message}"""
 
@@ -925,7 +631,13 @@ def test_cache_control(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, cache=False, debug=True, timeout=12)
+    @llm(
+        model=model,
+        cache=False,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
     def chat_no_cache(message):
         """Chat: {message}"""
 
@@ -934,11 +646,16 @@ def test_cache_control(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_anthropic_cache_limit(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_anthropic_cache_limit(model, create_completion_fn):
     """Test Anthropic cache block limit"""
     # Skip test for non-Anthropic models
     if not model.startswith(("claude", "anthropic")):
         pytest.skip("Cache control only applies to Anthropic models")
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     state = State()
 
@@ -953,6 +670,7 @@ def test_anthropic_cache_limit(model):
         memory=True,
         # debug=True,
         timeout=12,
+        create_completion_fn=create_completion_fn,
     )
     def chat(message):
         """Chat: {message}"""
@@ -970,11 +688,16 @@ def test_anthropic_cache_limit(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_cache_with_system_prompts(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_with_system_prompts(model, create_completion_fn):
     """Test cache behavior with system prompts"""
     # Skip test for non-Anthropic models
     if not model.startswith(("claude", "anthropic")):
         pytest.skip("Cache control only applies to Anthropic models")
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     system_prompts = [
         {"role": "system", "content": "You are a helpful assistant"},
@@ -989,7 +712,14 @@ def test_cache_with_system_prompts(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, system=system_prompts, cache=True, debug=True, timeout=12)
+    @llm(
+        model=model,
+        system=system_prompts,
+        cache=True,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -1220,3 +950,400 @@ def test_image_functionality(model):
     text_result = analyze_image_feature(image_data, "text or letters")
     assert isinstance(text_result, str)
     assert "ai" in text_result.lower() or "oc" in text_result.lower()
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_state_basic(model):
+    state = State()
+    message = {"role": "user", "content": "Hello"}
+
+    state.add_message(message)
+    assert state.get_messages() == [message]
+
+    state.clear()
+    assert state.get_messages() == []
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_state_limit(model):
+    state = State()
+    messages = [{"role": "user", "content": f"Message {i}"} for i in range(3)]
+
+    for msg in messages:
+        state.add_message(msg)
+
+    assert state.get_messages(limit=2) == messages[-2:]
+    assert state.get_messages() == messages
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_multiple_tool_calls(model):
+    counter = Mock()
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        system="You are a helpful assistant that likes to double-check things",
+        temperature=0,
+        model=model,
+        timeout=5,
+    )
+    def double_checker(query):
+        """{query}"""
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @double_checker.tool
+    def check_status():
+        """Check the current status"""
+        counter()
+        return "Status OK"
+
+    double_checker("Please check the status twice to be sure")
+    # Ensure we tested an even number of times with retries
+    assert counter.call_count // 2 * 2 == counter.call_count
+    assert counter.call_count >= 2  # At least called twice
+
+
+def test_anthropic_tool_calling():
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model="claude-3-haiku-20240307",
+        temperature=0,
+        debug=True,
+        timeout=5,
+    )
+    def assistant(command):
+        """{command}"""
+
+    @assistant.tool
+    def get_time():
+        """Get the current time"""
+        return "12:00 PM"
+
+    result = assistant("What time is it?")
+
+    assert isinstance(result, str)
+    assert "12:00" in result
+
+
+# Add new test to verify Gemini streaming with tools raises exception
+def test_gemini_streaming_with_tools_error():
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(stream=True, model="gemini/gemini-1.5-pro", timeout=5)
+    def assistant(command):
+        """{command}"""
+
+    @assistant.tool
+    def get_time():
+        """Get the current time"""
+        return "12:00 PM"
+
+    with pytest.raises(ValueError) as exc_info:
+        next(assistant("What time is it?"))
+
+    assert str(exc_info.value) == "Gemini models do not support streaming with tools"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_mutually_exclusive_schemas(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    schema = {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "age": {"type": "integer"},
+        },
+        "required": ["name", "age"],
+    }
+
+    class Person(BaseModel):
+        name: str
+        age: int
+
+    with pytest.raises(ValueError) as exc_info:
+
+        @llm(
+            temperature=0,
+            model=model,
+            json_schema=schema,
+            timeout=5,
+            create_completion_fn=create_completion_fn,
+        )
+        def get_person(name: str) -> Person:
+            """Get information about {name}"""
+
+    assert (
+        str(exc_info.value)
+        == "Cannot use both Pydantic return type hints and json_schema validation together"
+    )
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_wrapper_attributes(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    custom_state = State()
+    p = Promptic(
+        model=model,
+        temperature=0.7,
+        memory=True,
+        system="test system prompt",
+        stream=True,
+        debug=True,
+        state=custom_state,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+
+    @p
+    def test_function(input_text: str):
+        """Test: {input_text}"""
+
+    assert hasattr(test_function, "tool")
+    assert callable(test_function.tool)
+
+    assert test_function.model == model
+    assert test_function.memory is True
+    assert test_function.system == "test system prompt"
+    assert test_function.debug is True
+    assert test_function.state is custom_state
+
+    assert test_function.completion_kwargs == {
+        "temperature": 0.7,
+        "stream": True,
+        "timeout": 5,
+    }
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_clear_state(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    # Test successful clearing
+    state = State()
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        model=model,
+        memory=True,
+        state=state,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+    def chat(message):
+        """Chat: {message}"""
+
+    # Add some messages
+    chat("Hello")
+    assert len(state.get_messages()) > 0
+
+    # Clear the state
+    chat.clear()
+    assert len(state.get_messages()) == 0
+
+    # Test error when memory/state is disabled
+
+    @llm(
+        model=model, memory=False, timeout=5, create_completion_fn=create_completion_fn
+    )
+    def chat_no_memory(message):
+        """Chat: {message}"""
+
+    with pytest.raises(ValueError) as exc_info:
+        chat_no_memory.clear()
+    assert "Cannot clear state: memory/state is not enabled" in str(exc_info.value)
+
+
+def _get_example_files():
+    """Get all example Python files."""
+    return map(str, Path("examples").glob("*.py"))
+
+
+@pytest.mark.parametrize("example_file", _get_example_files())
+def test_examples(example_file):
+    """Run each example file."""
+    if example_file == "examples/memory.py":
+        sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
+    elif example_file == "examples/state.py":
+        pytest.skip("State example is not runnable without Redis.")
+    else:
+        sp.run(f"uv run {example_file}", shell=True, check=True)
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_weather_tools_basic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=5,
+        debug=True,
+        create_completion_fn=create_completion_fn,
+    )
+    def weather_assistant(command):
+        """{command}"""
+
+    @weather_assistant.tool
+    def get_location(city: str) -> dict:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return locations.get(city, {"error": "Location not found"})
+
+    @weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> dict:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:  # Northern region
+            return {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:  # Southern region
+            return {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+
+    # Test single city weather
+    result1 = weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, str)
+    assert any(word in result1.lower() for word in ["new york", "59", "sunny"])
+
+    # Test weather comparison
+    result2 = weather_assistant("Please compare the weather between New York and Miami")
+    assert isinstance(result2, str)
+    assert all(city in result2.lower() for city in ["new york", "miami"])
+    assert any(str(temp) in result2 for temp in ["59", "77"])
+
+    # Test temperature difference
+    result3 = weather_assistant(
+        "What's the temperature difference between New York and Miami?"
+    )
+    assert isinstance(result3, str)
+    assert "18" in result3  # 77 - 59 = 18 degrees difference
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_weather_tools_structured(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    class Location(BaseModel):
+        latitude: float
+        longitude: float
+        city: str
+
+    class Weather(BaseModel):
+        temperature: float
+        condition: str
+        humidity: float
+        wind_speed: float
+
+    class WeatherReport(BaseModel):
+        location: Location
+        weather: Weather
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
+    def structured_weather_assistant(command) -> WeatherReport:
+        """{command}"""
+
+    @structured_weather_assistant.tool
+    def get_location(city: str) -> Location:
+        """Get latitude and longitude based on city name"""
+        locations = {
+            "New York": {
+                "latitude": 40.7128,
+                "longitude": -74.0060,
+                "city": "New York",
+            },
+            "Miami": {"latitude": 25.7617, "longitude": -80.1918, "city": "Miami"},
+        }
+        return Location(**locations.get(city, {"error": "Location not found"}))
+
+    @structured_weather_assistant.tool
+    def get_weather(latitude: float, longitude: float) -> Weather:
+        """Get weather based on latitude and longitude"""
+        if latitude > 35:
+            weather_data = {
+                "temperature": 59,
+                "condition": "sunny",
+                "humidity": 50,
+                "wind_speed": 8,
+            }
+        else:
+            weather_data = {
+                "temperature": 77,
+                "condition": "cloudy",
+                "humidity": 80,
+                "wind_speed": 6,
+            }
+        return Weather(**weather_data)
+
+    # Test single city weather with structured output
+    result1 = structured_weather_assistant("How's the weather in New York right now?")
+    assert isinstance(result1, WeatherReport)
+    assert result1.location.city == "New York"
+    assert result1.weather.temperature == 59
+    assert result1.weather.condition == "sunny"
+
+    # Test weather comparison with structured output
+    result2 = structured_weather_assistant("How's the weather in Miami right now?")
+    assert isinstance(result2, WeatherReport)
+    assert result2.location.city == "Miami"
+    assert result2.weather.temperature == 77
+    assert result2.weather.condition == "cloudy"

@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "4.2.0"
+__version__ = "5.0.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -157,7 +157,7 @@ class Promptic:
         cached_count = 0
 
         for msg in completion_messages:
-            if msg.get("cache_control"):
+            if hasattr(msg, "get") and msg.get("cache_control"):
                 if cached_count == self.anthropic_cached_block_limit:
                     msg.pop("cache_control")
                 else:
@@ -627,4 +627,4 @@ def to_json(obj: Any) -> str:
     return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
-llm = Promptic.decorate
+llm = Promptic.llm = Promptic.decorate

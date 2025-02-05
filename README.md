@@ -520,7 +520,8 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 - `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
 - `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
 - `cache` (bool, optional): If True, enables prompt caching. Defaults to True.
-- `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+- `create_completion_fn` (callable, optional): Custom completion function to use instead of litellm.completion.
+- `**completion_kwargs`: Additional arguments passed directly to the completion function i.e. [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods
 
