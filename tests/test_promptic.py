@@ -805,13 +805,7 @@ def test_pydantic_tools_with_memory(model, create_completion_fn):
     assert result2.task_id == 123  # Should reference the previous task
 
 
-@pytest.mark.parametrize(
-    "create_completion_fn", [openai_completion_fn, litellm_completion]
-)
-def test_anthropic_tool_calling(create_completion_fn):
-    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
-        pytest.skip("Non-GPT models are not supported with OpenAI client")
-
+def test_anthropic_tool_calling():
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -821,7 +815,6 @@ def test_anthropic_tool_calling(create_completion_fn):
         temperature=0,
         debug=True,
         timeout=5,
-        create_completion_fn=create_completion_fn,
     )
     def assistant(command):
         """{command}"""
