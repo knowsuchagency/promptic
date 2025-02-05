@@ -230,6 +230,35 @@ print("".join(write_poem("artificial intelligence")))
 
 ```
 
+### OpenAI Client
+
+Promptic uses [litellm](https://docs.litellm.ai/) by default, but supports any OpenAI-compatible client.
+
+Here's an example on how to use the [langfuse](https://langfuse.com/) OpenAI client to trace function calls.
+
+```py
+# examples/langfuse_openai.py
+
+from langfuse.openai import openai
+from langfuse.decorators import observe
+from promptic import Promptic
+
+
+promptic = Promptic(openai_client=openai.OpenAI())
+
+
+@observe
+@promptic.llm
+def greet(name):
+    """Greet {name}"""
+
+
+print(greet("John"))
+# Hello, John!
+
+```
+
+
 ### Error Handling and Dry Runs
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
@@ -520,7 +549,8 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 - `state` (State, optional): Custom State implementation for memory management. Overrides the `memory` parameter.
 - `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
 - `cache` (bool, optional): If True, enables prompt caching. Defaults to True.
-- `**litellm_kwargs`: Additional arguments passed directly to [litellm.completion](https://docs.litellm.ai/docs/completion/input).
+- `create_completion_fn` (callable, optional): Custom completion function to use instead of litellm.completion.
+- `**completion_kwargs`: Additional arguments passed directly to the completion function i.e. [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods
 

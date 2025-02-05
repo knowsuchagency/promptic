@@ -6,8 +6,6 @@ import logging
 from unittest.mock import Mock
 import subprocess as sp
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
-import sys
 
 import pytest
 from litellm.exceptions import RateLimitError, InternalServerError, APIError, Timeout
@@ -18,7 +16,8 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from promptic import ImageBytes, Promptic, State, llm
+from promptic import ImageBytes, Promptic, State, llm, litellm_completion
+from openai import OpenAI
 
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
@@ -26,14 +25,27 @@ ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
 
+openai_completion_fn = OpenAI().chat.completions.create
+
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_basic(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_basic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def president(year):
         """Who was the President of the United States in {year}?"""
 
@@ -43,12 +55,20 @@ def test_basic(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_parens(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_parens(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
 
@@ -58,7 +78,13 @@ def test_parens(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_pydantic(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_pydantic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class Capital(BaseModel):
         country: str
         capital: str
@@ -67,7 +93,9 @@ def test_pydantic(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
     def capital(country) -> Capital:
         """What's the capital of {country}?"""
 
@@ -77,7 +105,13 @@ def test_pydantic(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_streaming(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_streaming(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -87,6 +121,7 @@ def test_streaming(model):
         model=model,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def haiku(subject, adjective, verb="delights"):
         """Write a haiku about {subject} that is {adjective} and {verb}."""
@@ -96,12 +131,24 @@ def test_streaming(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system="you are a snarky chatbot", temperature=0, model=model, timeout=5)
+    @llm(
+        system="you are a snarky chatbot",
+        temperature=0,
+        model=model,
+        timeout=8,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -111,7 +158,13 @@ def test_system_prompt(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_list_strings(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_list_strings(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     system_prompts = [
         "you are a helpful assistant",
         "you always provide concise answers",
@@ -122,7 +175,13 @@ def test_system_prompt_list_strings(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    @llm(
+        system=system_prompts,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -134,7 +193,13 @@ def test_system_prompt_list_strings(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_list_dicts(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_list_dicts(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     system_prompts = [
         {"role": "system", "content": "you are a helpful assistant"},
         {
@@ -149,7 +214,13 @@ def test_system_prompt_list_dicts(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(system=system_prompts, temperature=0, model=model, timeout=5)
+    @llm(
+        system=system_prompts,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def answer(question):
         """{question}"""
 
@@ -161,7 +232,13 @@ def test_system_prompt_list_dicts(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_agents(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_agents(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
@@ -171,6 +248,7 @@ def test_agents(model):
         temperature=0,
         model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def jarvis(command):
         """{command}"""
@@ -211,7 +289,13 @@ def test_agents(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_streaming_with_tools(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_streaming_with_tools(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     if model.startswith(("gemini", "vertex")):  # pragma: no cover
         pytest.skip("Gemini models do not support streaming with tools")
 
@@ -228,6 +312,7 @@ def test_streaming_with_tools(model):
         system="you are a helpful assistant",
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def stream_with_tools(query):
         """{query}"""
@@ -252,7 +337,13 @@ def test_streaming_with_tools(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_json_schema_validation(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_json_schema_validation(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     schema = {
         "type": "object",
         "properties": {
@@ -278,7 +369,13 @@ def test_json_schema_validation(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=schema, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        json_schema=schema,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def get_user_info(name: str):
         """Get information about {name}"""
 
@@ -306,7 +403,13 @@ def test_json_schema_validation(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, json_schema=invalid_schema, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        json_schema=invalid_schema,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def get_impossible_score(name: str):
         """Get score for {name}"""
 
@@ -316,12 +419,25 @@ def test_json_schema_validation(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_dry_run_with_tools(model, caplog):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_dry_run_with_tools(model, create_completion_fn, caplog):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(dry_run=True, debug=True, temperature=0, model=model, timeout=5)
+    @llm(
+        dry_run=True,
+        debug=True,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def assistant(command):
         """{command}"""
 
@@ -338,12 +454,24 @@ def test_dry_run_with_tools(model, caplog):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_debug_logging(model, caplog):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_debug_logging(model, create_completion_fn, caplog):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(debug=True, temperature=0, model=model, timeout=5)
+    @llm(
+        debug=True,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def debug_test(message):
         """Echo: {message}"""
 
@@ -355,7 +483,13 @@ def test_debug_logging(model, caplog):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_multiple_tool_calls(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_multiple_tool_calls(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     counter = Mock()
 
     @retry(
@@ -367,6 +501,7 @@ def test_multiple_tool_calls(model):
         temperature=0,
         model=model,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def double_checker(query):
         """{query}"""
@@ -412,12 +547,24 @@ def test_state_limit(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_conversation(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_conversation(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=True, temperature=0, model=model, timeout=5)
+    @llm(
+        memory=True,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -431,7 +578,13 @@ def test_memory_conversation(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_custom_state(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_custom_state(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class TestState(State):
         def __init__(self):
             super().__init__()
@@ -447,7 +600,13 @@ def test_custom_state(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(state=custom_state, temperature=0, model=model, timeout=5)
+    @llm(
+        state=custom_state,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -460,12 +619,24 @@ def test_custom_state(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_disabled(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_disabled(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=False, temperature=0, model=model, timeout=5)
+    @llm(
+        memory=False,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -477,7 +648,13 @@ def test_memory_disabled(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_memory_with_streaming(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_memory_with_streaming(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     state = State()
     p = Promptic(
         model=model,
@@ -486,6 +663,7 @@ def test_memory_with_streaming(model):
         stream=True,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
 
     @retry(
@@ -525,7 +703,13 @@ def test_memory_with_streaming(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_pydantic_with_tools(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_pydantic_with_tools(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class WeatherReport(BaseModel):
         location: str
         temperature: float
@@ -535,7 +719,12 @@ def test_pydantic_with_tools(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def get_weather_report(location: str) -> WeatherReport:
         """Create a detailed weather report for {location}"""
 
@@ -565,7 +754,13 @@ def test_pydantic_with_tools(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_pydantic_tools_with_memory(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_pydantic_tools_with_memory(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class TaskStatus(BaseModel):
         task_id: int
         status: str
@@ -577,7 +772,14 @@ def test_pydantic_tools_with_memory(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(memory=True, state=state, temperature=0, model=model, timeout=5)
+    @llm(
+        memory=True,
+        state=state,
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def task_tracker(command: str) -> TaskStatus:
         """Process the following task command: {command}"""
 
@@ -629,12 +831,20 @@ def test_anthropic_tool_calling():
 
 
 # Add new test to verify Gemini streaming with tools raises exception
-def test_gemini_streaming_with_tools_error():
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_gemini_streaming_with_tools_error(create_completion_fn):
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(stream=True, model="gemini/gemini-1.5-pro", timeout=5)
+    @llm(
+        stream=True,
+        model="gemini/gemini-1.5-pro",
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def assistant(command):
         """{command}"""
 
@@ -650,7 +860,10 @@ def test_gemini_streaming_with_tools_error():
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_mutually_exclusive_schemas(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_mutually_exclusive_schemas(model, create_completion_fn):
     schema = {
         "type": "object",
         "properties": {
@@ -666,7 +879,13 @@ def test_mutually_exclusive_schemas(model):
 
     with pytest.raises(ValueError) as exc_info:
 
-        @llm(temperature=0, model=model, json_schema=schema, timeout=5)
+        @llm(
+            temperature=0,
+            model=model,
+            json_schema=schema,
+            timeout=5,
+            create_completion_fn=create_completion_fn,
+        )
         def get_person(name: str) -> Person:
             """Get information about {name}"""
 
@@ -677,7 +896,13 @@ def test_mutually_exclusive_schemas(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_wrapper_attributes(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_wrapper_attributes(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     custom_state = State()
     p = Promptic(
         model=model,
@@ -688,6 +913,7 @@ def test_wrapper_attributes(model):
         debug=True,
         state=custom_state,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
 
     @p
@@ -703,7 +929,7 @@ def test_wrapper_attributes(model):
     assert test_function.debug is True
     assert test_function.state is custom_state
 
-    assert test_function.litellm_kwargs == {
+    assert test_function.completion_kwargs == {
         "temperature": 0.7,
         "stream": True,
         "timeout": 5,
@@ -711,11 +937,23 @@ def test_wrapper_attributes(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_clear_state(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_clear_state(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     # Test successful clearing
     state = State()
 
-    @llm(model=model, memory=True, state=state, timeout=5)
+    @llm(
+        model=model,
+        memory=True,
+        state=state,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -729,7 +967,12 @@ def test_clear_state(model):
 
     # Test error when memory/state is disabled
 
-    @llm(model=model, memory=False, timeout=5)
+    @llm(
+        model=model,
+        memory=False,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def chat_no_memory(message):
         """Chat: {message}"""
 
@@ -750,17 +993,31 @@ def test_examples(example_file):
         sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
     elif example_file == "examples/state.py":
         pytest.skip("State example is not runnable without Redis.")
+    elif example_file == "examples/langfuse_openai.py":
+        sp.run(f"uv run --with langfuse {example_file}", shell=True, check=True)
     else:
         sp.run(f"uv run {example_file}", shell=True, check=True)
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_weather_tools_basic(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_weather_tools_basic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5, debug=True)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=5,
+        debug=True,
+        create_completion_fn=create_completion_fn,
+    )
     def weather_assistant(command):
         """{command}"""
 
@@ -815,7 +1072,13 @@ def test_weather_tools_basic(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_weather_tools_structured(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_weather_tools_structured(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     class Location(BaseModel):
         latitude: float
         longitude: float
@@ -835,7 +1098,12 @@ def test_weather_tools_structured(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     def structured_weather_assistant(command) -> WeatherReport:
         """{command}"""
 
@@ -887,17 +1155,29 @@ def test_weather_tools_structured(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_cache_control(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_control(model, create_completion_fn):
     """Test cache control functionality"""
     # Skip test for non-Anthropic models
     if not model.startswith(("claude", "anthropic")):
         pytest.skip("Cache control only applies to Anthropic models")
 
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, cache=True, debug=True, timeout=12)
+    @llm(
+        model=model,
+        cache=True,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -913,7 +1193,13 @@ def test_cache_control(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, cache=False, debug=True, timeout=12)
+    @llm(
+        model=model,
+        cache=False,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
     def chat_no_cache(message):
         """Chat: {message}"""
 
@@ -922,11 +1208,17 @@ def test_cache_control(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_anthropic_cache_limit(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_anthropic_cache_limit(model, create_completion_fn):
     """Test Anthropic cache block limit"""
     # Skip test for non-Anthropic models
     if not model.startswith(("claude", "anthropic")):
         pytest.skip("Cache control only applies to Anthropic models")
+
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     state = State()
 
@@ -941,6 +1233,7 @@ def test_anthropic_cache_limit(model):
         memory=True,
         # debug=True,
         timeout=12,
+        create_completion_fn=create_completion_fn,
     )
     def chat(message):
         """Chat: {message}"""
@@ -958,11 +1251,17 @@ def test_anthropic_cache_limit(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_cache_with_system_prompts(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_cache_with_system_prompts(model, create_completion_fn):
     """Test cache behavior with system prompts"""
     # Skip test for non-Anthropic models
     if not model.startswith(("claude", "anthropic")):
         pytest.skip("Cache control only applies to Anthropic models")
+
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     system_prompts = [
         {"role": "system", "content": "You are a helpful assistant"},
@@ -977,7 +1276,14 @@ def test_cache_with_system_prompts(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(model=model, system=system_prompts, cache=True, debug=True, timeout=12)
+    @llm(
+        model=model,
+        system=system_prompts,
+        cache=True,
+        debug=True,
+        timeout=12,
+        create_completion_fn=create_completion_fn,
+    )
     def chat(message):
         """Chat: {message}"""
 
@@ -987,8 +1293,14 @@ def test_cache_with_system_prompts(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_system_prompt_order(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_system_prompt_order(model, create_completion_fn):
     """Test that system prompts are always first in the message list"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     state = State()
     system_prompt = "You are a helpful test assistant"
 
@@ -1003,6 +1315,7 @@ def test_system_prompt_order(model):
         memory=True,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def chat(message):
         """Chat: {message}"""
@@ -1038,6 +1351,7 @@ def test_system_prompt_order(model):
         memory=True,
         temperature=0,
         timeout=5,
+        create_completion_fn=create_completion_fn,
     )
     def chat2(message):
         """Chat: {message}"""
@@ -1053,8 +1367,14 @@ def test_system_prompt_order(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_message_order_with_memory(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_message_order_with_memory(model, create_completion_fn):
     """Test that messages maintain correct order with memory enabled"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     state = State()
     system_prompts = [
         "You are a helpful assistant",
@@ -1074,6 +1394,7 @@ def test_message_order_with_memory(model):
         temperature=0,
         timeout=5,
         debug=True,
+        create_completion_fn=create_completion_fn,
     )
     def chat(message):
         """Chat: {message}"""
@@ -1127,16 +1448,33 @@ def test_message_order_with_memory(model):
 
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_message_method(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_message_method(model, create_completion_fn):
     """Test the direct message method of Promptic"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     # Test basic message functionality
-    p = Promptic(model=model, temperature=0, timeout=5)
+    p = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
     result = p.message("What is the capital of France?")
     assert isinstance(result, str)
     assert "Paris" in result
 
     # Test with memory enabled
-    p_with_memory = Promptic(model=model, memory=True, temperature=0, timeout=5)
+    p_with_memory = Promptic(
+        model=model,
+        memory=True,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
 
     # First message
     result1 = p_with_memory.message("What is the capital of France?")
@@ -1161,8 +1499,13 @@ def test_message_method(model):
 
 
 @pytest.mark.parametrize("model", REGULAR_MODELS)
-def test_image_functionality(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_image_functionality(model, create_completion_fn):
     """Test image support functionality with different formats and prompting"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
 
     # Test structured output with ImageDescription
     class ImageDescription(BaseModel):
@@ -1173,7 +1516,12 @@ def test_image_functionality(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=10)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=10,
+        create_completion_fn=create_completion_fn,
+    )
     def analyze_image(image: ImageBytes) -> ImageDescription:
         """Describe this image and list its main colors"""
 
@@ -1193,7 +1541,12 @@ def test_image_functionality(model):
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=10)
+    @llm(
+        temperature=0,
+        model=model,
+        timeout=10,
+        create_completion_fn=create_completion_fn,
+    )
     def analyze_image_feature(img: ImageBytes, feature: str):
         """Tell me about the {feature} in this image"""
 

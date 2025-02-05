@@ -749,6 +749,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "openai" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -765,6 +766,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "openai", specifier = ">=1.58.1" },
     { name = "pre-commit", specifier = ">=4.0.1" },
     { name = "pytest", specifier = ">=8.3.3" },
     { name = "pytest-cov", specifier = ">=6.0.0" },

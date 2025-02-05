@@ -35,6 +35,9 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ vars.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
         run: |
           # Note: Some tests are expected to be skipped based on model capabilities
           uv run pytest -v -n auto tests/
