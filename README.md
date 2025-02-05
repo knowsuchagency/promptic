@@ -230,6 +230,35 @@ print("".join(write_poem("artificial intelligence")))
 
 ```
 
+### OpenAI Client
+
+Promptic uses [litellm](https://docs.litellm.ai/) by default, but supports any OpenAI-compatible client.
+
+Here's an example on how to use the [langfuse](https://langfuse.com/) OpenAI client to trace function calls.
+
+```py
+# examples/langfuse_openai.py
+
+from langfuse.openai import openai
+from langfuse.decorators import observe
+from promptic import Promptic
+
+
+promptic = Promptic(openai_client=openai.OpenAI())
+
+
+@observe
+@promptic.llm
+def greet(name):
+    """Greet {name}"""
+
+
+print(greet("John"))
+# Hello, John!
+
+```
+
+
 ### Error Handling and Dry Runs
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.

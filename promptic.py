@@ -63,6 +63,7 @@ class Promptic:
         json_schema: Optional[Dict] = None,
         cache: bool = True,
         create_completion_fn=None,
+        openai_client=None,
         **completion_kwargs,
     ):
         """Initialize a new Promptic instance.
@@ -77,18 +78,28 @@ class Promptic:
             state (State, optional): Custom state instance for memory management. Defaults to None.
             json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
+            openai_client (OpenAI, optional): The OpenAI client to use for API calls. Defaults to None.
             create_completion_fn (Callable, optional): The function to use for API calls. Defaults to None.
             **client_kwargs: Additional keyword arguments passed to the create_completion_fn.
         """
+        assert not (openai_client and create_completion_fn), (
+            "openai_client and create_completion_fn are mutually exclusive"
+        )
+
         self.model = model
         self.system = system
         self.dry_run = dry_run
         self.completion_kwargs = completion_kwargs
         self.tools: Dict[str, Callable] = {}
         self.json_schema = json_schema
-        self.create_completion_fn = (
-            litellm_completion if create_completion_fn is None else create_completion_fn
-        )
+        self.openai_client = openai_client
+
+        if self.openai_client:
+            self.create_completion_fn = self.openai_client.chat.completions.create
+        elif create_completion_fn:
+            self.create_completion_fn = create_completion_fn
+        else:
+            self.create_completion_fn = litellm_completion
 
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
