@@ -15,7 +15,7 @@ from typing import Callable, Dict, Any, List, Optional, Union
 import litellm
 from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
-from litellm.utils import CustomStreamWrapper
+from litellm import completion as litellm_completion
 
 __version__ = "4.2.0"
 
@@ -62,7 +62,8 @@ class Promptic:
         state: Optional[State] = None,
         json_schema: Optional[Dict] = None,
         cache: bool = True,
-        **litellm_kwargs,
+        create_completion_fn=None,
+        **completion_kwargs,
     ):
         """Initialize a new Promptic instance.
 
@@ -76,14 +77,18 @@ class Promptic:
             state (State, optional): Custom state instance for memory management. Defaults to None.
             json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
-            **litellm_kwargs: Additional keyword arguments passed to litellm.completion().
+            create_completion_fn (Callable, optional): The function to use for API calls. Defaults to None.
+            **client_kwargs: Additional keyword arguments passed to the create_completion_fn.
         """
         self.model = model
         self.system = system
         self.dry_run = dry_run
-        self.litellm_kwargs = litellm_kwargs
+        self.completion_kwargs = completion_kwargs
         self.tools: Dict[str, Callable] = {}
         self.json_schema = json_schema
+        self.create_completion_fn = (
+            litellm_completion if create_completion_fn is None else create_completion_fn
+        )
 
         self.logger = logging.getLogger("promptic")
         handler = logging.StreamHandler()
@@ -97,7 +102,8 @@ class Promptic:
 
         if debug:
             self.logger.setLevel(logging.DEBUG)
-            litellm.set_verbose = True
+            if self.create_completion_fn == litellm:
+                litellm.set_verbose = True
         else:
             self.logger.setLevel(logging.WARNING)
 
@@ -157,12 +163,12 @@ class Promptic:
                 else:
                     cached_count += 1
 
-        result = litellm.completion(
+        result = self.create_completion_fn(
             model=self.model,
             messages=completion_messages,
             tools=self.tool_definitions,
             tool_choice="auto" if self.tool_definitions else None,
-            **(self.litellm_kwargs | kwargs),
+            **(self.completion_kwargs | kwargs),
         )
 
         if self.state:
@@ -175,7 +181,7 @@ class Promptic:
         messages = [{"content": message, "role": "user"}]
         response = self._completion(messages, **kwargs)
 
-        if (self.litellm_kwargs | kwargs).get("stream"):
+        if (self.completion_kwargs | kwargs).get("stream"):
             return self._stream_response(response)
         else:
             content = response.choices[0].message.content
@@ -311,7 +317,7 @@ class Promptic:
             self.logger.debug(f"{self.model = }")
             self.logger.debug(f"{self.system = }")
             self.logger.debug(f"{self.dry_run = }")
-            self.logger.debug(f"{self.litellm_kwargs = }")
+            self.logger.debug(f"{self.completion_kwargs = }")
             self.logger.debug(f"{self.tools = }")
             self.logger.debug(f"{func = }")
             self.logger.debug(f"{args = }")
@@ -428,7 +434,7 @@ class Promptic:
                 messages.append(msg)
 
             # Add check for Gemini streaming with tools
-            if self.gemini and self.litellm_kwargs.get("stream") and self.tools:
+            if self.gemini and self.completion_kwargs.get("stream") and self.tools:
                 raise ValueError("Gemini models do not support streaming with tools")
 
             self.logger.debug("Chat History:")
@@ -458,7 +464,7 @@ class Promptic:
                 # Call the LLM with the prompt and tools
                 response = self._completion(messages)
 
-                if self.litellm_kwargs.get("stream"):
+                if self.completion_kwargs.get("stream"):
                     return self._stream_response(response)
 
                 for choice in response.choices:

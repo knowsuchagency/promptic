@@ -1,3 +1,4 @@
+import os
 import warnings
 
 warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
@@ -18,7 +19,8 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from promptic import ImageBytes, Promptic, State, llm
+from promptic import ImageBytes, Promptic, State, llm, litellm_completion
+from openai import OpenAI
 
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
@@ -26,14 +28,24 @@ ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
 
+openai_completion_fn = OpenAI().chat.completions.create
+
 
 @pytest.mark.parametrize("model", CHEAP_MODELS)
-def test_basic(model):
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_basic(model, create_completion_fn):
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
     @retry(
         wait=wait_exponential(multiplier=1, min=4, max=10),
         retry=retry_if_exception_type(ERRORS),
     )
-    @llm(temperature=0, model=model, timeout=5)
+    @llm(
+        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+    )
     def president(year):
         """Who was the President of the United States in {year}?"""
 
