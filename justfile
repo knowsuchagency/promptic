@@ -21,3 +21,6 @@ test-fn fn:
 # Run tests with coverage
 test-cov: format
     uv run pytest --cov=promptic --cov-report=term-missing tests/
+
+pre-commit:
+    /bin/bash .git/hooks/pre-commit

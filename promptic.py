@@ -337,7 +337,7 @@ class Promptic:
 
             if (
                 self.tools and not self.openai_client
-            ): # assume oai clients support tools
+            ):  # assume oai clients support tools
                 assert litellm.supports_function_calling(self.model), (
                     f"Model {self.model} does not support function calling"
                 )
