@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "5.0.0"
+__version__ = "5.0.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
