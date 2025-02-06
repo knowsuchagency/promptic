@@ -335,7 +335,9 @@ class Promptic:
             self.logger.debug(f"{kwargs = }")
             self.logger.debug(f"{self.cache = }")
 
-            if self.tools and not self.openai_client: # assume oai clients support tools
+            if (
+                self.tools and not self.openai_client
+            ): # assume oai clients support tools
                 assert litellm.supports_function_calling(self.model), (
                     f"Model {self.model} does not support function calling"
                 )
