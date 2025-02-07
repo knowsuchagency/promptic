@@ -23,4 +23,4 @@ test-cov: format
     uv run pytest --cov=promptic --cov-report=term-missing tests/
 
 pre-commit:
-    /bin/bash .git/hooks/pre-commit
+    uv run pre-commit
