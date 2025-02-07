@@ -18,7 +18,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "5.1.0"
+__version__ = "5.1.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -342,6 +342,8 @@ class Promptic:
             self.logger.debug(f"{args = }")
             self.logger.debug(f"{kwargs = }")
             self.logger.debug(f"{self.cache = }")
+            self.logger.debug(f"{self.create_completion_fn = }")
+            self.logger.debug(f"{self.openai_client = }")
 
             if (
                 self.tools and not self.openai_client
