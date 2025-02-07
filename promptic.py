@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "5.0.0"
+__version__ = "5.0.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -335,7 +335,9 @@ class Promptic:
             self.logger.debug(f"{kwargs = }")
             self.logger.debug(f"{self.cache = }")
 
-            if self.tools:
+            if (
+                self.tools and not self.openai_client
+            ):  # assume oai clients support tools
                 assert litellm.supports_function_calling(self.model), (
                     f"Model {self.model} does not support function calling"
                 )
