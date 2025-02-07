@@ -1,3 +1,4 @@
+import copy
 import warnings
 
 warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
@@ -17,7 +18,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "5.0.1"
+__version__ = "5.1.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -309,6 +310,13 @@ class Promptic:
         """See Promptic.__init__ for valid kwargs."""
         instance = cls(**kwargs)
         return instance._decorator(func) if func else instance
+
+    def llm(self, func: Callable = None, **kwargs):
+        """Decorate a function with the Promptic instance."""
+        new_instance = copy.copy(self)
+        for key, value in kwargs.items():
+            setattr(new_instance, key, value)
+        return new_instance._decorator(func) if func else new_instance._decorator
 
     def _decorator(self, func: Callable):
         return_type = func.__annotations__.get("return")
@@ -640,4 +648,4 @@ def to_json(obj: Any) -> str:
     return json.dumps(obj, cls=CustomJSONEncoder, ensure_ascii=False)
 
 
-llm = Promptic.llm = Promptic.decorate
+llm = Promptic.decorate
