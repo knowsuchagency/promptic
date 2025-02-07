@@ -24,3 +24,6 @@ test-cov: format
 
 pre-commit:
     uv run pre-commit
+
+publish:
+    rm -rf dist/* ; uv build ; uv publish
