@@ -263,6 +263,9 @@ print(greet("John"))
 
 Promptic integrates with [Weave](https://wandb.ai) to trace function calls and LLM interactions.
 
+<img width="981" alt="Screenshot 2025-02-07 at 6 02 25 PM" src="https://github.com/user-attachments/assets/3ccf4602-3557-455a-838f-7e4b8c2ec21a" />
+
+
 ```py
 # examples/weave_integration.py
 
