@@ -995,6 +995,8 @@ def test_examples(example_file):
         pytest.skip("State example is not runnable without Redis.")
     elif example_file == "examples/langfuse_openai.py":
         sp.run(f"uv run --with langfuse {example_file}", shell=True, check=True)
+    elif example_file == "examples/weave_integration.py":
+        sp.run(f"uv run --with weave {example_file}", shell=True, check=True)
     else:
         sp.run(f"uv run {example_file}", shell=True, check=True)
 
