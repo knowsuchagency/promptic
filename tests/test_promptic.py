@@ -22,7 +22,7 @@ from openai import OpenAI
 ERRORS = (RateLimitError, InternalServerError, APIError, Timeout)
 
 # Define default model lists
-CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-1.5-flash"]
+CHEAP_MODELS = ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini/gemini-2.0-flash"]
 REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro"]
 
 openai_completion_fn = OpenAI().chat.completions.create
