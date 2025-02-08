@@ -259,6 +259,52 @@ print(greet("John"))
 ```
 
 
+### Observability
+
+Promptic integrates with [Weave](https://wandb.ai) to trace function calls and LLM interactions.
+
+<img width="981" alt="Screenshot 2025-02-07 at 6 02 25 PM" src="https://github.com/user-attachments/assets/3ccf4602-3557-455a-838f-7e4b8c2ec21a" />
+
+
+```py
+# examples/weave_integration.py
+
+from promptic import Promptic
+import weave
+
+# Initialize the weave client with the project name
+# it doesn't need to be "promptic"
+client = weave.init("promptic")
+
+promptic = Promptic(weave_client=client)
+
+
+@promptic.llm
+def translate(text, language="Chinese"):
+    """Translate '{text}' to {language}"""
+
+
+print(translate("Hello world!"))
+# 您好，世界！
+
+print(translate("Hello world!", language="Spanish"))
+# ¡Hola, mundo!
+
+
+@promptic.llm(stream=True)
+def write_poem(topic):
+    """Write a haiku about {topic}."""
+
+
+print("".join(write_poem("artificial intelligence")))
+# Binary thoughts hum,
+# Electron minds awake, learn,
+# Future thinking now.
+
+```
+
+
+
 ### Error Handling and Dry Runs
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
@@ -550,6 +596,7 @@ The main decorator for creating LLM-powered functions. Can be used as `@llm` or 
 - `json_schema` (dict, optional): JSON Schema dictionary for validating LLM outputs. Alternative to using Pydantic models.
 - `cache` (bool, optional): If True, enables prompt caching. Defaults to True.
 - `create_completion_fn` (callable, optional): Custom completion function to use instead of litellm.completion.
+- `weave_client` (WeaveClient, optional): Weave client to use for tracing.
 - `**completion_kwargs`: Additional arguments passed directly to the completion function i.e. [litellm.completion](https://docs.litellm.ai/docs/completion/input).
 
 #### Methods

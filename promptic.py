@@ -8,7 +8,6 @@ import json
 import logging
 import re
 import base64
-import mimetypes
 from functools import wraps
 from textwrap import dedent
 from typing import Callable, Dict, Any, List, Optional, Union
@@ -18,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from pydantic import BaseModel
 from litellm import completion as litellm_completion
 
-__version__ = "5.1.1"
+__version__ = "5.2.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -65,6 +64,7 @@ class Promptic:
         cache: bool = True,
         create_completion_fn=None,
         openai_client=None,
+        weave_client=None,
         **completion_kwargs,
     ):
         """Initialize a new Promptic instance.
@@ -81,6 +81,7 @@ class Promptic:
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
             openai_client (OpenAI, optional): The OpenAI client to use for API calls. Defaults to None.
             create_completion_fn (Callable, optional): The function to use for API calls. Defaults to None.
+            weave_client (WeaveClient, optional): The Weights & Biases client used to trace calls. Defaults to None.
             **client_kwargs: Additional keyword arguments passed to the create_completion_fn.
         """
         assert not (openai_client and create_completion_fn), (
@@ -94,7 +95,7 @@ class Promptic:
         self.tools: Dict[str, Callable] = {}
         self.json_schema = json_schema
         self.openai_client = openai_client
-
+        self.weave_client = weave_client
         if self.openai_client:
             self.create_completion_fn = self.openai_client.chat.completions.create
         elif create_completion_fn:
@@ -175,7 +176,7 @@ class Promptic:
                 else:
                     cached_count += 1
 
-        result = self.create_completion_fn(
+        completion = self.create_completion_fn(
             model=self.model,
             messages=completion_messages,
             tools=self.tool_definitions,
@@ -187,17 +188,39 @@ class Promptic:
             for msg in new_messages:
                 self.state.add_message(msg)
 
-        return result
+        return completion_messages, completion
 
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
-        response = self._completion(messages, **kwargs)
+        completion_messages, response = self._completion(messages, **kwargs)
+
+        call = None
+
+        if self.weave_client:
+            call = self.weave_client.create_call(
+                op="Promptic.message",
+                inputs={
+                    "messages": completion_messages,
+                },
+                attributes={
+                    "model": self.model,
+                    "system": self.system,
+                    "tools": self.tool_definitions,
+                    "tool_choice": "auto" if self.tool_definitions else None,
+                },
+                display_name="promptic_message",
+            )
 
         if (self.completion_kwargs | kwargs).get("stream"):
-            return self._stream_response(response)
+            return self._stream_response(response, call)
         else:
             content = response.choices[0].message.content
-            return self._parse_and_validate_response(content)
+            result = self._parse_and_validate_response(content)
+
+            if call and self.weave_client:
+                self.weave_client.finish_call(call, output=result)
+
+            return result
 
     def _set_anthropic_cache(self, messages: List[dict]):
         """Set the cache control for the message if it is an Anthropic message"""
@@ -483,12 +506,30 @@ class Promptic:
                             f"  {tool['function']['name']}: {tool['function']['description']}"
                         )
 
+            call = None
+
+            if self.weave_client:
+                call = self.weave_client.create_call(
+                    op="Promptic._decorator",
+                    inputs={"messages": messages},
+                    attributes={
+                        "model": self.model,
+                        "system": self.system,
+                        "tools": self.tool_definitions,
+                        "tool_choice": "auto" if self.tool_definitions else None,
+                    },
+                    display_name="promptic_decorator",
+                )
+
             while True:
                 # Call the LLM with the prompt and tools
-                response = self._completion(messages)
+                completion_messages, response = self._completion(messages)
+
+                if call:
+                    call.inputs["messages"] = completion_messages
 
                 if self.completion_kwargs.get("stream"):
-                    return self._stream_response(response)
+                    return self._stream_response(response, call)
 
                 for choice in response.choices:
                     # Handle tool calls if present
@@ -532,11 +573,16 @@ class Promptic:
                     # Gemini has `stop` as a finish reason when tools are used
                     elif choice.finish_reason in ["stop", "max_tokens", "length"]:
                         generated_text = choice.message.content
-                        return self._parse_and_validate_response(
+                        result = self._parse_and_validate_response(
                             generated_text,
                             return_type=return_type,
                             json_schema=self.json_schema,
                         )
+
+                        if call and self.weave_client:
+                            self.weave_client.finish_call(call, output=result)
+
+                        return result
 
         # Add methods explicitly
         wrapper.tool = self.tool
@@ -550,7 +596,7 @@ class Promptic:
 
         return wrapper
 
-    def _stream_response(self, response):
+    def _stream_response(self, response, call=None):
         current_tool_calls = {}
         current_index = None
         accumulated_response = ""
@@ -627,6 +673,9 @@ class Promptic:
             self.state.add_message(
                 {"content": accumulated_response, "role": "assistant"}
             )
+
+        if call and self.weave_client:
+            self.weave_client.finish_call(call, output=accumulated_response)
 
     def clear(self) -> None:
         """Clear all messages from the state if it exists.
