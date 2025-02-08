@@ -259,6 +259,49 @@ print(greet("John"))
 ```
 
 
+### Observability
+
+Promptic integrates with [Weave](https://wandb.ai) to trace function calls and LLM interactions.
+
+```py
+# examples/weave_integration.py
+
+from promptic import Promptic
+import weave
+
+# Initialize the weave client with the project name
+# it doesn't need to be "promptic"
+client = weave.init("promptic")
+
+promptic = Promptic(weave_client=client)
+
+
+@promptic.llm
+def translate(text, language="Chinese"):
+    """Translate '{text}' to {language}"""
+
+
+print(translate("Hello world!"))
+# 您好，世界！
+
+print(translate("Hello world!", language="Spanish"))
+# ¡Hola, mundo!
+
+
+@promptic.llm(stream=True)
+def write_poem(topic):
+    """Write a haiku about {topic}."""
+
+
+print("".join(write_poem("artificial intelligence")))
+# Binary thoughts hum,
+# Electron minds awake, learn,
+# Future thinking now.
+
+```
+
+
+
 ### Error Handling and Dry Runs
 
 Dry runs allow you to see which tools will be called and their arguments without invoking the decorated tool functions. You can also enable debug mode for more detailed logging.
