@@ -258,13 +258,11 @@ print(greet("John"))
 
 ```
 
-
 ### Observability
 
 Promptic integrates with [Weave](https://wandb.ai) to trace function calls and LLM interactions.
 
 <img width="981" alt="Screenshot 2025-02-07 at 6 02 25 PM" src="https://github.com/user-attachments/assets/3ccf4602-3557-455a-838f-7e4b8c2ec21a" />
-
 
 ```py
 # examples/weave_integration.py
@@ -302,8 +300,6 @@ print("".join(write_poem("artificial intelligence")))
 # Future thinking now.
 
 ```
-
-
 
 ### Error Handling and Dry Runs
 
@@ -613,6 +609,31 @@ Base class for managing conversation memory and state. Can be extended to implem
 - `add_message(message: dict)`: Add a message to the conversation history.
 - `get_messages(prompt: str = None, limit: int = None) -> List[dict]`: Retrieve conversation history, optionally limited to the most recent messages and filtered by a prompt.
 - `clear()`: Clear all stored messages.
+
+### `Promptic`
+
+The main class for creating LLM-powered functions and managing conversations.
+
+#### Methods
+
+- `message(message: str, **kwargs)`: Send a message directly to the LLM and get a response. Useful for follow-up questions or direct interactions.
+- `completion(messages: list[dict], **kwargs)`: Send a list of messages directly to the LLM and get the raw completion response. Useful for more control over the conversation flow.
+
+  ```python
+  from promptic import Promptic
+
+  p = Promptic(model="gpt-4o-mini")
+  messages = [
+      {"role": "user", "content": "What is the capital of France?"},
+      {"role": "assistant", "content": "The capital of France is Paris."},
+      {"role": "user", "content": "What is its population?"}
+  ]
+  response = p.completion(messages)
+  print(response.choices[0].message.content)
+  ```
+
+- `tool(fn)`: Register a function as a tool that can be called by the LLM.
+- `clear()`: Clear all stored messages from memory. Raises ValueError if memory/state is not enabled.
 
 #### Example
 
