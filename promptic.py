@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.3.1"
+__version__ = "5.4.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -288,6 +288,8 @@ class Promptic:
                 param_info["type"] = "number"
             elif param_type == bool:
                 param_info["type"] = "boolean"
+            elif inspect.isclass(param_type) and issubclass(param_type, BaseModel):
+                param_info = param_type.model_json_schema()
 
             parameters["properties"][name] = param_info
 
@@ -377,6 +379,28 @@ class Promptic:
             setattr(new_instance, key, value)
 
         return new_instance._decorator(func) if func else new_instance._decorator
+
+    def _deserialize_pydantic_args(self, fn: Callable, function_args: dict) -> dict:
+        """Deserialize any Pydantic model parameters in the function arguments.
+
+        Args:
+            fn: The function whose parameters to check
+            function_args: The arguments to deserialize
+
+        Returns:
+            The function arguments with any Pydantic models deserialized
+        """
+        sig = inspect.signature(fn)
+        for param_name, param in sig.parameters.items():
+            param_type = param.annotation if param.annotation != inspect._empty else Any
+            if (
+                inspect.isclass(param_type)
+                and issubclass(param_type, BaseModel)
+                and param_name in function_args
+                and isinstance(function_args[param_name], dict)
+            ):
+                function_args[param_name] = param_type(**function_args[param_name])
+        return function_args
 
     def _decorator(self, func: Callable):
         return_type = func.__annotations__.get("return")
@@ -590,9 +614,14 @@ class Promptic:
                                     function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
                                 else:
                                     try:
-                                        function_response = self.tools[function_name](
-                                            **function_args
+                                        self.logger.debug(
+                                            f"Calling tool {function_name}({function_args}) using {self.model = }"
                                         )
+                                        fn = self.tools[function_name]
+                                        function_args = self._deserialize_pydantic_args(
+                                            fn, function_args
+                                        )
+                                        function_response = fn(**function_args)
                                     except Exception as e:
                                         self.logger.error(
                                             f"Error calling tool {function_name}({function_args}): {e}"
@@ -625,6 +654,7 @@ class Promptic:
         wrapper.tool = self.tool
         wrapper.clear = self.clear
         wrapper.message = self.message
+        wrapper.instance = self
 
         # Automatically expose all other attributes from self
         for attr_name, attr_value in self.__dict__.items():
@@ -683,9 +713,16 @@ class Promptic:
                                                 f"[DRY RUN] Would have called {tool_info['name']} with {function_args}"
                                             )
                                         else:
-                                            self.tools[tool_info["name"]](
-                                                **function_args
+                                            self.logger.debug(
+                                                f"Calling tool {tool_info['name']}({function_args}) using {self.model = }"
                                             )
+                                            fn = self.tools[tool_info["name"]]
+                                            function_args = (
+                                                self._deserialize_pydantic_args(
+                                                    fn, function_args
+                                                )
+                                            )
+                                            fn(**function_args)
                                         # Clear after successful execution
                                         del current_tool_calls[current_index]
                                 except json.JSONDecodeError:

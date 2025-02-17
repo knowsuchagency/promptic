@@ -1668,3 +1668,46 @@ def test_tool_isolation_with_llm_method(model, create_completion_fn):
     # It should respond without using the tool
     result = child_function("What time is it?")
     assert "12:00" not in result
+
+
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_tool_definition_with_pydantic_param(model, create_completion_fn):
+    """Test that tool definitions properly handle Pydantic BaseModel parameters"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+    if "gemini" in model:
+        pytest.skip("The Gemini model is flaky with this test.")
+
+    class UserProfile(BaseModel):
+        name: str
+        age: int
+        email: str
+
+    llm = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+
+    @llm
+    def assistant(command):
+        """{command}"""
+
+    name = None
+
+    @assistant.tool
+    def update_user(profile: UserProfile) -> str:
+        """Update user profile"""
+        nonlocal name
+        name = profile.name
+        return f"Updated profile for {profile.name}"
+
+    assistant(
+        "Update the user's profile with the name 'John Doe', age 30, and email 'john@example.com'"
+    )
+
+    assert name == "John Doe"
