@@ -1623,3 +1623,48 @@ def test_completion_method(model, create_completion_fn):
     ):
         response = p_with_state.completion(messages)
         assert "Paris" in response.choices[0].message.content
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_tool_isolation_with_llm_method(model, create_completion_fn):
+    """Test that tools don't leak between parent and child functions when using llm method"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    p = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @p.llm
+    def parent_function(command):
+        """Respond to: {command}"""
+
+    # Add a tool to the parent function
+    @parent_function.tool
+    def get_time():
+        """Get the current time"""
+        return "12:00 PM"
+
+    # Create a child function using the parent's llm method
+    @p.llm
+    def child_function(command):
+        """Respond to: {command}"""
+
+    # Verify parent function has access to the tool
+    result = parent_function("What time is it?")
+    assert "12:00" in result
+
+    # Verify child function does not have access to the tool
+    # It should respond without using the tool
+    result = child_function("What time is it?")
+    assert "12:00" not in result

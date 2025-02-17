@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.3.0"
+__version__ = "5.3.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -360,11 +360,22 @@ class Promptic:
         instance = cls(**kwargs)
         return instance._decorator(func) if func else instance
 
+    def _clear_tools(self):
+        self.tools = {}
+        self.tool_definitions = None
+
+    def _disable_state(self):
+        self.state = None
+
     def llm(self, func: Callable = None, **kwargs):
         """Decorate a function with the Promptic instance."""
         new_instance = copy.copy(self)
+        new_instance._clear_tools()
+        new_instance._disable_state()
+
         for key, value in kwargs.items():
             setattr(new_instance, key, value)
+
         return new_instance._decorator(func) if func else new_instance._decorator
 
     def _decorator(self, func: Callable):
