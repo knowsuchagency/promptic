@@ -1563,3 +1563,63 @@ def test_image_functionality(model, create_completion_fn):
     text_result = analyze_image_feature(image_data, "text or letters")
     assert isinstance(text_result, str)
     assert "ai" in text_result.lower() or "oc" in text_result.lower()
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_completion_method(model, create_completion_fn):
+    """Test the direct completion method of Promptic"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    p = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        create_completion_fn=create_completion_fn,
+    )
+
+    # Test basic completion with a single message
+    messages = [{"role": "user", "content": "What is the capital of France?"}]
+    response = p.completion(messages)
+    assert "Paris" in response.choices[0].message.content
+
+    # Test completion with multiple messages
+    messages = [
+        {"role": "user", "content": "What is the capital of France?"},
+        {"role": "assistant", "content": "The capital of France is Paris."},
+        {"role": "user", "content": "What is its population?"},
+    ]
+    response = p.completion(messages)
+    assert any(
+        word in response.choices[0].message.content.lower()
+        for word in ["million", "inhabitants", "people"]
+    )
+
+    # Test completion with system message
+    p_with_system = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        system="You are a geography expert",
+        create_completion_fn=create_completion_fn,
+    )
+    messages = [{"role": "user", "content": "What is the capital of France?"}]
+    response = p_with_system.completion(messages)
+    assert "Paris" in response.choices[0].message.content
+
+    # Test warning when using with state enabled
+    p_with_state = Promptic(
+        model=model,
+        temperature=0,
+        timeout=5,
+        memory=True,
+        create_completion_fn=create_completion_fn,
+    )
+    with pytest.warns(
+        UserWarning, match="State is enabled, but completion is being called directly"
+    ):
+        response = p_with_state.completion(messages)
+        assert "Paris" in response.choices[0].message.content

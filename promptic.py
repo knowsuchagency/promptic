@@ -3,21 +3,21 @@ import warnings
 
 warnings.filterwarnings("ignore", message="Valid config keys have changed in V2:*")
 
+import base64
 import inspect
 import json
 import logging
 import re
-import base64
 from functools import wraps
 from textwrap import dedent
-from typing import Callable, Dict, Any, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import litellm
 from jsonschema import validate as validate_json_schema
-from pydantic import BaseModel
 from litellm import completion as litellm_completion
+from pydantic import BaseModel
 
-__version__ = "5.2.1"
+__version__ = "5.3.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -189,6 +189,32 @@ class Promptic:
                 self.state.add_message(msg)
 
         return completion_messages, completion
+
+    def completion(self, messages: list[dict], **kwargs):
+        """Return the raw completion response from the LLM for a list of messages.
+
+        This method provides direct access to the underlying LLM completion API, allowing
+        more control over the conversation flow. Unlike the message method, it accepts
+        a list of messages and returns the raw completion response.
+
+        Args:
+            messages (list[dict]): A list of message dictionaries, each with 'role' and 'content' keys.
+                Example: [{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi"}]
+            **kwargs: Additional arguments passed to the completion function.
+
+        Returns:
+            The raw completion response from the LLM.
+
+        Warning:
+            If state/memory is enabled, this method will warn that it's being called directly
+            as it may lead to unexpected behavior with conversation history.
+        """
+        if self.state:
+            warnings.warn(
+                "State is enabled, but completion is being called directly. This can cause unexpected behavior.",
+                UserWarning,
+            )
+        return self._completion(messages, **kwargs)[1]
 
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
