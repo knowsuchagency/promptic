@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.4.0"
+__version__ = "5.4.1"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -446,7 +446,13 @@ class Promptic:
             )
 
             # Get the function's docstring as the prompt
-            prompt_template = dedent(func.__doc__)
+            try:
+                prompt_template = dedent(func.__doc__)
+            except TypeError as e:
+                raise TypeError(
+                    f"Function {func.__name__} has no docstring. "
+                    "Ensure the docstring is not an f-string."
+                ) from e
 
             # Get the argument names, default values and values using inspect
             sig = inspect.signature(func)

@@ -1711,3 +1711,39 @@ def test_tool_definition_with_pydantic_param(model, create_completion_fn):
     )
 
     assert name == "John Doe"
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS[:1])
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion][:1]
+)
+def test_docstring_validation(model, create_completion_fn):
+    """Test validation of docstrings in decorated functions"""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    # Test function with no docstring
+    with pytest.raises(TypeError) as exc_info:
+
+        @llm(model=model, create_completion_fn=create_completion_fn)
+        def no_docstring_function(text):
+            pass
+
+        no_docstring_function("Hello")
+
+    assert "no_docstring_function has no docstring" in str(exc_info.value)
+    assert "Ensure the docstring is not an f-string" in str(exc_info.value)
+
+    # Test function with an f-string (this won't actually be executed but will fail at definition time)
+    name = "World"
+    with pytest.raises(TypeError) as exc_info:
+        # This would fail because f-strings aren't allowed in docstrings
+        @llm(model=model, create_completion_fn=create_completion_fn)
+        def f_string_docstring(text):
+            f"""Hello {name}"""
+            return text
+
+        f_string_docstring("Hello")
+
+    assert "f_string_docstring has no docstring" in str(exc_info.value)
+    assert "Ensure the docstring is not an f-string" in str(exc_info.value)
