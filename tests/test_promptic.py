@@ -43,7 +43,7 @@ def test_basic(model, create_completion_fn):
     @llm(
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def president(year):
@@ -67,7 +67,7 @@ def test_parens(model, create_completion_fn):
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+        temperature=0, model=model, timeout=8, create_completion_fn=create_completion_fn
     )
     def vice_president(year):
         """Who was the Vice President of the United States in {year}?"""
@@ -94,7 +94,7 @@ def test_pydantic(model, create_completion_fn):
         retry=retry_if_exception_type(ERRORS),
     )
     @llm(
-        temperature=0, model=model, timeout=5, create_completion_fn=create_completion_fn
+        temperature=0, model=model, timeout=8, create_completion_fn=create_completion_fn
     )
     def capital(country) -> Capital:
         """What's the capital of {country}?"""
@@ -120,7 +120,7 @@ def test_streaming(model, create_completion_fn):
         stream=True,
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def haiku(subject, adjective, verb="delights"):
@@ -179,7 +179,7 @@ def test_system_prompt_list_strings(model, create_completion_fn):
         system=system_prompts,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def answer(question):
@@ -218,7 +218,7 @@ def test_system_prompt_list_dicts(model, create_completion_fn):
         system=system_prompts,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def answer(question):
@@ -247,7 +247,7 @@ def test_agents(model, create_completion_fn):
         system="you are a posh smart home assistant named Jarvis",
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def jarvis(command):
@@ -311,7 +311,7 @@ def test_streaming_with_tools(model, create_completion_fn):
         model=model,
         system="you are a helpful assistant",
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def stream_with_tools(query):
@@ -373,7 +373,7 @@ def test_json_schema_validation(model, create_completion_fn):
         temperature=0,
         model=model,
         json_schema=schema,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def get_user_info(name: str):
@@ -407,7 +407,7 @@ def test_json_schema_validation(model, create_completion_fn):
         temperature=0,
         model=model,
         json_schema=invalid_schema,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def get_impossible_score(name: str):
@@ -435,7 +435,7 @@ def test_dry_run_with_tools(model, create_completion_fn, caplog):
         debug=True,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def assistant(command):
@@ -469,7 +469,7 @@ def test_debug_logging(model, create_completion_fn, caplog):
         debug=True,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def debug_test(message):
@@ -500,7 +500,7 @@ def test_multiple_tool_calls(model, create_completion_fn):
         system="You are a helpful assistant that likes to double-check things",
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def double_checker(query):
@@ -562,7 +562,7 @@ def test_memory_conversation(model, create_completion_fn):
         memory=True,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat(message):
@@ -604,7 +604,7 @@ def test_custom_state(model, create_completion_fn):
         state=custom_state,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat(message):
@@ -634,7 +634,7 @@ def test_memory_disabled(model, create_completion_fn):
         memory=False,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat(message):
@@ -662,7 +662,7 @@ def test_memory_with_streaming(model, create_completion_fn):
         state=state,
         stream=True,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
@@ -722,7 +722,7 @@ def test_pydantic_with_tools(model, create_completion_fn):
     @llm(
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def get_weather_report(location: str) -> WeatherReport:
@@ -777,7 +777,7 @@ def test_pydantic_tools_with_memory(model, create_completion_fn):
         state=state,
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def task_tracker(command: str) -> TaskStatus:
@@ -814,7 +814,7 @@ def test_anthropic_tool_calling():
         model="claude-3-haiku-20240307",
         temperature=0,
         debug=True,
-        timeout=5,
+        timeout=8,
     )
     def assistant(command):
         """{command}"""
@@ -842,7 +842,7 @@ def test_gemini_streaming_with_tools_error(create_completion_fn):
     @llm(
         stream=True,
         model="gemini/gemini-1.5-pro",
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def assistant(command):
@@ -883,7 +883,7 @@ def test_mutually_exclusive_schemas(model, create_completion_fn):
             temperature=0,
             model=model,
             json_schema=schema,
-            timeout=5,
+            timeout=8,
             create_completion_fn=create_completion_fn,
         )
         def get_person(name: str) -> Person:
@@ -912,7 +912,7 @@ def test_wrapper_attributes(model, create_completion_fn):
         stream=True,
         debug=True,
         state=custom_state,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
@@ -951,7 +951,7 @@ def test_clear_state(model, create_completion_fn):
         model=model,
         memory=True,
         state=state,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat(message):
@@ -970,7 +970,7 @@ def test_clear_state(model, create_completion_fn):
     @llm(
         model=model,
         memory=False,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat_no_memory(message):
@@ -1016,7 +1016,7 @@ def test_weather_tools_basic(model, create_completion_fn):
     @llm(
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         debug=True,
         create_completion_fn=create_completion_fn,
     )
@@ -1103,7 +1103,7 @@ def test_weather_tools_structured(model, create_completion_fn):
     @llm(
         temperature=0,
         model=model,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def structured_weather_assistant(command) -> WeatherReport:
@@ -1316,7 +1316,7 @@ def test_system_prompt_order(model, create_completion_fn):
         state=state,
         memory=True,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat(message):
@@ -1352,7 +1352,7 @@ def test_system_prompt_order(model, create_completion_fn):
         state=state,
         memory=True,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     def chat2(message):
@@ -1394,7 +1394,7 @@ def test_message_order_with_memory(model, create_completion_fn):
         state=state,
         memory=True,
         temperature=0,
-        timeout=5,
+        timeout=8,
         debug=True,
         create_completion_fn=create_completion_fn,
     )
@@ -1462,7 +1462,7 @@ def test_message_method(model, create_completion_fn):
     p = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
     result = p.message("What is the capital of France?")
@@ -1474,7 +1474,7 @@ def test_message_method(model, create_completion_fn):
         model=model,
         memory=True,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
@@ -1577,7 +1577,7 @@ def test_completion_method(model, create_completion_fn):
     p = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
@@ -1602,7 +1602,7 @@ def test_completion_method(model, create_completion_fn):
     p_with_system = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         system="You are a geography expert",
         create_completion_fn=create_completion_fn,
     )
@@ -1614,7 +1614,7 @@ def test_completion_method(model, create_completion_fn):
     p_with_state = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         memory=True,
         create_completion_fn=create_completion_fn,
     )
@@ -1637,7 +1637,7 @@ def test_tool_isolation_with_llm_method(model, create_completion_fn):
     p = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
@@ -1689,7 +1689,7 @@ def test_tool_definition_with_pydantic_param(model, create_completion_fn):
     llm = Promptic(
         model=model,
         temperature=0,
-        timeout=5,
+        timeout=8,
         create_completion_fn=create_completion_fn,
     )
 
