@@ -932,7 +932,7 @@ def test_wrapper_attributes(model, create_completion_fn):
     assert test_function.completion_kwargs == {
         "temperature": 0.7,
         "stream": True,
-        "timeout": 5,
+        "timeout": 8,
     }
 
 
