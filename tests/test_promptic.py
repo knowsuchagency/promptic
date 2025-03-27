@@ -1713,9 +1713,9 @@ def test_tool_definition_with_pydantic_param(model, create_completion_fn):
     assert name == "John Doe"
 
 
-@pytest.mark.parametrize("model", CHEAP_MODELS[:1])
+@pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
-    "create_completion_fn", [openai_completion_fn, litellm_completion][:1]
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
 )
 def test_docstring_validation(model, create_completion_fn):
     """Test validation of docstrings in decorated functions"""
