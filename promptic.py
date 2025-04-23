@@ -17,7 +17,33 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.4.2"
+# Allowed JSON‑Schema keys that OpenAI’s function‑calling interface accepts
+_OPENAI_SCHEMA_KEYS = {
+    "type",
+    "description",
+    "properties",
+    "required",
+    "enum",
+    "items",
+    "additionalProperties",
+}
+
+
+def _to_openai_schema(data):
+    """
+    Recursively prune a full JSON‑Schema produced by Pydantic down to the
+    restricted subset accepted by OpenAI function‑calling.
+    """
+    if isinstance(data, dict):
+        return {
+            k: _to_openai_schema(v) for k, v in data.items() if k in _OPENAI_SCHEMA_KEYS
+        }
+    if isinstance(data, list):
+        return [_to_openai_schema(i) for i in data]
+    return data
+
+
+__version__ = "5.5.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -289,7 +315,7 @@ class Promptic:
             elif param_type == bool:
                 param_info["type"] = "boolean"
             elif inspect.isclass(param_type) and issubclass(param_type, BaseModel):
-                param_info = param_type.model_json_schema()
+                param_info = _to_openai_schema(param_type.model_json_schema())
 
             parameters["properties"][name] = param_info
 
@@ -519,7 +545,7 @@ class Promptic:
                 and inspect.isclass(return_type)
                 and issubclass(return_type, BaseModel)
             ):
-                schema = return_type.model_json_schema()
+                schema = _to_openai_schema(return_type.model_json_schema())
                 json_schema = json.dumps(schema, indent=2)
                 msg = {
                     "role": "user",

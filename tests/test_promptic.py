@@ -702,7 +702,7 @@ def test_memory_with_streaming(model, create_completion_fn):
     assert messages[3]["content"] == response2  # Second assistant response
 
 
-@pytest.mark.parametrize("model", CHEAP_MODELS)
+@pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
 )
