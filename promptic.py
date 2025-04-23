@@ -17,6 +17,8 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
+__version__ = "5.5.0"
+
 # Allowed JSON‑Schema keys that OpenAI’s function‑calling interface accepts
 _OPENAI_SCHEMA_KEYS = {
     "type",
@@ -42,8 +44,6 @@ def _to_openai_schema(data):
         return [_to_openai_schema(i) for i in data]
     return data
 
-
-__version__ = "5.5.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
