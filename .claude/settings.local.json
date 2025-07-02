@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(uv run:*)",
+      "Bash(gh issue view:*)",
+      "Bash(just format)"
+    ],
+    "deny": []
+  }
+}

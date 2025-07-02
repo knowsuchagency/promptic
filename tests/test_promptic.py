@@ -1747,3 +1747,62 @@ def test_docstring_validation(model, create_completion_fn):
 
     assert "f_string_docstring has no docstring" in str(exc_info.value)
     assert "Ensure the docstring is not an f-string" in str(exc_info.value)
+
+
+@pytest.mark.parametrize("model", CHEAP_MODELS)
+def test_schema_simplification(model):
+    """Test that schema simplification removes metadata from Pydantic models"""
+    import json
+    from promptic import simplify_schema
+
+    class TestModel(BaseModel):
+        """Test model with metadata"""
+
+        name: str
+        age: int
+
+    # Test the simplify_schema function directly
+    original_schema = TestModel.model_json_schema()
+    simplified = simplify_schema(original_schema)
+
+    # Check that metadata is removed
+    assert "title" not in simplified
+    assert "description" not in simplified
+    assert "title" not in simplified["properties"]["name"]
+    assert "title" not in simplified["properties"]["age"]
+
+    # Check that essential fields are preserved
+    assert simplified["type"] == "object"
+    assert "name" in simplified["properties"]
+    assert "age" in simplified["properties"]
+    assert simplified["properties"]["name"]["type"] == "string"
+    assert simplified["properties"]["age"]["type"] == "integer"
+    assert simplified["required"] == ["name", "age"]
+
+    # Test with llm decorator - simplified schema (default)
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, temperature=0, timeout=8)
+    def get_person() -> TestModel:
+        """Create a person named Alice who is 30 years old."""
+
+    result = get_person()
+    assert isinstance(result, TestModel)
+    assert result.name == "Alice"
+    assert result.age == 30
+
+    # Test with llm decorator - full schema
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(model=model, temperature=0, timeout=8, simplify_schema=False)
+    def get_person_full_schema() -> TestModel:
+        """Create a person named Bob who is 25 years old."""
+
+    result = get_person_full_schema()
+    assert isinstance(result, TestModel)
+    assert result.name == "Bob"
+    assert result.age == 25
