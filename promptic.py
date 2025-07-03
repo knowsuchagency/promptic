@@ -17,11 +17,74 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.4.2"
+__version__ = "5.5.0"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
 ImageBytes = bytes
+
+
+def simplify_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove unnecessary metadata from Pydantic schemas for LLM compatibility.
+
+    This function removes fields that can confuse LLMs like titles and descriptions,
+    while preserving the essential structure needed for validation.
+
+    Args:
+        schema: The original JSON schema from Pydantic
+
+    Returns:
+        A simplified schema with metadata removed
+    """
+    # Fields to remove from schemas
+    metadata_fields = {
+        "title",
+        "description",
+        "examples",
+        "example",
+        "deprecated",
+        "additionalProperties",
+        "default",
+    }
+
+    def clean_dict(d: Dict[str, Any]) -> None:
+        """Recursively clean metadata from dictionary"""
+        if not isinstance(d, dict):
+            return
+
+        # Remove metadata fields
+        for field in list(d.keys()):
+            if field in metadata_fields:
+                d.pop(field, None)
+
+        # Handle anyOf patterns for optional fields
+        if "anyOf" in d and isinstance(d["anyOf"], list):
+            # Check if this is a simple optional pattern (type + null)
+            types = []
+            for item in d["anyOf"]:
+                if isinstance(item, dict) and "type" in item:
+                    types.append(item["type"])
+
+            # If we have exactly 2 types and one is null, simplify
+            if len(types) == 2 and "null" in types:
+                non_null_type = next(t for t in types if t != "null")
+                d["type"] = [non_null_type, "null"]
+                d.pop("anyOf")
+
+        # Recursively clean nested structures
+        for key, value in list(d.items()):
+            if isinstance(value, dict):
+                clean_dict(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        clean_dict(item)
+
+    # Create a deep copy to avoid modifying the original
+    simplified = copy.deepcopy(schema)
+    clean_dict(simplified)
+
+    return simplified
 
 
 class State:
@@ -62,6 +125,7 @@ class Promptic:
         state: Optional[State] = None,
         json_schema: Optional[Dict] = None,
         cache: bool = True,
+        simplify_schema: bool = True,
         create_completion_fn=None,
         openai_client=None,
         weave_client=None,
@@ -79,6 +143,7 @@ class Promptic:
             state (State, optional): Custom state instance for memory management. Defaults to None.
             json_schema (Dict, optional): JSON schema for response validation. Defaults to None.
             cache (bool, optional): Enable response caching for Anthropic models. Defaults to True.
+            simplify_schema (bool, optional): Simplify Pydantic schemas by removing metadata. Defaults to True.
             openai_client (OpenAI, optional): The OpenAI client to use for API calls. Defaults to None.
             create_completion_fn (Callable, optional): The function to use for API calls. Defaults to None.
             weave_client (WeaveClient, optional): The Weights & Biases client used to trace calls. Defaults to None.
@@ -133,6 +198,7 @@ class Promptic:
         self.gemini = self.model.startswith(("gemini", "vertex"))
 
         self.cache = cache
+        self.simplify_schema = simplify_schema
         self.anthropic_cached_block_limit = 4
         self.cached_count = 0
 
@@ -290,6 +356,8 @@ class Promptic:
                 param_info["type"] = "boolean"
             elif inspect.isclass(param_type) and issubclass(param_type, BaseModel):
                 param_info = param_type.model_json_schema()
+                if self.simplify_schema:
+                    param_info = simplify_schema(param_info)
 
             parameters["properties"][name] = param_info
 
@@ -520,6 +588,8 @@ class Promptic:
                 and issubclass(return_type, BaseModel)
             ):
                 schema = return_type.model_json_schema()
+                if self.simplify_schema:
+                    schema = simplify_schema(schema)
                 json_schema = json.dumps(schema, indent=2)
                 msg = {
                     "role": "user",

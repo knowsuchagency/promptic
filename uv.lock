@@ -739,7 +739,7 @@ wheels = [
 
 [[package]]
 name = "promptic"
-version = "5.1.1"
+version = "5.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "jsonschema" },
