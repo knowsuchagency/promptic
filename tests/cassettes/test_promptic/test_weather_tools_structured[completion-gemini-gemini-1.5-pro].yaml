@@ -1,0 +1,357 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      New York right now?"}, {"text": "Format your response according to this JSON
+      schema:\n```json\n{\n  \"$defs\": {\n    \"Location\": {\n      \"properties\":
+      {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]}],
+      "tools": [{"function_declarations": [{"name": "get_location", "description":
+      "Get latitude and longitude based on city name", "parameters": {"type": "object",
+      "properties": {"city": {"type": "string"}}, "required": ["city"]}}, {"name":
+      "get_weather", "description": "Get weather based on latitude and longitude",
+      "parameters": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '2070'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_location\",\n
+        \             \"args\": {\n                \"city\": \"New York\"\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_weather\",\n              \"args\": {\n                \"longitude\":
+        -74.006,\n                \"latitude\": 40.7128\n              }\n            }\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.11294678541330191\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 409,\n    \"candidatesTokenCount\": 13,\n    \"totalTokenCount\":
+        422,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 409\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"QAlmaKuEO-26x_AP6tyD6Ag\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:38:26 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2083
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1005'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      New York right now?"}, {"text": "Format your response according to this JSON
+      schema:\n```json\n{\n  \"$defs\": {\n    \"Location\": {\n      \"properties\":
+      {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]},
+      {"role": "model", "parts": [{"function_call": {"name": "get_location", "args":
+      {"city": "New York"}}}, {"function_call": {"name": "get_weather", "args": {"longitude":
+      -74.006, "latitude": 40.7128}}}]}, {"parts": [{"function_response": {"name":
+      "get_location", "response": {"content": "{\"latitude\": 40.7128, \"longitude\":
+      -74.006, \"city\": \"New York\"}"}}}, {"function_response": {"name": "get_weather",
+      "response": {"content": "{\"temperature\": 59.0, \"condition\": \"sunny\", \"humidity\":
+      50.0, \"wind_speed\": 8.0}"}}}]}], "tools": [{"function_declarations": [{"name":
+      "get_location", "description": "Get latitude and longitude based on city name",
+      "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}, {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '2601'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"location\\\":
+        {\\n    \\\"latitude\\\": 40.7128,\\n    \\\"longitude\\\": -74.006,\\n    \\\"city\\\":
+        \\\"New York\\\"\\n  },\\n  \\\"weather\\\": {\\n    \\\"temperature\\\":
+        59.0,\\n    \\\"condition\\\": \\\"sunny\\\",\\n    \\\"humidity\\\": 50.0,\\n
+        \   \\\"wind_speed\\\": 8.0\\n  }\\n}\\n```\"\n          }\n        ],\n        \"role\":
+        \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\":
+        -4.2280247796652387e-06\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\":
+        494,\n    \"candidatesTokenCount\": 103,\n    \"totalTokenCount\": 597,\n
+        \   \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 494\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 103\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"QwlmaJyfFqfQ1PIPp4DX2QQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:38:28 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1567
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '916'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      Miami right now?"}, {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]}],
+      "tools": [{"function_declarations": [{"name": "get_location", "description":
+      "Get latitude and longitude based on city name", "parameters": {"type": "object",
+      "properties": {"city": {"type": "string"}}, "required": ["city"]}}, {"name":
+      "get_weather", "description": "Get weather based on latitude and longitude",
+      "parameters": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '2067'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_location\",\n
+        \             \"args\": {\n                \"city\": \"Miami\"\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_weather\",\n              \"args\": {\n                \"latitude\":
+        25.761681,\n                \"longitude\": -80.191788\n              }\n            }\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.00048371357843279839\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 408,\n    \"candidatesTokenCount\": 12,\n    \"totalTokenCount\":
+        420,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 408\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 12\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"RQlmaPmzCezi1PIPzajVyQc\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:38:30 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1508
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1010'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      Miami right now?"}, {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]},
+      {"role": "model", "parts": [{"function_call": {"name": "get_location", "args":
+      {"city": "Miami"}}}, {"function_call": {"name": "get_weather", "args": {"latitude":
+      25.761681, "longitude": -80.191788}}}]}, {"parts": [{"function_response": {"name":
+      "get_location", "response": {"content": "{\"latitude\": 25.7617, \"longitude\":
+      -80.1918, \"city\": \"Miami\"}"}}}, {"function_response": {"name": "get_weather",
+      "response": {"content": "{\"temperature\": 77.0, \"condition\": \"cloudy\",
+      \"humidity\": 80.0, \"wind_speed\": 6.0}"}}}]}], "tools": [{"function_declarations":
+      [{"name": "get_location", "description": "Get latitude and longitude based on
+      city name", "parameters": {"type": "object", "properties": {"city": {"type":
+      "string"}}, "required": ["city"]}}, {"name": "get_weather", "description": "Get
+      weather based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '2599'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"location\\\":
+        {\\n    \\\"latitude\\\": 25.7617,\\n    \\\"longitude\\\": -80.1918,\\n    \\\"city\\\":
+        \\\"Miami\\\"\\n  },\\n  \\\"weather\\\": {\\n    \\\"temperature\\\": 77.0,\\n
+        \   \\\"condition\\\": \\\"cloudy\\\",\\n    \\\"humidity\\\": 80.0,\\n    \\\"wind_speed\\\":
+        6.0\\n  }\\n}\\n```\"\n          }\n        ],\n        \"role\": \"model\"\n
+        \     },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -1.3724936949975282e-06\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 492,\n    \"candidatesTokenCount\":
+        103,\n    \"totalTokenCount\": 595,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 492\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 103\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n
+        \ \"responseId\": \"RglmaIbuNamDmNAPuPHvKQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:38:32 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1628
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '914'
+    status:
+      code: 200
+      message: OK
+version: 1

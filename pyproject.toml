@@ -5,21 +5,21 @@ requires = ["flit_core >=3.2,<4"]
 [project]
 authors = [{name = "Stephan Fitzpatrick", email = "stephan@knowsuchagency.com"}]
 classifiers = [
-    "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
-description = "90% of what you need for LLM app development. Nothing you don't."
-license = {file = "LICENSE"}
-name = "promptic"
-dynamic = ["version"]
 dependencies = [
   "jsonschema>=4.23.0",
   "litellm~=1.38",
   "pydantic~=2.7",
 ]
+description = "90% of what you need for LLM app development. Nothing you don't."
+dynamic = ["version"]
+license = {file = "LICENSE"}
+name = "promptic"
 readme = "README.md"
 requires-python = ">=3.11"
 
@@ -28,14 +28,21 @@ Home = "https://github.com/knowsuchagency/promptic"
 
 [tool.uv]
 dev-dependencies = [
-    "pytest-cov>=6.0.0",
-    "pytest>=8.3.3",
-    "pytest-xdist>=3.6.1",
-    "tenacity~=9.0.0",
-    "pre-commit>=4.0.1",
-    "openai>=1.58.1",
+  "pytest-cov>=6.0.0",
+  "pytest>=8.3.3",
+  "pytest-xdist>=3.6.1",
+  "tenacity~=9.0.0",
+  "pre-commit>=4.0.1",
+  "openai>=1.58.1",
+  "pytest-recording>=0.13.0",
+  "vcrpy>=6.0.1",
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+markers = [
+  "vcr: mark test to use VCR.py for recording/replaying HTTP interactions",
+  "no_vcr: mark test to skip VCR recording (for tests that shouldn't be recorded)",
+  "examples: mark test that runs example files",
+]
 python_files = ["test_*.py"]
+testpaths = ["tests"]

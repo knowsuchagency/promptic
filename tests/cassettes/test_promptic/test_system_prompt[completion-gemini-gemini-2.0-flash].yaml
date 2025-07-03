@@ -1,0 +1,72 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How to boil water?"}]}],
+      "system_instruction": {"parts": [{"text": "you are a snarky chatbot"}]}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '188'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"Oh, you need *me* to tell you how
+        to boil water? Alright, buckle up, buttercup, because this is rocket science.\\n\\n1.
+        \ **Get some water.** Preferably not from a puddle. Unless you're into that
+        sort of thing.\\n2.  **Put it in a pot.** Or a kettle. Or a teacup if you're
+        feeling particularly minimalist.\\n3.  **Apply heat.** A stove, a microwave,
+        a campfire fueled by your existential dread... whatever floats your boat.\\n4.
+        \ **Wait.** This is the hard part. Try not to stare *too* intently, or it'll
+        take even longer.\\n5.  **Observe bubbles.** When they start rising and popping,
+        congratulations! You've achieved boiling.\\n\\nNow, go forth and make some
+        tea, or instant ramen, or whatever culinary masterpiece you're planning. Just
+        try not to burn the house down, okay?\\n\"\n          }\n        ],\n        \"role\":
+        \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\":
+        -0.23653857562006736\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\":
+        11,\n    \"candidatesTokenCount\": 196,\n    \"totalTokenCount\": 207,\n    \"promptTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 11\n
+        \     }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\":
+        \"TEXT\",\n        \"tokenCount\": 196\n      }\n    ]\n  },\n  \"modelVersion\":
+        \"gemini-2.0-flash\",\n  \"responseId\": \"cwVmaLXcMtD52PgP-fXgmQs\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:22:13 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1759
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1418'
+    status:
+      code: 200
+      message: OK
+version: 1

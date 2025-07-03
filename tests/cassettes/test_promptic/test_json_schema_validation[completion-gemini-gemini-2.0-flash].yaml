@@ -1,0 +1,137 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Get information about
+      Alice"}, {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"type\":
+      \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\",\n      \"pattern\":
+      \"^[A-Z][a-z]+$\",\n      \"minLength\": 2,\n      \"maxLength\": 20\n    },\n    \"age\":
+      {\n      \"type\": \"integer\",\n      \"minimum\": 0,\n      \"maximum\": 120\n    },\n    \"email\":
+      {\n      \"type\": \"string\",\n      \"format\": \"email\"\n    }\n  },\n  \"required\":
+      [\n    \"name\",\n    \"age\"\n  ],\n  \"additionalProperties\": false\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]}],
+      "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '835'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"name\\\": \\\"Alice\\\",\\n
+        \ \\\"age\\\": 30,\\n  \\\"email\\\": \\\"alice@example.com\\\"\\n}\\n```\"\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.019756441180770461\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 208,\n    \"candidatesTokenCount\": 37,\n    \"totalTokenCount\":
+        245,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 208\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 37\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n  \"responseId\":
+        \"kwVmaLqUFeWanvgPv_SSwQo\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:22:43 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=552
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '744'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Get score for Alice"},
+      {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"type\":
+      \"object\",\n  \"properties\": {\n    \"score\": {\n      \"type\": \"number\",\n      \"minimum\":
+      1000,\n      \"maximum\": 1,\n      \"multipleOf\": 0.5\n    }\n  },\n  \"required\":
+      [\n    \"score\"\n  ],\n  \"additionalProperties\": false\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}]}],
+      "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '617'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"score\\\": 1.0\\n}\\n```\"\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.040265076300677133\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 141,\n    \"candidatesTokenCount\": 17,\n    \"totalTokenCount\":
+        158,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 141\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 17\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n  \"responseId\":
+        \"lAVmaPvjCc6BnvgPyLjriQ0\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:22:44 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=416
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '686'
+    status:
+      code: 200
+      message: OK
+version: 1

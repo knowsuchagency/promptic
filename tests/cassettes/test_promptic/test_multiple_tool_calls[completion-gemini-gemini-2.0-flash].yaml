@@ -1,0 +1,141 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Please check the status
+      twice to be sure"}]}], "system_instruction": {"parts": [{"text": "You are a
+      helpful assistant that likes to double-check things"}]}, "tools": [{"function_declarations":
+      [{"name": "check_status", "description": "Check the current status", "parameters":
+      {"type": "object", "properties": {"llm_invocation": {"type": "boolean", "description":
+      "True if the function was invoked by an LLM"}}, "required": ["llm_invocation"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '597'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"check_status\",\n
+        \             \"args\": {\n                \"llm_invocation\": true\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"check_status\",\n              \"args\": {\n                \"llm_invocation\":
+        true\n              }\n            }\n          }\n        ],\n        \"role\":
+        \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\":
+        -4.6795539674349129e-06\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\":
+        47,\n    \"candidatesTokenCount\": 16,\n    \"totalTokenCount\": 63,\n    \"promptTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 47\n
+        \     }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\":
+        \"TEXT\",\n        \"tokenCount\": 16\n      }\n    ]\n  },\n  \"modelVersion\":
+        \"gemini-2.0-flash\",\n  \"responseId\": \"qgVmaNeZIu26x_AP6tyD6Ag\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:06 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=613
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '973'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Please check the status
+      twice to be sure"}]}, {"role": "model", "parts": [{"function_call": {"name":
+      "check_status", "args": {"llm_invocation": true}}}, {"function_call": {"name":
+      "check_status", "args": {"llm_invocation": true}}}]}, {"parts": [{"function_response":
+      {"name": "check_status", "response": {"content": "\"Status OK\""}}}, {"function_response":
+      {"name": "check_status", "response": {"content": "\"Status OK\""}}}]}], "system_instruction":
+      {"parts": [{"text": "You are a helpful assistant that likes to double-check
+      things"}]}, "tools": [{"function_declarations": [{"name": "check_status", "description":
+      "Check the current status", "parameters": {"type": "object", "properties": {"llm_invocation":
+      {"type": "boolean", "description": "True if the function was invoked by an LLM"}},
+      "required": ["llm_invocation"]}}]}], "toolConfig": {"functionCallingConfig":
+      {"mode": "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '980'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"OK. The status is OK. I have checked
+        it twice.\\n\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n
+        \     \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -0.08492434024810791\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 79,\n    \"candidatesTokenCount\":
+        14,\n    \"totalTokenCount\": 93,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 79\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 14\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n
+        \ \"responseId\": \"qwVmaP_1FKmDmNAPuPHvKQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:07 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=461
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '693'
+    status:
+      code: 200
+      message: OK
+version: 1

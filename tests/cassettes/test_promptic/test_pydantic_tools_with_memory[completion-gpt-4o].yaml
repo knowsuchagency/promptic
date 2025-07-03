@@ -1,0 +1,409 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Process the following
+      task command: Check status of task 123"}], "role": "user"}, {"role": "user",
+      "content": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}], "model": "gpt-4o", "temperature": 0, "tool_choice": "auto",
+      "tools": [{"type": "function", "function": {"name": "get_task_status", "description":
+      "Get the current status of a task", "parameters": {"type": "object", "properties":
+      {"task_id": {"type": "integer"}}, "required": ["task_id"]}}}, {"type": "function",
+      "function": {"name": "get_last_update", "description": "Get the last update
+      timestamp for a task", "parameters": {"type": "object", "properties": {"task_id":
+      {"type": "integer"}}, "required": ["task_id"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1222'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=KQNMiKLJO6j3NoE2nO1PtxSPCb2V02Hfzc2omWLIQwg-1751516317-1.0.1.1-e0bwqNvMVlZPPWI81TzG8KWUs9WTu5wOZ46TlnO1slRlwsa72gjBm9TO9td8jXfzikNoD0aS6yEgOT3GaCnGxCyCaXN_MsM7liPQioD_r1M;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5ly1YRp9plC7Y2nK9HWHNDxyKmw\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516618,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_kDF3aUsm607Kmg4scPvGhUTA\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_task_status\",\n
+        \             \"arguments\": \"{\\\"task_id\\\": 123}\"\n            }\n          },\n
+        \         {\n            \"id\": \"call_6sAWl3z5oNgabyBOdYX2TDoL\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_last_update\",\n
+        \             \"arguments\": \"{\\\"task_id\\\": 123}\"\n            }\n          }\n
+        \       ],\n        \"refusal\": null,\n        \"annotations\": []\n      },\n
+        \     \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n    }\n
+        \ ],\n  \"usage\": {\n    \"prompt_tokens\": 215,\n    \"completion_tokens\":
+        48,\n    \"total_tokens\": 263,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 95939bd42db3c69d-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:39 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1320'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '854'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '857'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29308'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.382s
+      x-request-id:
+      - req_b29cb924ff0aacc43e58b6fe81cb9a61
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Process the following
+      task command: Check status of task 123"}], "role": "user"}, {"role": "user",
+      "content": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"content": [{"type": "text", "text": "Process the following
+      task command: Check status of task 123"}], "role": "user"}, {"role": "user",
+      "content": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"role": "assistant", "tool_calls": [{"function": {"arguments":
+      "{\"task_id\": 123}", "name": "get_task_status"}, "id": "call_kDF3aUsm607Kmg4scPvGhUTA",
+      "type": "function"}, {"function": {"arguments": "{\"task_id\": 123}", "name":
+      "get_last_update"}, "id": "call_6sAWl3z5oNgabyBOdYX2TDoL", "type": "function"}]},
+      {"tool_call_id": "call_kDF3aUsm607Kmg4scPvGhUTA", "role": "tool", "name": "get_task_status",
+      "content": "\"in_progress\""}, {"tool_call_id": "call_6sAWl3z5oNgabyBOdYX2TDoL",
+      "role": "tool", "name": "get_last_update", "content": "\"2024-03-15 10:00 AM\""}],
+      "model": "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools": [{"type":
+      "function", "function": {"name": "get_task_status", "description": "Get the
+      current status of a task", "parameters": {"type": "object", "properties": {"task_id":
+      {"type": "integer"}}, "required": ["task_id"]}}}, {"type": "function", "function":
+      {"name": "get_last_update", "description": "Get the last update timestamp for
+      a task", "parameters": {"type": "object", "properties": {"task_id": {"type":
+      "integer"}}, "required": ["task_id"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2478'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=KQNMiKLJO6j3NoE2nO1PtxSPCb2V02Hfzc2omWLIQwg-1751516317-1.0.1.1-e0bwqNvMVlZPPWI81TzG8KWUs9WTu5wOZ46TlnO1slRlwsa72gjBm9TO9td8jXfzikNoD0aS6yEgOT3GaCnGxCyCaXN_MsM7liPQioD_r1M;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5lzz0tsQLtXFwxJCdURF0gXW6Xo\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516619,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"task_id\\\": 123,\\n
+        \ \\\"status\\\": \\\"in_progress\\\",\\n  \\\"last_update\\\": \\\"2024-03-15
+        10:00 AM\\\"\\n}\\n```\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 437,\n    \"completion_tokens\":
+        41,\n    \"total_tokens\": 478,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 95939bda391dc69d-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:40 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '919'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '514'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '517'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29501'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 996ms
+      x-request-id:
+      - req_403450a5f7f2867981bb43b69c802e99
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Process the following
+      task command: Check status of task 123"}], "role": "user"}, {"role": "user",
+      "content": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"content": [{"type": "text", "text": "Process the following
+      task command: Check status of task 123"}], "role": "user"}, {"role": "user",
+      "content": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"role": "assistant", "tool_calls": [{"function": {"arguments":
+      "{\"task_id\": 123}", "name": "get_task_status"}, "id": "call_kDF3aUsm607Kmg4scPvGhUTA",
+      "type": "function"}, {"function": {"arguments": "{\"task_id\": 123}", "name":
+      "get_last_update"}, "id": "call_6sAWl3z5oNgabyBOdYX2TDoL", "type": "function"}]},
+      {"tool_call_id": "call_kDF3aUsm607Kmg4scPvGhUTA", "role": "tool", "name": "get_task_status",
+      "content": "\"in_progress\""}, {"tool_call_id": "call_6sAWl3z5oNgabyBOdYX2TDoL",
+      "role": "tool", "name": "get_last_update", "content": "\"2024-03-15 10:00 AM\""},
+      {"content": "\n{\n  \"task_id\": 123,\n  \"status\": \"in_progress\",\n  \"last_update\":
+      \"2024-03-15 10:00 AM\"\n}\n", "role": "assistant"}, {"content": [{"type": "text",
+      "text": "Process the following task command: What was the last task we checked?"}],
+      "role": "user"}, {"role": "user", "content": "Format your response according
+      to this JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}], "model": "gpt-4o", "temperature": 0, "tool_choice": "auto",
+      "tools": [{"type": "function", "function": {"name": "get_task_status", "description":
+      "Get the current status of a task", "parameters": {"type": "object", "properties":
+      {"task_id": {"type": "integer"}}, "required": ["task_id"]}}}, {"type": "function",
+      "function": {"name": "get_last_update", "description": "Get the last update
+      timestamp for a task", "parameters": {"type": "object", "properties": {"task_id":
+      {"type": "integer"}}, "required": ["task_id"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '3318'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=KQNMiKLJO6j3NoE2nO1PtxSPCb2V02Hfzc2omWLIQwg-1751516317-1.0.1.1-e0bwqNvMVlZPPWI81TzG8KWUs9WTu5wOZ46TlnO1slRlwsa72gjBm9TO9td8jXfzikNoD0aS6yEgOT3GaCnGxCyCaXN_MsM7liPQioD_r1M;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5m0B9Ipnf0qLxbaXZOB7LhKIwGd\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516620,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"task_id\\\": 123,\\n
+        \ \\\"status\\\": \\\"in_progress\\\",\\n  \\\"last_update\\\": \\\"2024-03-15
+        10:00 AM\\\"\\n}\\n```\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 627,\n    \"completion_tokens\":
+        41,\n    \"total_tokens\": 668,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 95939bde1c9ac69d-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:41 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '919'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '479'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '483'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29239'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.52s
+      x-request-id:
+      - req_c3f6a54315ff8c4971520fcc97f2a2c2
+    status:
+      code: 200
+      message: OK
+version: 1

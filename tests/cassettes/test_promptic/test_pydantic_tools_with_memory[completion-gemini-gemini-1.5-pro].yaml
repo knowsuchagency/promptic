@@ -1,0 +1,257 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Process the following
+      task command: Check status of task 123"}, {"text": "Format your response according
+      to this JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}]}], "tools": [{"function_declarations": [{"name": "get_task_status",
+      "description": "Get the current status of a task", "parameters": {"type": "object",
+      "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}}, {"name":
+      "get_last_update", "description": "Get the last update timestamp for a task",
+      "parameters": {"type": "object", "properties": {"task_id": {"type": "integer"}},
+      "required": ["task_id"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '1185'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_task_status\",\n
+        \             \"args\": {\n                \"task_id\": 123\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_last_update\",\n              \"args\": {\n
+        \               \"task_id\": 123\n              }\n            }\n          }\n
+        \       ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -2.4506466110728474e-07\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 208,\n    \"candidatesTokenCount\": 18,\n    \"totalTokenCount\":
+        226,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 208\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 18\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"2AVmaLb0AqfQ1PIPp4DX2QQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:52 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1092
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '968'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Process the following
+      task command: Check status of task 123"}, {"text": "Format your response according
+      to this JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"text": "Process the following task command: Check status
+      of task 123"}, {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}]}, {"role": "model", "parts": [{"function_call": {"name":
+      "get_task_status", "args": {"task_id": 123}}}, {"function_call": {"name": "get_last_update",
+      "args": {"task_id": 123}}}]}, {"parts": [{"function_response": {"name": "get_task_status",
+      "response": {"content": "\"in_progress\""}}}, {"function_response": {"name":
+      "get_last_update", "response": {"content": "\"2024-03-15 10:00 AM\""}}}]}],
+      "tools": [{"function_declarations": [{"name": "get_task_status", "description":
+      "Get the current status of a task", "parameters": {"type": "object", "properties":
+      {"task_id": {"type": "integer"}}, "required": ["task_id"]}}, {"name": "get_last_update",
+      "description": "Get the last update timestamp for a task", "parameters": {"type":
+      "object", "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '2197'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"task_id\\\": 123,\\n
+        \ \\\"status\\\": \\\"in_progress\\\",\\n  \\\"last_update\\\": \\\"2024-03-15
+        10:00 AM\\\"\\n}\\n```\"\n          }\n        ],\n        \"role\": \"model\"\n
+        \     },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -2.7675048792324171e-08\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 429,\n    \"candidatesTokenCount\":
+        56,\n    \"totalTokenCount\": 485,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 429\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 56\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n
+        \ \"responseId\": \"2QVmaOyNF-26x_AP6tyD6Ag\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:54 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1164
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '769'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Process the following
+      task command: Check status of task 123"}, {"text": "Format your response according
+      to this JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"text": "Process the following task command: Check status
+      of task 123"}, {"text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}]}, {"role": "model", "parts": [{"function_call": {"name":
+      "get_task_status", "args": {"task_id": 123}}}, {"function_call": {"name": "get_last_update",
+      "args": {"task_id": 123}}}]}, {"parts": [{"function_response": {"name": "get_task_status",
+      "response": {"content": "\"in_progress\""}}}, {"function_response": {"name":
+      "get_last_update", "response": {"content": "\"2024-03-15 10:00 AM\""}}}]}, {"role":
+      "model", "parts": [{"text": "\n{\n  \"task_id\": 123,\n  \"status\": \"in_progress\",\n  \"last_update\":
+      \"2024-03-15 10:00 AM\"\n}\n"}]}, {"role": "user", "parts": [{"text": "Process
+      the following task command: What was the last task we checked?"}, {"text": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}]}], "tools": [{"function_declarations": [{"name": "get_task_status",
+      "description": "Get the current status of a task", "parameters": {"type": "object",
+      "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}}, {"name":
+      "get_last_update", "description": "Get the last update timestamp for a task",
+      "parameters": {"type": "object", "properties": {"task_id": {"type": "integer"}},
+      "required": ["task_id"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '3006'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"task_id\\\": 123,\\n
+        \ \\\"status\\\": \\\"in_progress\\\",\\n  \\\"last_update\\\": \\\"2024-03-15
+        10:00 AM\\\"\\n}\\n```\"\n          }\n        ],\n        \"role\": \"model\"\n
+        \     },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -0.011470111353056771\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 649,\n    \"candidatesTokenCount\":
+        56,\n    \"totalTokenCount\": 705,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 649\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 56\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n
+        \ \"responseId\": \"2gVmaMeVKuzi1PIPzajVyQc\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:55 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1053
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '767'
+    status:
+      code: 200
+      message: OK
+version: 1

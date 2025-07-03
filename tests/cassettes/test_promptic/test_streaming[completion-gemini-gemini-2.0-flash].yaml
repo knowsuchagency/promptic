@@ -1,0 +1,71 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Write a haiku about
+      programming that is witty and delights."}]}], "generationConfig": {"temperature":
+      0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '156'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=REDACTED
+  response:
+    body:
+      string: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Code\"}],\"role\":
+        \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\":
+        13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\":
+        \"gemini-2.0-flash\",\"responseId\": \"WgVmaI-4F9iI3NoPtqis6Qo\"}\r\n\r\ndata:
+        {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" compiles, it\"}],\"role\":
+        \"model\"}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\":
+        13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\":
+        \"gemini-2.0-flash\",\"responseId\": \"WgVmaI-4F9iI3NoPtqis6Qo\"}\r\n\r\ndata:
+        {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" runs!\\nBut wait,
+        what's this error now?\\nDebugging begins\"}],\"role\": \"model\"}}],\"usageMetadata\":
+        {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\":
+        [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.0-flash\",\"responseId\":
+        \"WgVmaI-4F9iI3NoPtqis6Qo\"}\r\n\r\ndata: {\"candidates\": [{\"content\":
+        {\"parts\": [{\"text\": \".\\n\"}],\"role\": \"model\"},\"finishReason\":
+        \"STOP\"}],\"usageMetadata\": {\"promptTokenCount\": 11,\"candidatesTokenCount\":
+        22,\"totalTokenCount\": 33,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\":
+        11}],\"candidatesTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\":
+        22}]},\"modelVersion\": \"gemini-2.0-flash\",\"responseId\": \"WgVmaI-4F9iI3NoPtqis6Qo\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Date:
+      - Thu, 03 Jul 2025 04:21:46 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=350
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

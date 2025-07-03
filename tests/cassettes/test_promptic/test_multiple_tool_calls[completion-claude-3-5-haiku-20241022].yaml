@@ -1,0 +1,278 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Please check the status twice to be sure"}]}], "temperature":
+      0, "tools": [{"name": "check_status", "input_schema": {"type": "object", "properties":
+      {}, "required": []}, "description": "Check the current status"}], "tool_choice":
+      {"type": "auto"}, "system": [{"type": "text", "text": "You are a helpful assistant
+      that likes to double-check things"}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '477'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01TMxctDQnfwRJaCKNnZekHW","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"I''ll
+        help you check the status twice to ensure everything is in order. I''ll use
+        the `check_status` function two times.\n\nFirst check:"},{"type":"tool_use","id":"toolu_01XqVvHWEpxFGHvGkoPF4zVv","name":"check_status","input":{}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":334,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":69,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939ae51e7c8404-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:02 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:01Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:02Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:00Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:01Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '552'
+      request-id:
+      - req_011CQjStkuGSSQTYGzNZrBZB
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Please check the status twice to be sure"}]}, {"role":
+      "assistant", "content": [{"type": "text", "text": "I''ll help you check the
+      status twice to ensure everything is in order. I''ll use the `check_status`
+      function two times.\n\nFirst check:"}, {"type": "tool_use", "id": "toolu_01XqVvHWEpxFGHvGkoPF4zVv",
+      "name": "check_status", "input": {}}]}, {"role": "user", "content": [{"type":
+      "tool_result", "tool_use_id": "toolu_01XqVvHWEpxFGHvGkoPF4zVv", "content": "\"Status
+      OK\""}]}], "temperature": 0, "tools": [{"name": "check_status", "input_schema":
+      {"type": "object", "properties": {}, "required": []}, "description": "Check
+      the current status"}], "tool_choice": {"type": "auto"}, "system": [{"type":
+      "text", "text": "You are a helpful assistant that likes to double-check things"}],
+      "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '909'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01BbzVSRZm1xHGdgstqZ8Qic","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"Second
+        check:"},{"type":"tool_use","id":"toolu_01QYr1vDQynrdT4G4cUwyra7","name":"check_status","input":{}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":417,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":41,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939af08ea1490e-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:04 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:04Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:04Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:02Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:04Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '431'
+      request-id:
+      - req_011CQjSttoXax5FsJMf9nR1h
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Please check the status twice to be sure"}]}, {"role":
+      "assistant", "content": [{"type": "text", "text": "I''ll help you check the
+      status twice to ensure everything is in order. I''ll use the `check_status`
+      function two times.\n\nFirst check:"}, {"type": "tool_use", "id": "toolu_01XqVvHWEpxFGHvGkoPF4zVv",
+      "name": "check_status", "input": {}}]}, {"role": "user", "content": [{"type":
+      "tool_result", "tool_use_id": "toolu_01XqVvHWEpxFGHvGkoPF4zVv", "content": "\"Status
+      OK\""}]}, {"role": "assistant", "content": [{"type": "text", "text": "Second
+      check:"}, {"type": "tool_use", "id": "toolu_01QYr1vDQynrdT4G4cUwyra7", "name":
+      "check_status", "input": {}}]}, {"role": "user", "content": [{"type": "tool_result",
+      "tool_use_id": "toolu_01QYr1vDQynrdT4G4cUwyra7", "content": "\"Status OK\""}]}],
+      "temperature": 0, "tools": [{"name": "check_status", "input_schema": {"type":
+      "object", "properties": {}, "required": []}, "description": "Check the current
+      status"}], "tool_choice": {"type": "auto"}, "system": [{"type": "text", "text":
+      "You are a helpful assistant that likes to double-check things"}], "max_tokens":
+      4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1220'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_0169FijsiqAVxo9qafY26Jgm","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"Both
+        status checks have returned \"Status OK\", so everything appears to be functioning
+        normally. Is there anything specific you''d like me to help you with?"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":472,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":34,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939afea87ef640-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:06 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:05Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:06Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:04Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:05Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '483'
+      request-id:
+      - req_011CQjSu4Pydke5H7QQGQvHH
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,253 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Create a detailed
+      weather report for San Francisco"}], "role": "user"}, {"role": "user", "content":
+      "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"location\": {\n      \"type\": \"string\"\n    },\n    \"temperature\":
+      {\n      \"type\": \"number\"\n    },\n    \"conditions\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"location\",\n    \"temperature\",\n    \"conditions\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}], "model": "gpt-4o-mini", "temperature": 0, "tool_choice":
+      "auto", "tools": [{"type": "function", "function": {"name": "get_temperature",
+      "description": "Get the temperature for a city", "parameters": {"type": "object",
+      "properties": {"city": {"type": "string"}}, "required": ["city"]}}}, {"type":
+      "function", "function": {"name": "get_conditions", "description": "Get the weather
+      conditions for a city", "parameters": {"type": "object", "properties": {"city":
+      {"type": "string"}}, "required": ["city"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1206'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5losfSrBhBqFj6PThBV1JOamM1g\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516608,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_mNIENPvvGGnatR3Gw25lHfHb\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_temperature\",\n
+        \             \"arguments\": \"{\\\"city\\\": \\\"San Francisco\\\"}\"\n            }\n
+        \         },\n          {\n            \"id\": \"call_vn2m13VsxiB50bj3JIT5vxyC\",\n
+        \           \"type\": \"function\",\n            \"function\": {\n              \"name\":
+        \"get_conditions\",\n              \"arguments\": \"{\\\"city\\\": \\\"San
+        Francisco\\\"}\"\n            }\n          }\n        ],\n        \"refusal\":
+        null,\n        \"annotations\": []\n      },\n      \"logprobs\": null,\n
+        \     \"finish_reason\": \"tool_calls\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        201,\n    \"completion_tokens\": 46,\n    \"total_tokens\": 247,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 95939b919f5a08dc-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:29 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1346'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1076'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1080'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9968'
+      x-ratelimit-remaining-tokens:
+      - '199862'
+      x-ratelimit-reset-requests:
+      - 4m34.867s
+      x-ratelimit-reset-tokens:
+      - 41ms
+      x-request-id:
+      - req_67ecab266080e0ac010e84e339475c2e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Create a detailed
+      weather report for San Francisco"}], "role": "user"}, {"role": "user", "content":
+      "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"location\": {\n      \"type\": \"string\"\n    },\n    \"temperature\":
+      {\n      \"type\": \"number\"\n    },\n    \"conditions\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"location\",\n    \"temperature\",\n    \"conditions\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}, {"content": null, "refusal": null, "role": "assistant",
+      "tool_calls": [{"id": "call_mNIENPvvGGnatR3Gw25lHfHb", "function": {"arguments":
+      "{\"city\": \"San Francisco\"}", "name": "get_temperature"}, "type": "function"},
+      {"id": "call_vn2m13VsxiB50bj3JIT5vxyC", "function": {"arguments": "{\"city\":
+      \"San Francisco\"}", "name": "get_conditions"}, "type": "function"}], "annotations":
+      []}, {"tool_call_id": "call_mNIENPvvGGnatR3Gw25lHfHb", "role": "tool", "name":
+      "get_temperature", "content": "72.5"}, {"tool_call_id": "call_vn2m13VsxiB50bj3JIT5vxyC",
+      "role": "tool", "name": "get_conditions", "content": "\"Sunny with light clouds\""}],
+      "model": "gpt-4o-mini", "temperature": 0, "tool_choice": "auto", "tools": [{"type":
+      "function", "function": {"name": "get_temperature", "description": "Get the
+      temperature for a city", "parameters": {"type": "object", "properties": {"city":
+      {"type": "string"}}, "required": ["city"]}}}, {"type": "function", "function":
+      {"name": "get_conditions", "description": "Get the weather conditions for a
+      city", "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1841'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5lpgisu3OIpkyfF955jMANuTe7x\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516609,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"location\\\": \\\"San
+        Francisco\\\",\\n  \\\"temperature\\\": 72.5,\\n  \\\"conditions\\\": \\\"Sunny
+        with light clouds\\\"\\n}\\n```\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 268,\n    \"completion_tokens\":
+        34,\n    \"total_tokens\": 302,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 95939b99398508dc-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:30 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '936'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '995'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1000'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9967'
+      x-ratelimit-remaining-tokens:
+      - '199852'
+      x-ratelimit-reset-requests:
+      - 4m42.292s
+      x-ratelimit-reset-tokens:
+      - 44ms
+      x-request-id:
+      - req_9ae7d774be8c4a9b068db6945dea64fe
+    status:
+      code: 200
+      message: OK
+version: 1

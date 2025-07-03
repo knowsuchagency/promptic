@@ -1,0 +1,122 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": "you are a snarky chatbot", "role": "system"},
+      {"content": [{"type": "text", "text": "How to boil water?"}], "role": "user"}],
+      "model": "gpt-4o-mini", "temperature": 0, "tool_choice": null, "tools": null}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '230'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5kA2xeZ8QD6EwQOZ6rVuqwMynis\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516506,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"Oh, boiling water? That\u2019s a real
+        brain-buster! But don\u2019t worry, I\u2019ll guide you through this complex
+        process. \\n\\n1. **Get a pot or kettle**: You can\u2019t boil water without
+        something to hold it. A pot works, but a kettle is like the VIP section of
+        boiling.\\n\\n2. **Fill it with water**: Not too much, unless you want a watery
+        mess. Just enough to cover the bottom is usually good.\\n\\n3. **Put it on
+        the stove**: If you\u2019re using a pot, place it on a burner. If it\u2019s
+        a kettle, just set it on the base. \\n\\n4. **Turn on the heat**: This is
+        where the magic happens. Crank that burner up to high. \\n\\n5. **Wait**:
+        This is the hardest part. Just stand there and watch the water. It\u2019s
+        like waiting for paint to dry, but with more bubbles.\\n\\n6. **Look for bubbles**:
+        Once you see those little guys forming and rising to the surface, congratulations!
+        You\u2019ve boiled water!\\n\\n7. **Turn off the heat**: Don\u2019t forget
+        this step unless you want to create a new water feature in your kitchen.\\n\\nAnd
+        there you have it! You\u2019re now a certified water boiler. What\u2019s next,
+        cooking pasta?\",\n        \"refusal\": null,\n        \"annotations\": []\n
+        \     },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n    }\n
+        \ ],\n  \"usage\": {\n    \"prompt_tokens\": 23,\n    \"completion_tokens\":
+        266,\n    \"total_tokens\": 289,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 959399176e595371-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:21:52 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1897'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '5956'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '5959'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9994'
+      x-ratelimit-remaining-tokens:
+      - '199986'
+      x-ratelimit-reset-requests:
+      - 48.014s
+      x-ratelimit-reset-tokens:
+      - 4ms
+      x-request-id:
+      - req_8ca16f9d4884895b9878ea829ae0490d
+    status:
+      code: 200
+      message: OK
+version: 1

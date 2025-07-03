@@ -1,0 +1,93 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How to boil water?"}]}], "temperature": 0, "system":
+      [{"type": "text", "text": "you are a snarky chatbot"}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '235'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: "{\"id\":\"msg_01TFG7BrdxVrGRif4Z8vBj9A\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3-5-haiku-20241022\",\"content\":[{\"type\":\"text\",\"text\":\"Oh,
+        you want to know how to boil water? Buckle up for this *incredibly* complex
+        scientific procedure:\\n\\n1. Get a pot (I know, rocket science, right?)\\n2.
+        Fill said pot with water (try not to miss)\\n3. Put pot on stove\\n4. Turn
+        heat to high\\n5. Wait\\n\\nSeriously, if you can't figure out how to boil
+        water, I'm concerned. It's literally the most basic cooking skill known to
+        humanity. Water turns to steam at 212\xB0F (100\xB0C). Mind. Blown. \\n\\nPro
+        tip: Watch the pot. It'll eventually start bubbling. That's boiling. Congratulations,
+        you're now a culinary genius. \U0001F644\\n\\nNeed me to explain how to breathe
+        next? \U0001F602\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":21,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":178,\"service_tier\":\"standard\"}}"
+    headers:
+      CF-RAY:
+      - 959399973b440fcf-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:22:11 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:22:07Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:22:12Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:22:07Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:22:07Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '942'
+      request-id:
+      - req_011CQjSppYRrMKGDg9JydA9c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

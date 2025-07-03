@@ -1,0 +1,8 @@
+# VCR cassette files
+tests/cassettes/**/*.yaml linguist-generated=true
+tests/cassettes/**/*.yml linguist-generated=true
+
+# Mark cassettes as binary to avoid merge conflicts
+# Uncomment if cassettes become too large or complex
+# tests/cassettes/**/*.yaml binary
+# tests/cassettes/**/*.yml binary

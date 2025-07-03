@@ -15,6 +15,21 @@ Promptic is a Python library for building LLM applications. It provides a lightw
 - **Run tests with coverage**: `just test-cov`
 - **Run a single test**: `uv run pytest tests/test_promptic.py::TestClass::test_name -xvs`
 
+#### VCR.py Integration
+Tests use VCR.py (via pytest-recording) to record and replay HTTP responses, avoiding repeated API calls:
+
+- **Recording modes**:
+  - `just test`: Run tests normally (uses existing cassettes, records new ones)
+  - `just test-record`: Re-record all cassettes (uses `--record-mode=rewrite`)
+  - `just test-ci`: Replay-only mode for CI (uses `--record-mode=none`)
+  - `just update-cassette <pattern>`: Update specific cassettes matching pattern
+
+- **Cassette management**:
+  - Cassettes are stored in `tests/cassettes/<test_module>/<test_name>.yaml`
+  - API keys are automatically filtered from recordings
+  - Commit cassettes to version control for deterministic CI builds
+  - Fake API keys are injected when real ones are missing (for replay mode)
+
 ### Code Quality
 - **Format code**: `just format` (uses ruff)
 - **Run pre-commit hooks**: `just pre-commit`

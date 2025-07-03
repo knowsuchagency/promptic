@@ -1,0 +1,816 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in New York right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}], "model":
+      "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools": [{"type": "function",
+      "function": {"name": "get_location", "description": "Get latitude and longitude
+      based on city name", "parameters": {"type": "object", "properties": {"city":
+      {"type": "string"}}, "required": ["city"]}}}, {"type": "function", "function":
+      {"name": "get_weather", "description": "Get weather based on latitude and longitude",
+      "parameters": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2107'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5zyAcwzzhZFQWWT0Rb2mRXkbfzf\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517486,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_M02g8FFPdQg5iKNHcAZNMufl\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_location\",\n
+        \             \"arguments\": \"{\\\"city\\\":\\\"New York\\\"}\"\n            }\n
+        \         }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 388,\n    \"completion_tokens\":
+        15,\n    \"total_tokens\": 403,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b1023ed4cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:07 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1085'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '575'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '580'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29681'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 638ms
+      x-request-id:
+      - req_c9091affb831e02fd89eb3705fa9e3d6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in New York right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}, {"role":
+      "assistant", "tool_calls": [{"function": {"arguments": "{\"city\":\"New York\"}",
+      "name": "get_location"}, "id": "call_M02g8FFPdQg5iKNHcAZNMufl", "type": "function"}]},
+      {"tool_call_id": "call_M02g8FFPdQg5iKNHcAZNMufl", "role": "tool", "name": "get_location",
+      "content": "{\"latitude\": 40.7128, \"longitude\": -74.006, \"city\": \"New
+      York\"}"}], "model": "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools":
+      [{"type": "function", "function": {"name": "get_location", "description": "Get
+      latitude and longitude based on city name", "parameters": {"type": "object",
+      "properties": {"city": {"type": "string"}}, "required": ["city"]}}}, {"type":
+      "function", "function": {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2462'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5zzkbwZFWU7ZbiHqgQCLiZmpeZX\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517487,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_s2cFyVeq2s7p82FWmaRHM4OX\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_weather\",\n
+        \             \"arguments\": \"{\\\"latitude\\\":40.7128,\\\"longitude\\\":-74.006}\"\n
+        \           }\n          }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 435,\n    \"completion_tokens\":
+        24,\n    \"total_tokens\": 459,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b1069e83cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:07 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1105'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '660'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '663'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29489'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.021s
+      x-request-id:
+      - req_ea1a2c9ab28c340945efe73c28c21991
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in New York right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}, {"role":
+      "assistant", "tool_calls": [{"function": {"arguments": "{\"city\":\"New York\"}",
+      "name": "get_location"}, "id": "call_M02g8FFPdQg5iKNHcAZNMufl", "type": "function"}]},
+      {"tool_call_id": "call_M02g8FFPdQg5iKNHcAZNMufl", "role": "tool", "name": "get_location",
+      "content": "{\"latitude\": 40.7128, \"longitude\": -74.006, \"city\": \"New
+      York\"}"}, {"role": "assistant", "tool_calls": [{"function": {"arguments": "{\"latitude\":40.7128,\"longitude\":-74.006}",
+      "name": "get_weather"}, "id": "call_s2cFyVeq2s7p82FWmaRHM4OX", "type": "function"}]},
+      {"tool_call_id": "call_s2cFyVeq2s7p82FWmaRHM4OX", "role": "tool", "name": "get_weather",
+      "content": "{\"temperature\": 59.0, \"condition\": \"sunny\", \"humidity\":
+      50.0, \"wind_speed\": 8.0}"}], "model": "gpt-4o", "temperature": 0, "tool_choice":
+      "auto", "tools": [{"type": "function", "function": {"name": "get_location",
+      "description": "Get latitude and longitude based on city name", "parameters":
+      {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]}}},
+      {"type": "function", "function": {"name": "get_weather", "description": "Get
+      weather based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2855'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp600Rhl3ElfYiWq2f547F40xpSmW\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517488,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"location\\\": {\\n
+        \   \\\"latitude\\\": 40.7128,\\n    \\\"longitude\\\": -74.006,\\n    \\\"city\\\":
+        \\\"New York\\\"\\n  },\\n  \\\"weather\\\": {\\n    \\\"temperature\\\":
+        59.0,\\n    \\\"condition\\\": \\\"sunny\\\",\\n    \\\"humidity\\\": 50.0,\\n
+        \   \\\"wind_speed\\\": 8.0\\n  }\\n}\\n```\",\n        \"refusal\": null,\n
+        \       \"annotations\": []\n      },\n      \"logprobs\": null,\n      \"finish_reason\":
+        \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 499,\n    \"completion_tokens\":
+        84,\n    \"total_tokens\": 583,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b10b7f66cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:09 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1064'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1192'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1195'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29440'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.118s
+      x-request-id:
+      - req_510f280d5528c0ac878964bb213c0292
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in Miami right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}], "model":
+      "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools": [{"type": "function",
+      "function": {"name": "get_location", "description": "Get latitude and longitude
+      based on city name", "parameters": {"type": "object", "properties": {"city":
+      {"type": "string"}}, "required": ["city"]}}}, {"type": "function", "function":
+      {"name": "get_weather", "description": "Get weather based on latitude and longitude",
+      "parameters": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2104'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp601iJSMhF3GT28SYB37CPFVOUZN\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517489,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_VmsHfZXZH8XCAEY0oE4d3wyt\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_location\",\n
+        \             \"arguments\": \"{\\\"city\\\":\\\"Miami\\\"}\"\n            }\n
+        \         }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 387,\n    \"completion_tokens\":
+        14,\n    \"total_tokens\": 401,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b113aa76cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:09 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1082'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '557'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '560'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29601'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 797ms
+      x-request-id:
+      - req_d17951174fdaf9bdb72cdfeeca8e984a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in Miami right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}, {"role":
+      "assistant", "tool_calls": [{"function": {"arguments": "{\"city\":\"Miami\"}",
+      "name": "get_location"}, "id": "call_VmsHfZXZH8XCAEY0oE4d3wyt", "type": "function"}]},
+      {"tool_call_id": "call_VmsHfZXZH8XCAEY0oE4d3wyt", "role": "tool", "name": "get_location",
+      "content": "{\"latitude\": 25.7617, \"longitude\": -80.1918, \"city\": \"Miami\"}"}],
+      "model": "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools": [{"type":
+      "function", "function": {"name": "get_location", "description": "Get latitude
+      and longitude based on city name", "parameters": {"type": "object", "properties":
+      {"city": {"type": "string"}}, "required": ["city"]}}}, {"type": "function",
+      "function": {"name": "get_weather", "description": "Get weather based on latitude
+      and longitude", "parameters": {"type": "object", "properties": {"latitude":
+      {"type": "number"}, "longitude": {"type": "number"}}, "required": ["latitude",
+      "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2454'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp602ft6eQaE5pYCTwriS0rMN5Kj9\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517490,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_IyVUvUwThpf8kAIdIPUaU3jw\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_weather\",\n
+        \             \"arguments\": \"{\\\"latitude\\\":25.7617,\\\"longitude\\\":-80.1918}\"\n
+        \           }\n          }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 433,\n    \"completion_tokens\":
+        25,\n    \"total_tokens\": 458,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b117f932cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:10 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1106'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '622'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '626'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29428'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.143s
+      x-request-id:
+      - req_77926b2b63aa59f654e8db40eeaefcdd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "How''s the weather
+      in Miami right now?"}], "role": "user"}, {"role": "user", "content": "Format
+      your response according to this JSON schema:\n```json\n{\n  \"$defs\": {\n    \"Location\":
+      {\n      \"properties\": {\n        \"latitude\": {\n          \"type\": \"number\"\n        },\n        \"longitude\":
+      {\n          \"type\": \"number\"\n        },\n        \"city\": {\n          \"type\":
+      \"string\"\n        }\n      },\n      \"required\": [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}, {"role":
+      "assistant", "tool_calls": [{"function": {"arguments": "{\"city\":\"Miami\"}",
+      "name": "get_location"}, "id": "call_VmsHfZXZH8XCAEY0oE4d3wyt", "type": "function"}]},
+      {"tool_call_id": "call_VmsHfZXZH8XCAEY0oE4d3wyt", "role": "tool", "name": "get_location",
+      "content": "{\"latitude\": 25.7617, \"longitude\": -80.1918, \"city\": \"Miami\"}"},
+      {"role": "assistant", "tool_calls": [{"function": {"arguments": "{\"latitude\":25.7617,\"longitude\":-80.1918}",
+      "name": "get_weather"}, "id": "call_IyVUvUwThpf8kAIdIPUaU3jw", "type": "function"}]},
+      {"tool_call_id": "call_IyVUvUwThpf8kAIdIPUaU3jw", "role": "tool", "name": "get_weather",
+      "content": "{\"temperature\": 77.0, \"condition\": \"cloudy\", \"humidity\":
+      80.0, \"wind_speed\": 6.0}"}], "model": "gpt-4o", "temperature": 0, "tool_choice":
+      "auto", "tools": [{"type": "function", "function": {"name": "get_location",
+      "description": "Get latitude and longitude based on city name", "parameters":
+      {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]}}},
+      {"type": "function", "function": {"name": "get_weather", "description": "Get
+      weather based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '2849'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp602ethUNi7qm5Qbo0Zgo3Jv3mu8\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517490,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"location\\\": {\\n
+        \   \\\"latitude\\\": 25.7617,\\n    \\\"longitude\\\": -80.1918,\\n    \\\"city\\\":
+        \\\"Miami\\\"\\n  },\\n  \\\"weather\\\": {\\n    \\\"temperature\\\": 77.0,\\n
+        \   \\\"condition\\\": \\\"cloudy\\\",\\n    \\\"humidity\\\": 80.0,\\n    \\\"wind_speed\\\":
+        6.0\\n  }\\n}\\n```\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 498,\n    \"completion_tokens\":
+        84,\n    \"total_tokens\": 582,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b11ce9d8cb96-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:11 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1063'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1093'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1095'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29208'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 1.583s
+      x-request-id:
+      - req_65c489bc9f765ea75cdb6c0a249c4f19
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -6,7 +6,12 @@
       "Bash(gh issue view:*)",
       "Bash(just format)",
       "Bash(rm:*)",
-      "Bash(just embedme:*)"
+      "Bash(just embedme:*)",
+      "Bash(mkdir:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv lock:*)",
+      "Bash(find:*)",
+      "Bash(just test-ci:*)"
     ],
     "deny": []
   }

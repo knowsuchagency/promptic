@@ -1,0 +1,481 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Process the following task command: Check status
+      of task 123"}, {"type": "text", "text": "Format your response according to this
+      JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}], "temperature":
+      0, "tools": [{"name": "get_task_status", "input_schema": {"type": "object",
+      "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}, "description":
+      "Get the current status of a task"}, {"name": "get_last_update", "input_schema":
+      {"type": "object", "properties": {"task_id": {"type": "integer"}}, "required":
+      ["task_id"]}, "description": "Get the last update timestamp for a task"}], "tool_choice":
+      {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1245'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_015ZQsJn6uvNskjzosiwzV8p","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"I''ll
+        help check the status of task 123 using the available tools. I''ll need to
+        make two calls to get all the required information for the JSON response format."},{"type":"tool_use","id":"toolu_01EMUoi9MTERkASbwJUgy5n6","name":"get_task_status","input":{"task_id":123}},{"type":"tool_use","id":"toolu_017t2tFU9iQoEjQk3Qg5sbCE","name":"get_last_update","input":{"task_id":123}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":610,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":133,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939be21dc678d4-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:43 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:41Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:44Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:41Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:41Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '702'
+      request-id:
+      - req_011CQjSwjx3yYfm4vCbvbR55
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Process the following task command: Check status
+      of task 123"}, {"type": "text", "text": "Format your response according to this
+      JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}, {"type": "text",
+      "text": "Process the following task command: Check status of task 123"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I''ll help check the status of task 123
+      using the available tools. I''ll need to make two calls to get all the required
+      information for the JSON response format."}, {"type": "tool_use", "id": "toolu_01EMUoi9MTERkASbwJUgy5n6",
+      "name": "get_task_status", "input": {"task_id": 123}}, {"type": "tool_use",
+      "id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "name": "get_last_update", "input":
+      {"task_id": 123}}]}, {"role": "user", "content": [{"type": "tool_result", "tool_use_id":
+      "toolu_01EMUoi9MTERkASbwJUgy5n6", "content": "\"in_progress\""}, {"type": "tool_result",
+      "tool_use_id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "content": "\"2024-03-15 10:00
+      AM\""}]}], "temperature": 0, "tools": [{"name": "get_task_status", "input_schema":
+      {"type": "object", "properties": {"task_id": {"type": "integer"}}, "required":
+      ["task_id"]}, "description": "Get the current status of a task"}, {"name": "get_last_update",
+      "input_schema": {"type": "object", "properties": {"task_id": {"type": "integer"}},
+      "required": ["task_id"]}, "description": "Get the last update timestamp for
+      a task"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2642'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_011SAnRP23ipCcGg4H6NXrAj","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"Based
+        on the function results, I''ll format the response according to the specified
+        JSON schema:\n\n```json\n{\n    \"task_id\": 123,\n    \"status\": \"in_progress\",\n    \"last_update\":
+        \"2024-03-15 10:00 AM\"\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":993,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":72,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939bf20d21d88e-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:46 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:45Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:46Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:44Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:45Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '548'
+      request-id:
+      - req_011CQjSwxMvSqmNKhW12kkPg
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Process the following task command: Check status
+      of task 123"}, {"type": "text", "text": "Format your response according to this
+      JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}, {"type": "text",
+      "text": "Process the following task command: Check status of task 123"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I''ll help check the status of task 123
+      using the available tools. I''ll need to make two calls to get all the required
+      information for the JSON response format."}, {"type": "tool_use", "id": "toolu_01EMUoi9MTERkASbwJUgy5n6",
+      "name": "get_task_status", "input": {"task_id": 123}}, {"type": "tool_use",
+      "id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "name": "get_last_update", "input":
+      {"task_id": 123}}]}, {"role": "user", "content": [{"type": "tool_result", "tool_use_id":
+      "toolu_01EMUoi9MTERkASbwJUgy5n6", "content": "\"in_progress\""}, {"type": "tool_result",
+      "tool_use_id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "content": "\"2024-03-15 10:00
+      AM\""}]}, {"role": "assistant", "content": [{"type": "text", "text": "\n{\n    \"task_id\":
+      123,\n    \"status\": \"in_progress\",\n    \"last_update\": \"2024-03-15 10:00
+      AM\"\n}\n"}]}, {"role": "user", "content": [{"type": "text", "text": "Process
+      the following task command: What was the last task we checked?"}, {"type": "text",
+      "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}], "temperature":
+      0, "tools": [{"name": "get_task_status", "input_schema": {"type": "object",
+      "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}, "description":
+      "Get the current status of a task"}, {"name": "get_last_update", "input_schema":
+      {"type": "object", "properties": {"task_id": {"type": "integer"}}, "required":
+      ["task_id"]}, "description": "Get the last update timestamp for a task"}], "tool_choice":
+      {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '3553'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01STqimdWgVVSpTZs5yKZv79","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"Based
+        on our previous interaction, I''ll check the status of task 123 again since
+        that was the last task we checked."},{"type":"tool_use","id":"toolu_01UEci2DMSoUigBgNRLQqPKk","name":"get_task_status","input":{"task_id":123}},{"type":"tool_use","id":"toolu_01Nn24m1kwxa39E6ET4sgY9S","name":"get_last_update","input":{"task_id":123}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":4,"cache_creation_input_tokens":1209,"cache_read_input_tokens":0,"output_tokens":124,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939c03aed9f7e3-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:49 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:47Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:49Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:46Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:47Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '659'
+      request-id:
+      - req_011CQjSx8uRwysvqA871SGft
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Process the following task command: Check status
+      of task 123"}, {"type": "text", "text": "Format your response according to this
+      JSON schema:\n```json\n{\n  \"properties\": {\n    \"task_id\": {\n      \"type\":
+      \"integer\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"last_update\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}, {"type": "text",
+      "text": "Process the following task command: Check status of task 123"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I''ll help check the status of task 123
+      using the available tools. I''ll need to make two calls to get all the required
+      information for the JSON response format."}, {"type": "tool_use", "id": "toolu_01EMUoi9MTERkASbwJUgy5n6",
+      "name": "get_task_status", "input": {"task_id": 123}}, {"type": "tool_use",
+      "id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "name": "get_last_update", "input":
+      {"task_id": 123}}]}, {"role": "user", "content": [{"type": "tool_result", "tool_use_id":
+      "toolu_01EMUoi9MTERkASbwJUgy5n6", "content": "\"in_progress\""}, {"type": "tool_result",
+      "tool_use_id": "toolu_017t2tFU9iQoEjQk3Qg5sbCE", "content": "\"2024-03-15 10:00
+      AM\""}]}, {"role": "assistant", "content": [{"type": "text", "text": "\n{\n    \"task_id\":
+      123,\n    \"status\": \"in_progress\",\n    \"last_update\": \"2024-03-15 10:00
+      AM\"\n}\n"}]}, {"role": "user", "content": [{"type": "text", "text": "Process
+      the following task command: What was the last task we checked?"}, {"type": "text",
+      "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}, {"type": "text",
+      "text": "Process the following task command: What was the last task we checked?"},
+      {"type": "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"task_id\": {\n      \"type\": \"integer\"\n    },\n    \"status\":
+      {\n      \"type\": \"string\"\n    },\n    \"last_update\": {\n      \"type\":
+      \"string\"\n    }\n  },\n  \"required\": [\n    \"task_id\",\n    \"status\",\n    \"last_update\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "Based on our previous interaction, I''ll
+      check the status of task 123 again since that was the last task we checked."},
+      {"type": "tool_use", "id": "toolu_01UEci2DMSoUigBgNRLQqPKk", "name": "get_task_status",
+      "input": {"task_id": 123}}, {"type": "tool_use", "id": "toolu_01Nn24m1kwxa39E6ET4sgY9S",
+      "name": "get_last_update", "input": {"task_id": 123}}]}, {"role": "user", "content":
+      [{"type": "tool_result", "tool_use_id": "toolu_01UEci2DMSoUigBgNRLQqPKk", "content":
+      "\"in_progress\""}, {"type": "tool_result", "tool_use_id": "toolu_01Nn24m1kwxa39E6ET4sgY9S",
+      "content": "\"2024-03-15 10:00 AM\""}]}], "temperature": 0, "tools": [{"name":
+      "get_task_status", "input_schema": {"type": "object", "properties": {"task_id":
+      {"type": "integer"}}, "required": ["task_id"]}, "description": "Get the current
+      status of a task"}, {"name": "get_last_update", "input_schema": {"type": "object",
+      "properties": {"task_id": {"type": "integer"}}, "required": ["task_id"]}, "description":
+      "Get the last update timestamp for a task"}], "tool_choice": {"type": "auto"},
+      "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '4916'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01QTnu3KyasmUXXK6G8caGd9","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"```json\n{\n    \"task_id\":
+        123,\n    \"status\": \"in_progress\",\n    \"last_update\": \"2024-03-15
+        10:00 AM\"\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":211,"cache_creation_input_tokens":169,"cache_read_input_tokens":1209,"output_tokens":53,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 95939c147a6f2a8b-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:23:51 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:23:51Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:23:51Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:23:49Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:23:51Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '454'
+      request-id:
+      - req_011CQjSxLXvaU4zxq5hmQkbm
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1
