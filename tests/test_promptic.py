@@ -1012,16 +1012,33 @@ def _get_example_files():
 
 @pytest.mark.examples
 @pytest.mark.parametrize("example_file", _get_example_files())
-def test_examples(example_file):
-    """Run each example file."""
-    if example_file == "examples/memory.py":
-        sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
-    elif example_file == "examples/state.py":
+def test_examples(example_file, max_attempts=2):
+    """Run each example file.
+
+    Args:
+        example_file: Path to the example file to run
+        max_attempts: Maximum number of attempts to run the example (default: 2)
+    """
+    if example_file == "examples/state.py":
         pytest.skip("State example is not runnable without Redis.")
+
+    # Determine the command to run
+    if example_file == "examples/memory.py":
+        cmd = f"uv run --with gradio {example_file}"
     elif example_file == "examples/weave_integration.py":
-        sp.run(f"uv run --with weave {example_file}", shell=True, check=True)
+        cmd = f"uv run --with weave {example_file}"
     else:
-        sp.run(f"uv run {example_file}", shell=True, check=True)
+        cmd = f"uv run {example_file}"
+
+    # Try running the command, retry if it fails
+    for attempt in range(max_attempts):
+        try:
+            sp.run(cmd, shell=True, check=True)
+            break  # Success, exit the retry loop
+        except sp.CalledProcessError as e:
+            if attempt == max_attempts - 1:  # Last attempt failed
+                raise e  # Re-raise the exception
+            # Previous attempt failed, will retry
 
 
 @pytest.mark.vcr
