@@ -1,0 +1,188 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Update the user''s profile with the name ''John Doe'',
+      age 30, and email ''john@example.com''"}]}], "temperature": 0, "tools": [{"name":
+      "update_user", "input_schema": {"type": "object", "properties": {"profile":
+      {"properties": {"name": {"type": "string"}, "age": {"type": "integer"}, "email":
+      {"type": "string"}}, "required": ["name", "age", "email"], "type": "object"}},
+      "required": ["profile"]}, "description": "Update user profile"}], "tool_choice":
+      {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '594'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01MzH8ntq8eV3c1hLStB2TJ4","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"I''ll
+        help you update the user profile with the provided information. I have all
+        the required parameters:\n- name: ''John Doe''\n- age: 30\n- email: ''john@example.com''\n\nI''ll
+        make the update using the update_user function:"},{"type":"tool_use","id":"toolu_017LKanxpCcqBvkQB9RoavXf","name":"update_user","input":{"profile":{"name":"John
+        Doe","age":30,"email":"john@example.com"}}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":444,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":138,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b5bf2fb07c2f-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:23 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:41:21Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:41:23Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:41:20Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:41:21Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '704'
+      request-id:
+      - req_011CQjUHqSdJFNeN1nwCVXh7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Update the user''s profile with the name ''John Doe'',
+      age 30, and email ''john@example.com''"}]}, {"role": "assistant", "content":
+      [{"type": "text", "text": "I''ll help you update the user profile with the provided
+      information. I have all the required parameters:\n- name: ''John Doe''\n- age:
+      30\n- email: ''john@example.com''\n\nI''ll make the update using the update_user
+      function:"}, {"type": "tool_use", "id": "toolu_017LKanxpCcqBvkQB9RoavXf", "name":
+      "update_user", "input": {"profile": {"name": "John Doe", "age": 30, "email":
+      "john@example.com"}}}]}, {"role": "user", "content": [{"type": "tool_result",
+      "tool_use_id": "toolu_017LKanxpCcqBvkQB9RoavXf", "content": "\"Updated profile
+      for John Doe\""}]}], "temperature": 0, "tools": [{"name": "update_user", "input_schema":
+      {"type": "object", "properties": {"profile": {"properties": {"name": {"type":
+      "string"}, "age": {"type": "integer"}, "email": {"type": "string"}}, "required":
+      ["name", "age", "email"], "type": "object"}}, "required": ["profile"]}, "description":
+      "Update user profile"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1201'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_0194fx56ZPd3RBC8Jnc3yYkL","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"The
+        user profile has been successfully updated with the provided information."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":600,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":16,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b5d04fe3f207-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:24 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:41:23Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:41:24Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:41:23Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:41:23Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '405'
+      request-id:
+      - req_011CQjUJ2xfjb63BPFamWaG3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

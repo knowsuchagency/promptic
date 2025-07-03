@@ -634,48 +634,65 @@ from pydantic import BaseModel
 from promptic import llm
 
 
-class Story(BaseModel):
-    title: str
-    content: str
-    style: str
-    word_count: int
+class Person(BaseModel):
+    name: str
+    age: int
+    gender: str
+    occupation: str
 
 
 @llm(
-    model="gpt-4o-mini",
-    system="You are a creative writing assistant",
+    model="gpt-4o",
+    system="You generate example data for a person given a description of the person.",
     memory=True,
     temperature=0.7,
-    max_tokens=800,
+    max_tokens=300,
     cache=False,
 )
-def story_assistant(command: str) -> Story:
-    """Process this writing request: {command}"""
+def data_generator(description: str) -> Person:
+    """Generate data for the given person description: {description}"""
 
 
-@story_assistant.tool
-def get_writing_style():
-    """Get the current writing style preference"""
-    return "whimsical and light-hearted"
+@data_generator.tool
+def persist():
+    """Persist the data to a database"""
+    print("running persist")
 
 
-@story_assistant.tool
+@data_generator.tool
 def count_words(text: str) -> int:
     """Count words in the provided text"""
     return len(text.split())
 
 
-story = story_assistant("Write a short story about a magical library")
-print(f"Title: {story.title}")
-print(f"Style: {story.style}")
-print(f"Words: {story.word_count}")
-print(story.content)
+person = data_generator("Imagine a male software engineer and persist the data.")
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+print(f"Gender: {person.gender}")
+print(f"Occupation: {person.occupation}")
 
-print(
-    story_assistant("Write another story with the same style but about a time traveler")
-)
+print(data_generator("Now imagine them as a female but don't persist anything."))
 
 ```
+
+## Testing with VCR
+
+Promptic integrates with [VCR.py](https://vcrpy.readthedocs.io/) to record and replay HTTP interactions in tests. This enables fast, deterministic, and cost-effective testing of LLM-powered applications.
+
+```python
+import pytest
+from promptic import llm
+
+@pytest.mark.vcr  # This decorator enables VCR recording
+def test_my_llm_function():
+    @llm(model="gpt-4o-mini", temperature=0)
+    def get_capital(country: str) -> str:
+        """What is the capital of {country}?"""
+
+    assert get_capital("France") == "Paris"
+```
+
+First test run records the API interaction to a "cassette" file. Subsequent runs replay the recording instead of making real API calls. See the [VCR testing documentation](docs/vcr_usage.md) for detailed usage instructions.
 
 ## Limitations
 

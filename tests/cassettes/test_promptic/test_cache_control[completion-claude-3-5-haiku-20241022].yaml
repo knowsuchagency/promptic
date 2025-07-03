@@ -1,0 +1,225 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Please analyze this text: lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1365'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_016mb9ejCMc8SAUSYyFE8UvK","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"This
+        text appears to be \"Lorem Ipsum\", which is a standard placeholder text used
+        in design, publishing, and graphic design. It''s derived from Latin but doesn''t
+        actually have meaningful content. Specifically:\n\n1. Composition: The text
+        consists entirely of the words \"lorem ipsum\" repeated multiple times.\n\n2.
+        Purpose: Lorem ipsum text is used to demonstrate the graphic elements of a
+        document or visual presentation, such as font, typography, and layout, without
+        the distraction of meaningful content.\n\n3. Origin: This particular Lorem
+        ipsum text is a scrambled section from Cicero''s \"De Finibus Bonorum et Malorum\"
+        (The Extremes of Good and Evil), written in 45 BC.\n\n4. Length: In this case,
+        the text is quite long, with hundreds of repetitions of \"lorem ipsum\".\n\n5.
+        No semantic meaning: The text contains no actual information or readable content.\n\nThis
+        is a typical placeholder text used by designers and typesetters to fill space
+        and show how text will look in a given layout or design."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":215,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":227,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b1a51dc80fb8-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:38 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:33Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:39Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:32Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:33Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1337'
+      request-id:
+      - req_011CQjU5TonjudMQhkbKNw3w
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Please analyze this text: lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1365'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01TfvkJJHgAfkfwuJMCXnR4J","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"Here''s
+        an analysis of the provided text:\n\n1. Content:\n- This is a standard \"lorem
+        ipsum\" placeholder text\n- It consists entirely of the repeated phrase \"lorem
+        ipsum\"\n- No actual meaningful content or message is present\n\n2. Text Characteristics:\n-
+        Repetitive\n- Contains no real words or semantic meaning\n- Used typically
+        as a design or layout placeholder\n\n3. Composition:\n- Total word count:
+        \"lorem ipsum\" repeated multiple times\n- No variation in the text\n- Appears
+        to be used for demonstrating text layout or design spacing\n\n4. Purpose:\n-
+        Commonly used in graphic design, publishing, and web development\n- Helps
+        visualize text blocks without being distracted by actual content\n- Simulates
+        the flow and appearance of text in a document or design\n\n5. Technical Details:\n-
+        Derived from Latin text, originally from Cicero''s \"de Finibus Bonorum et
+        Malorum\"\n- Standardized dummy text in publishing and design industries\n\nIn
+        summary, this is a standard lorem ipsum placeholder text with no substantive
+        content, used primarily for design and layout purposes."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":215,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":245,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b1cb9c88f79b-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:44 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:39Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:44Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:38Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:39Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1413'
+      request-id:
+      - req_011CQjU5uEjzQ82Xfxrdfg2Y
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

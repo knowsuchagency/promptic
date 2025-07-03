@@ -1,0 +1,135 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": "you are a helpful assistant", "role": "system"},
+      {"content": [{"type": "text", "text": "What time is it and what''s the weather
+      in Paris?"}], "role": "user"}], "model": "gpt-4o", "stream": true, "temperature":
+      0, "tool_choice": "auto", "tools": [{"type": "function", "function": {"name":
+      "get_time", "description": "Get the current time", "parameters": {"type": "object",
+      "properties": {}, "required": []}}}, {"type": "function", "function": {"name":
+      "get_weather", "description": "Get the weather for a location", "parameters":
+      {"type": "object", "properties": {"location": {"type": "string"}}, "required":
+      ["location"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '651'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: 'data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_E7Bq82mMCZk2O7QUKnsApiec","type":"function","function":{"name":"get_time","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_D3Bddvxf7w94fxIXOvarmMYA","type":"function","function":{"name":"get_weather","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{\"lo"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"catio"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"n\":
+        \"P"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"aris"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"\"}"}}]},"logprobs":null,"finish_reason":null}]}
+
+
+        data: {"id":"chatcmpl-Bp5ktikhp1O6L28YmN9il15WPqp1W","object":"chat.completion.chunk","created":1751516551,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_07871e2ad8","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}]}
+
+
+        data: [DONE]
+
+
+        '
+    headers:
+      CF-RAY:
+      - 95939a2e2dfd2f04-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Date:
+      - Thu, 03 Jul 2025 04:22:32 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '952'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '957'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29978'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 44ms
+      x-request-id:
+      - req_81f0847bd95efee245931cf476e0fce6
+    status:
+      code: 200
+      message: OK
+version: 1

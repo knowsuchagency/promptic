@@ -1,0 +1,75 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Create a detailed weather
+      report for San Francisco"}, {"text": "Format your response according to this
+      JSON schema:\n```json\n{\n  \"properties\": {\n    \"location\": {\n      \"type\":
+      \"string\"\n    },\n    \"temperature\": {\n      \"type\": \"number\"\n    },\n    \"conditions\":
+      {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"location\",\n    \"temperature\",\n    \"conditions\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid."}]}], "tools": [{"function_declarations": [{"name": "get_temperature",
+      "description": "Get the temperature for a city", "parameters": {"type": "object",
+      "properties": {"city": {"type": "string"}}, "required": ["city"]}}, {"name":
+      "get_conditions", "description": "Get the weather conditions for a city", "parameters":
+      {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '1164'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"```json\\n{\\n  \\\"location\\\":
+        \\\"San Francisco\\\",\\n  \\\"temperature\\\": 16.0,\\n  \\\"conditions\\\":
+        \\\"Partly Cloudy\\\"\\n}\\n```\"\n          }\n        ],\n        \"role\":
+        \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\":
+        -0.029377083520631533\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\":
+        180,\n    \"candidatesTokenCount\": 37,\n    \"totalTokenCount\": 217,\n    \"promptTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 180\n
+        \     }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\":
+        \"TEXT\",\n        \"tokenCount\": 37\n      }\n    ]\n  },\n  \"modelVersion\":
+        \"gemini-2.0-flash\",\n  \"responseId\": \"yAVmaPCIDqfQ1PIPp4DX2QQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:23:36 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=666
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '767'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,675 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in New York right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}], "temperature": 0, "tools": [{"name": "get_location",
+      "input_schema": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}, "description": "Get latitude and longitude based on city
+      name"}, {"name": "get_weather", "input_schema": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}, "description": "Get weather based on latitude and
+      longitude"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2130'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01WgF2ywMhT7fQV9AfcGeVP4","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"I''ll
+        help you get the weather in New York. Let me fetch that information using
+        the available tools."},{"type":"tool_use","id":"toolu_018DnNKKyTiSfBV6oQ22ni2r","name":"get_location","input":{"city":"New
+        York"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":825,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":76,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b12539272b7d-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:14 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:13Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:14Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:12Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:13Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '535'
+      request-id:
+      - req_011CQjU3wUdTX83ACtcvqshr
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in New York right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}, {"role": "assistant", "content": [{"type": "text",
+      "text": "I''ll help you get the weather in New York. Let me fetch that information
+      using the available tools."}, {"type": "tool_use", "id": "toolu_018DnNKKyTiSfBV6oQ22ni2r",
+      "name": "get_location", "input": {"city": "New York"}}]}, {"role": "user", "content":
+      [{"type": "tool_result", "tool_use_id": "toolu_018DnNKKyTiSfBV6oQ22ni2r", "content":
+      "{\"latitude\": 40.7128, \"longitude\": -74.006, \"city\": \"New York\"}"}]}],
+      "temperature": 0, "tools": [{"name": "get_location", "input_schema": {"type":
+      "object", "properties": {"city": {"type": "string"}}, "required": ["city"]},
+      "description": "Get latitude and longitude based on city name"}, {"name": "get_weather",
+      "input_schema": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}, "description":
+      "Get weather based on latitude and longitude"}], "tool_choice": {"type": "auto"},
+      "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2603'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01LuTgKttbQP1Yw2ksjgjpoc","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"tool_use","id":"toolu_01RFAozjus9Pdq5awpJwnguu","name":"get_weather","input":{"latitude":40.7128,"longitude":-74.006}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":936,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":77,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b132fdfac69d-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:16 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:15Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:16Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:14Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:15Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '430'
+      request-id:
+      - req_011CQjU46tAiBahoUhka18Gz
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in New York right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}, {"role": "assistant", "content": [{"type": "text",
+      "text": "I''ll help you get the weather in New York. Let me fetch that information
+      using the available tools."}, {"type": "tool_use", "id": "toolu_018DnNKKyTiSfBV6oQ22ni2r",
+      "name": "get_location", "input": {"city": "New York"}}]}, {"role": "user", "content":
+      [{"type": "tool_result", "tool_use_id": "toolu_018DnNKKyTiSfBV6oQ22ni2r", "content":
+      "{\"latitude\": 40.7128, \"longitude\": -74.006, \"city\": \"New York\"}"}]},
+      {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01RFAozjus9Pdq5awpJwnguu",
+      "name": "get_weather", "input": {"latitude": 40.7128, "longitude": -74.006}}]},
+      {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01RFAozjus9Pdq5awpJwnguu",
+      "content": "{\"temperature\": 59.0, \"condition\": \"sunny\", \"humidity\":
+      50.0, \"wind_speed\": 8.0}"}]}], "temperature": 0, "tools": [{"name": "get_location",
+      "input_schema": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}, "description": "Get latitude and longitude based on city
+      name"}, {"name": "get_weather", "input_schema": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}, "description": "Get weather based on latitude and
+      longitude"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2988'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01GnV1cpysoP3ik1s3ZyZLqM","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"```json\n{\n  \"location\":
+        {\n    \"latitude\": 40.7128,\n    \"longitude\": -74.006,\n    \"city\":
+        \"New York\"\n  },\n  \"weather\": {\n    \"temperature\": 59.0,\n    \"condition\":
+        \"sunny\",\n    \"humidity\": 50.0,\n    \"wind_speed\": 8.0\n  }\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1055,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":99,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b13fff462ec9-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:18 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:17Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:18Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:16Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:17Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '589'
+      request-id:
+      - req_011CQjU4FpSPwXP54M1eYRG8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in Miami right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}], "temperature": 0, "tools": [{"name": "get_location",
+      "input_schema": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}, "description": "Get latitude and longitude based on city
+      name"}, {"name": "get_weather", "input_schema": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}, "description": "Get weather based on latitude and
+      longitude"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2127'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01NV3nEytQL9JmvjqQndWShY","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"I''ll
+        help you get the weather in Miami. Let me fetch that information using the
+        available tools."},{"type":"tool_use","id":"toolu_0143cAGCZhtkN6kwmS43EMyd","name":"get_location","input":{"city":"Miami"}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":824,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":74,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b14d3ad82acf-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:20 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:19Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:20Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:18Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:19Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '529'
+      request-id:
+      - req_011CQjU4RCkFCxDRUxEVzRSW
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in Miami right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}, {"role": "assistant", "content": [{"type": "text",
+      "text": "I''ll help you get the weather in Miami. Let me fetch that information
+      using the available tools."}, {"type": "tool_use", "id": "toolu_0143cAGCZhtkN6kwmS43EMyd",
+      "name": "get_location", "input": {"city": "Miami"}}]}, {"role": "user", "content":
+      [{"type": "tool_result", "tool_use_id": "toolu_0143cAGCZhtkN6kwmS43EMyd", "content":
+      "{\"latitude\": 25.7617, \"longitude\": -80.1918, \"city\": \"Miami\"}"}]}],
+      "temperature": 0, "tools": [{"name": "get_location", "input_schema": {"type":
+      "object", "properties": {"city": {"type": "string"}}, "required": ["city"]},
+      "description": "Get latitude and longitude based on city name"}, {"name": "get_weather",
+      "input_schema": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}, "description":
+      "Get weather based on latitude and longitude"}], "tool_choice": {"type": "auto"},
+      "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2592'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_0146GzEuFMtPhS72dsPm916v","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"tool_use","id":"toolu_016tK9z2LnWa24Ns4y74N84f","name":"get_weather","input":{"latitude":25.7617,"longitude":-80.1918}}],"stop_reason":"tool_use","stop_sequence":null,"usage":{"input_tokens":933,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":78,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b15ad9ef7eab-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:22 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:21Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:22Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:20Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:21Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '431'
+      request-id:
+      - req_011CQjU4aBVYHLpd9FtpNWAp
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-sonnet-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "How''s the weather in Miami right now?"}, {"type":
+      "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"$defs\":
+      {\n    \"Location\": {\n      \"properties\": {\n        \"latitude\": {\n          \"type\":
+      \"number\"\n        },\n        \"longitude\": {\n          \"type\": \"number\"\n        },\n        \"city\":
+      {\n          \"type\": \"string\"\n        }\n      },\n      \"required\":
+      [\n        \"latitude\",\n        \"longitude\",\n        \"city\"\n      ],\n      \"type\":
+      \"object\"\n    },\n    \"Weather\": {\n      \"properties\": {\n        \"temperature\":
+      {\n          \"type\": \"number\"\n        },\n        \"condition\": {\n          \"type\":
+      \"string\"\n        },\n        \"humidity\": {\n          \"type\": \"number\"\n        },\n        \"wind_speed\":
+      {\n          \"type\": \"number\"\n        }\n      },\n      \"required\":
+      [\n        \"temperature\",\n        \"condition\",\n        \"humidity\",\n        \"wind_speed\"\n      ],\n      \"type\":
+      \"object\"\n    }\n  },\n  \"properties\": {\n    \"location\": {\n      \"$ref\":
+      \"#/$defs/Location\"\n    },\n    \"weather\": {\n      \"$ref\": \"#/$defs/Weather\"\n    }\n  },\n  \"required\":
+      [\n    \"location\",\n    \"weather\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid.", "cache_control":
+      {"type": "ephemeral"}}]}, {"role": "assistant", "content": [{"type": "text",
+      "text": "I''ll help you get the weather in Miami. Let me fetch that information
+      using the available tools."}, {"type": "tool_use", "id": "toolu_0143cAGCZhtkN6kwmS43EMyd",
+      "name": "get_location", "input": {"city": "Miami"}}]}, {"role": "user", "content":
+      [{"type": "tool_result", "tool_use_id": "toolu_0143cAGCZhtkN6kwmS43EMyd", "content":
+      "{\"latitude\": 25.7617, \"longitude\": -80.1918, \"city\": \"Miami\"}"}]},
+      {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_016tK9z2LnWa24Ns4y74N84f",
+      "name": "get_weather", "input": {"latitude": 25.7617, "longitude": -80.1918}}]},
+      {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_016tK9z2LnWa24Ns4y74N84f",
+      "content": "{\"temperature\": 77.0, \"condition\": \"cloudy\", \"humidity\":
+      80.0, \"wind_speed\": 6.0}"}]}], "temperature": 0, "tools": [{"name": "get_location",
+      "input_schema": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}, "description": "Get latitude and longitude based on city
+      name"}, {"name": "get_weather", "input_schema": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}, "description": "Get weather based on latitude and
+      longitude"}], "tool_choice": {"type": "auto"}, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2979'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01HN5a1C4K6CbDf6aeqZ6Ycn","type":"message","role":"assistant","model":"claude-3-5-sonnet-20241022","content":[{"type":"text","text":"```json\n{\n  \"location\":
+        {\n    \"latitude\": 25.7617,\n    \"longitude\": -80.1918,\n    \"city\":
+        \"Miami\"\n  },\n  \"weather\": {\n    \"temperature\": 77.0,\n    \"condition\":
+        \"cloudy\",\n    \"humidity\": 80.0,\n    \"wind_speed\": 6.0\n  }\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1054,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":100,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b1667f632ec1-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:24 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '80000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '80000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:23Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '16000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '16000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:24Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:22Z'
+      anthropic-ratelimit-tokens-limit:
+      - '96000'
+      anthropic-ratelimit-tokens-remaining:
+      - '96000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:23Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '589'
+      request-id:
+      - req_011CQjU4iTKU1sL7mqUYqrCp
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,231 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Update the user''s
+      profile with the name ''John Doe'', age 30, and email ''john@example.com''"}],
+      "role": "user"}], "model": "gpt-4o", "temperature": 0, "tool_choice": "auto",
+      "tools": [{"type": "function", "function": {"name": "update_user", "description":
+      "Update user profile", "parameters": {"type": "object", "properties": {"profile":
+      {"properties": {"name": {"type": "string"}, "age": {"type": "integer"}, "email":
+      {"type": "string"}}, "required": ["name", "age", "email"], "type": "object"}},
+      "required": ["profile"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '576'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp633Hc3gItwQWmuGCZGrduJxZsEp\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517677,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_1nyFblg2LWW8wbfeAZz6w96H\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"update_user\",\n
+        \             \"arguments\": \"{\\\"profile\\\":{\\\"name\\\":\\\"John Doe\\\",\\\"age\\\":30,\\\"email\\\":\\\"john@example.com\\\"}}\"\n
+        \           }\n          }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 75,\n    \"completion_tokens\":
+        27,\n    \"total_tokens\": 102,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b5ad6ba6f7b1-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:18 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1139'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '660'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '669'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29976'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 48ms
+      x-request-id:
+      - req_ab235c79911bf8db975c7bc6bc5f2fbd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Update the user''s
+      profile with the name ''John Doe'', age 30, and email ''john@example.com''"}],
+      "role": "user"}, {"content": null, "refusal": null, "role": "assistant", "tool_calls":
+      [{"id": "call_1nyFblg2LWW8wbfeAZz6w96H", "function": {"arguments": "{\"profile\":{\"name\":\"John
+      Doe\",\"age\":30,\"email\":\"john@example.com\"}}", "name": "update_user"},
+      "type": "function"}], "annotations": []}, {"tool_call_id": "call_1nyFblg2LWW8wbfeAZz6w96H",
+      "role": "tool", "name": "update_user", "content": "\"Updated profile for John
+      Doe\""}], "model": "gpt-4o", "temperature": 0, "tool_choice": "auto", "tools":
+      [{"type": "function", "function": {"name": "update_user", "description": "Update
+      user profile", "parameters": {"type": "object", "properties": {"profile": {"properties":
+      {"name": {"type": "string"}, "age": {"type": "integer"}, "email": {"type": "string"}},
+      "required": ["name", "age", "email"], "type": "object"}}, "required": ["profile"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '999'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp634sXPhAiyUV3LMhd8nbVijx1Dy\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517678,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The user's profile has been successfully
+        updated with the name 'John Doe', age 30, and email 'john@example.com'.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        117,\n    \"completion_tokens\": 26,\n    \"total_tokens\": 143,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_07871e2ad8\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b5b249e2f7b1-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:18 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '916'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '481'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '484'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29966'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 68ms
+      x-request-id:
+      - req_0b6f30ebe7fb0a6ea0de3e1e28fe56c8
+    status:
+      code: 200
+      message: OK
+version: 1

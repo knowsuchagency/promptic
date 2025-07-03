@@ -1,0 +1,240 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": "you are a posh smart home assistant named Jarvis",
+      "role": "system"}, {"content": [{"type": "text", "text": "Please turn the light
+      on Jarvis. By the way, what is the weather in San Francisco?"}], "role": "user"}],
+      "model": "gpt-4o-mini", "temperature": 0, "tool_choice": "auto", "tools": [{"type":
+      "function", "function": {"name": "turn_light_on", "description": "turn light
+      on", "parameters": {"type": "object", "properties": {}, "required": []}}}, {"type":
+      "function", "function": {"name": "get_current_weather", "description": "Get
+      the current weather in a given location", "parameters": {"type": "object", "properties":
+      {"location": {"type": "string"}, "unit": {"type": "string"}}, "required": ["location"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '742'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5kiSwmqab5Sf15k30ko1PQv2F3p\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516540,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n
+        \           \"id\": \"call_lowZEP8Q3UPj0w4LOHKGc67a\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"turn_light_on\",\n
+        \             \"arguments\": \"{}\"\n            }\n          },\n          {\n
+        \           \"id\": \"call_J0DqZMSrzlz5qseMShjfMcaw\",\n            \"type\":
+        \"function\",\n            \"function\": {\n              \"name\": \"get_current_weather\",\n
+        \             \"arguments\": \"{\\\"location\\\": \\\"San Francisco\\\"}\"\n
+        \           }\n          }\n        ],\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 96,\n    \"completion_tokens\":
+        44,\n    \"total_tokens\": 140,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_62a23a81ef\"\n}\n"
+    headers:
+      CF-RAY:
+      - 959399e71ca30ff8-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:22:21 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1325'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '986'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '993'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9992'
+      x-ratelimit-remaining-tokens:
+      - '199963'
+      x-ratelimit-reset-requests:
+      - 1m6.637s
+      x-ratelimit-reset-tokens:
+      - 10ms
+      x-request-id:
+      - req_8129a67aa2c2f8b7c710216145b6266e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "you are a posh smart home assistant named Jarvis",
+      "role": "system"}, {"content": [{"type": "text", "text": "Please turn the light
+      on Jarvis. By the way, what is the weather in San Francisco?"}], "role": "user"},
+      {"content": null, "refusal": null, "role": "assistant", "tool_calls": [{"id":
+      "call_lowZEP8Q3UPj0w4LOHKGc67a", "function": {"arguments": "{}", "name": "turn_light_on"},
+      "type": "function"}, {"id": "call_J0DqZMSrzlz5qseMShjfMcaw", "function": {"arguments":
+      "{\"location\": \"San Francisco\"}", "name": "get_current_weather"}, "type":
+      "function"}], "annotations": []}, {"tool_call_id": "call_lowZEP8Q3UPj0w4LOHKGc67a",
+      "role": "tool", "name": "turn_light_on", "content": "true"}, {"tool_call_id":
+      "call_J0DqZMSrzlz5qseMShjfMcaw", "role": "tool", "name": "get_current_weather",
+      "content": "\"The weather in San Francisco is 45 degrees fahrenheit\""}], "model":
+      "gpt-4o-mini", "temperature": 0, "tool_choice": "auto", "tools": [{"type": "function",
+      "function": {"name": "turn_light_on", "description": "turn light on", "parameters":
+      {"type": "object", "properties": {}, "required": []}}}, {"type": "function",
+      "function": {"name": "get_current_weather", "description": "Get the current
+      weather in a given location", "parameters": {"type": "object", "properties":
+      {"location": {"type": "string"}, "unit": {"type": "string"}}, "required": ["location"]}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1390'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=mJR_faz9t.CymRwrzh_p5APBniAyw7ktYHgIOoVpw2w-1751516315-1.0.1.1-cMZflLiTOmtsJLORcVSoPUqAaelzoAltshZxid5CgGn_O6M4qhu1ix9nssOsWyLFAkNKhTkZ494Ye7Y0oZs1pupGUjkfc9Kye93k.c57FCk;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5kjdht3G9bvOHmjnBiUbro09h1Y\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516541,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The light has been turned on. As for
+        the weather in San Francisco, it is currently 45 degrees Fahrenheit.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        166,\n    \"completion_tokens\": 24,\n    \"total_tokens\": 190,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_62a23a81ef\"\n}\n"
+    headers:
+      CF-RAY:
+      - 959399edeb8f0ff8-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:22:21 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '914'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '683'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '689'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9991'
+      x-ratelimit-remaining-tokens:
+      - '199946'
+      x-ratelimit-reset-requests:
+      - 1m14.155s
+      x-ratelimit-reset-tokens:
+      - 16ms
+      x-request-id:
+      - req_a03bca7d8c9222970e4944ddf28a0f3f
+    status:
+      code: 200
+      message: OK
+version: 1

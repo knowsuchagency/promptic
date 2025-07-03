@@ -28,6 +28,7 @@ REGULAR_MODELS = ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini/gemini-1.5-pro
 openai_completion_fn = OpenAI().chat.completions.create
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -54,6 +55,7 @@ def test_basic(model, create_completion_fn):
     assert isinstance(result, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -77,6 +79,7 @@ def test_parens(model, create_completion_fn):
     assert isinstance(result, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -104,6 +107,7 @@ def test_pydantic(model, create_completion_fn):
     assert result.capital == "Paris"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -130,6 +134,7 @@ def test_streaming(model, create_completion_fn):
     assert isinstance(result, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -157,6 +162,7 @@ def test_system_prompt(model, create_completion_fn):
     assert len(result) > 0
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -192,6 +198,7 @@ def test_system_prompt_list_strings(model, create_completion_fn):
     assert len(result.split()) < 30
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -231,6 +238,7 @@ def test_system_prompt_list_dicts(model, create_completion_fn):
     assert len(result.split()) < 30
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -288,6 +296,7 @@ def test_agents(model, create_completion_fn):
     assert any(word in result.lower() for word in probable_weather_words)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -336,6 +345,7 @@ def test_streaming_with_tools(model, create_completion_fn):
     weather_mock.assert_called_once()
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -418,6 +428,7 @@ def test_json_schema_validation(model, create_completion_fn):
     assert "Schema validation failed" in str(exc_info.value)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -453,6 +464,7 @@ def test_dry_run_with_tools(model, create_completion_fn, caplog):
     assert any("initialize_switch" in record.message for record in caplog.records)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -482,6 +494,7 @@ def test_debug_logging(model, create_completion_fn, caplog):
     assert any("hello" in record.message for record in caplog.records)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -522,6 +535,7 @@ def test_multiple_tool_calls(model, create_completion_fn):
     assert counter.call_count >= 2  # At least called twice
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_state_basic(model):
     state = State()
@@ -534,6 +548,7 @@ def test_state_basic(model):
     assert state.get_messages() == []
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_state_limit(model):
     state = State()
@@ -546,6 +561,7 @@ def test_state_limit(model):
     assert state.get_messages() == messages
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -577,6 +593,7 @@ def test_memory_conversation(model, create_completion_fn):
     assert "france" in result2.lower() or "paris" in result2.lower()
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -618,6 +635,7 @@ def test_custom_state(model, create_completion_fn):
     assert len(custom_state.get_messages()) == 0
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -647,6 +665,7 @@ def test_memory_disabled(model, create_completion_fn):
     assert not ("france" in result2.lower() or "paris" in result2.lower())
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -702,6 +721,7 @@ def test_memory_with_streaming(model, create_completion_fn):
     assert messages[3]["content"] == response2  # Second assistant response
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -753,6 +773,7 @@ def test_pydantic_with_tools(model, create_completion_fn):
     assert isinstance(result.conditions, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -859,6 +880,7 @@ def test_gemini_streaming_with_tools_error(create_completion_fn):
     assert str(exc_info.value) == "Gemini models do not support streaming with tools"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -895,6 +917,7 @@ def test_mutually_exclusive_schemas(model, create_completion_fn):
     )
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -936,6 +959,7 @@ def test_wrapper_attributes(model, create_completion_fn):
     }
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -986,6 +1010,7 @@ def _get_example_files():
     return map(str, Path("examples").glob("*.py"))
 
 
+@pytest.mark.examples
 @pytest.mark.parametrize("example_file", _get_example_files())
 def test_examples(example_file):
     """Run each example file."""
@@ -993,14 +1018,13 @@ def test_examples(example_file):
         sp.run(f"uv run --with gradio {example_file}", shell=True, check=True)
     elif example_file == "examples/state.py":
         pytest.skip("State example is not runnable without Redis.")
-    elif example_file == "examples/langfuse_openai.py":
-        sp.run(f"uv run --with langfuse {example_file}", shell=True, check=True)
     elif example_file == "examples/weave_integration.py":
         sp.run(f"uv run --with weave {example_file}", shell=True, check=True)
     else:
         sp.run(f"uv run {example_file}", shell=True, check=True)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1073,6 +1097,7 @@ def test_weather_tools_basic(model, create_completion_fn):
     assert "18" in result3  # 77 - 59 = 18 degrees difference
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1156,6 +1181,7 @@ def test_weather_tools_structured(model, create_completion_fn):
     assert result2.weather.condition == "cloudy"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1209,6 +1235,7 @@ def test_cache_control(model, create_completion_fn):
     assert isinstance(result2, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1252,6 +1279,7 @@ def test_anthropic_cache_limit(model, create_completion_fn):
     assert cached_count <= 4  # anthropic_cached_block_limit
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1294,6 +1322,7 @@ def test_cache_with_system_prompts(model, create_completion_fn):
     assert isinstance(result, str)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1368,6 +1397,7 @@ def test_system_prompt_order(model, create_completion_fn):
     assert messages[1]["content"] == system_prompts[1]
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1449,6 +1479,7 @@ def test_message_order_with_memory(model, create_completion_fn):
     assert messages[6]["role"] == "assistant"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1500,6 +1531,7 @@ def test_message_method(model, create_completion_fn):
     assert messages[3]["role"] == "assistant"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1574,6 +1606,7 @@ def test_image_functionality(model, create_completion_fn):
     assert "ai" in text_result.lower() or "oc" in text_result.lower()
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1634,6 +1667,7 @@ def test_completion_method(model, create_completion_fn):
         assert "Paris" in response.choices[0].message.content
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1679,6 +1713,7 @@ def test_tool_isolation_with_llm_method(model, create_completion_fn):
     assert "12:00" not in result
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", REGULAR_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1722,6 +1757,7 @@ def test_tool_definition_with_pydantic_param(model, create_completion_fn):
     assert name == "John Doe"
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
@@ -1758,6 +1794,7 @@ def test_docstring_validation(model, create_completion_fn):
     assert "Ensure the docstring is not an f-string" in str(exc_info.value)
 
 
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 def test_schema_simplification(model):
     """Test that schema simplification removes metadata from Pydantic models"""

@@ -1,0 +1,185 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Create a person named Alice who is 30 years old."},
+      {"type": "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"properties\":
+      {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"age\": {\n      \"type\":
+      \"integer\"\n    }\n  },\n  \"required\": [\n    \"name\",\n    \"age\"\n  ],\n  \"type\":
+      \"object\"\n}\n```\n\nProvide the result enclosed in triple backticks with ''json''
+      on the first line. Don''t put control characters in the wrong place or the JSON
+      will be invalid.", "cache_control": {"type": "ephemeral"}}]}], "temperature":
+      0, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '708'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01XFBvyFk9NtXGQ2q5jrF1iE","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"```json\n{\n  \"name\":
+        \"Alice\",\n  \"age\": 30\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":145,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":26,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b5de0a282b90-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:26 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:41:26Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:41:26Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:41:25Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:41:26Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '384'
+      request-id:
+      - req_011CQjUJCVA84MiRVGMiwLaD
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Create a person named Bob who is 25 years old."},
+      {"type": "text", "text": "Format your response according to this JSON schema:\n```json\n{\n  \"description\":
+      \"Test model with metadata\",\n  \"properties\": {\n    \"name\": {\n      \"title\":
+      \"Name\",\n      \"type\": \"string\"\n    },\n    \"age\": {\n      \"title\":
+      \"Age\",\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": [\n    \"name\",\n    \"age\"\n  ],\n  \"title\":
+      \"TestModel\",\n  \"type\": \"object\"\n}\n```\n\nProvide the result enclosed
+      in triple backticks with ''json'' on the first line. Don''t put control characters
+      in the wrong place or the JSON will be invalid.", "cache_control": {"type":
+      "ephemeral"}}]}], "temperature": 0, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '840'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01VtnYatYqQq9U7HpAEGsekr","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"```json\n{\n  \"name\":
+        \"Bob\",\n  \"age\": 25\n}\n```"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":181,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":26,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b5e4cedb5367-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:41:27 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:41:27Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:41:27Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:41:26Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:41:27Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '382'
+      request-id:
+      - req_011CQjUJGz2bnAcYYmWE9SND
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

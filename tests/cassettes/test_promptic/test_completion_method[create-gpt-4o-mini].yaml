@@ -1,0 +1,425 @@
+interactions:
+- request:
+    body: '{"messages": [{"role": "user", "content": "What is the capital of France?"}],
+      "model": "gpt-4o-mini", "temperature": 0, "tool_choice": null, "tools": null}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '155'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp62aYfPb7ydcFo05c1w8Fo87axSY\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517648,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The capital of France is Paris.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        14,\n    \"completion_tokens\": 7,\n    \"total_tokens\": 21,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b4f74aab7c5c-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:40:49 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '837'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '336'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '400'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9993'
+      x-ratelimit-remaining-tokens:
+      - '199990'
+      x-ratelimit-reset-requests:
+      - 55.625s
+      x-ratelimit-reset-tokens:
+      - 3ms
+      x-request-id:
+      - req_d9789bf6f3c581aa57db846dc6ede9b4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"role": "user", "content": "What is the capital of France?"},
+      {"role": "assistant", "content": "The capital of France is Paris."}, {"role":
+      "user", "content": "What is its population?"}], "model": "gpt-4o-mini", "temperature":
+      0, "tool_choice": null, "tools": null}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '280'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp62batHt5wSZP5vsMqWZKSlRaPOH\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517649,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"As of my last update in October 2023,
+        the population of Paris is approximately 2.1 million people within the city
+        proper. However, the larger metropolitan area, known as the \xCEle-de-France
+        region, has a population of around 12 million. For the most current population
+        figures, it's best to consult the latest statistics or official sources.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        34,\n    \"completion_tokens\": 71,\n    \"total_tokens\": 105,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b4fa6dae7c5c-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:40:50 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1148'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1784'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1791'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9993'
+      x-ratelimit-remaining-tokens:
+      - '199975'
+      x-ratelimit-reset-requests:
+      - 55.134s
+      x-ratelimit-reset-tokens:
+      - 7ms
+      x-request-id:
+      - req_98e9a465ed432d7c0b3a2c58b5ba6ded
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "You are a geography expert", "role": "system"},
+      {"role": "user", "content": "What is the capital of France?"}], "model": "gpt-4o-mini",
+      "temperature": 0, "tool_choice": null, "tools": null}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '216'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp62d9edsiFIWPpY7IB6DyFPKxQ5m\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517651,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The capital of France is Paris.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        23,\n    \"completion_tokens\": 7,\n    \"total_tokens\": 30,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b50658d87c5c-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:40:51 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '837'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '308'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '311'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9991'
+      x-ratelimit-remaining-tokens:
+      - '199983'
+      x-ratelimit-reset-requests:
+      - 1m10.511s
+      x-ratelimit-reset-tokens:
+      - 5ms
+      x-request-id:
+      - req_41ff9e357c2bbd4843e930ed39a8b567
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"role": "user", "content": "What is the capital of France?"}],
+      "model": "gpt-4o-mini", "temperature": 0, "tool_choice": null, "tools": null}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '155'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=XoijA2uop8KwGAlCIgLTGiXwWQqEqrQTC1vx3tUosf0-1751517421-1.0.1.1-ZMII_FlGj7OnaLjMThUR4.txfbivNG5PxG7z6h.Lq8udtX50_hQwKeq4KEwaXw.v3slR_zmfq934Njbyeuzd5O_uDnbOgLYXd9VRJD_u.og;
+        _cfuvid=Sr.CMipwVDnNluB4TbZUAyrO2sU5CTDuMDW56w.ZdYs-1751516315853-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp62d4y5TeIlNvubCW6LyEyOCEGNh\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517651,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The capital of France is Paris.\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        14,\n    \"completion_tokens\": 7,\n    \"total_tokens\": 21,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_62a23a81ef\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b508cb3b7c5c-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:40:51 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '837'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '393'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '395'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9990'
+      x-ratelimit-remaining-tokens:
+      - '199990'
+      x-ratelimit-reset-requests:
+      - 1m18.759s
+      x-ratelimit-reset-tokens:
+      - 3ms
+      x-request-id:
+      - req_2dccc45ab8e7d0ddbe5bfd1572e3773b
+    status:
+      code: 200
+      message: OK
+version: 1

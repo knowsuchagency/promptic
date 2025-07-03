@@ -1,0 +1,1002 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '1356'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01AUpRhpxn7tCM1G68V6koU1","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"I
+        notice this looks like a placeholder text (lorem ipsum) with no actual content.
+        Is there something specific you would like me to analyze or help you with?
+        If you have a real document, text, or data you''d like me to review, I''m
+        ready to assist."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":215,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":59,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b1f1c8c7b6c9-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:47 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:45Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:47Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:44Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:45Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '572'
+      request-id:
+      - req_011CQjU6MR6SKmLa92qrhxEF
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}, {"role": "assistant", "content": [{"type": "text", "text": "I notice this
+      looks like a placeholder text (lorem ipsum) with no actual content. Is there
+      something specific you would like me to analyze or help you with? If you have
+      a real document, text, or data you''d like me to review, I''m ready to assist."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 1:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '2951'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01WifpXC7A2dgoMeJrsbpKxS","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"I
+        see this is again a placeholder text (lorem ipsum) with no substantive content.
+        This appears to be a repeated pattern, but without actual text to analyze.
+        \n\nIf you intend to have me perform an analysis, I recommend:\n1. Providing
+        the actual text or document you want me to review\n2. Specifying the type
+        of analysis you''re seeking (e.g., content analysis, linguistic review, data
+        interpretation)\n3. Sharing any specific questions or goals you have for the
+        analysis\n\nI''m ready to help once you provide the real content or clarify
+        your request."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":485,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":127,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b2022f06dbae-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:50 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:48Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:50Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:47Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:48Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '877'
+      request-id:
+      - req_011CQjU6Yzc5cF7SLf6FkAhv
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}, {"role": "assistant", "content": [{"type": "text", "text": "I notice this
+      looks like a placeholder text (lorem ipsum) with no actual content. Is there
+      something specific you would like me to analyze or help you with? If you have
+      a real document, text, or data you''d like me to review, I''m ready to assist."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 1:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "I see this is again a placeholder text (lorem ipsum) with no
+      substantive content. This appears to be a repeated pattern, but without actual
+      text to analyze. \n\nIf you intend to have me perform an analysis, I recommend:\n1.
+      Providing the actual text or document you want me to review\n2. Specifying the
+      type of analysis you''re seeking (e.g., content analysis, linguistic review,
+      data interpretation)\n3. Sharing any specific questions or goals you have for
+      the analysis\n\nI''m ready to help once you provide the real content or clarify
+      your request."}]}, {"role": "user", "content": [{"type": "text", "text": "Chat:
+      Analysis part 2: lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '4850'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01Bttkhu3DF5bE2hYBUbMARp","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"I
+        understand that this is the third instance of a lorem ipsum placeholder text.
+        \n\nAt this point, I want to confirm: Are you intending to share multiple
+        parts of a document or analysis, but haven''t yet pasted the actual content?
+        Or is this a test or placeholder exercise?\n\nIf you genuinely want an analysis,
+        I recommend:\n- Uploading the full text\n- Clarifying the specific type of
+        analysis you need\n- Providing context about the document or data\n\nI''m
+        prepared to help you with a thorough and professional analysis once you share
+        the actual content. Would you like to proceed with the real text?"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":823,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":135,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b216fa697c44-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:54 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:51Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:54Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:50Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:51Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '930'
+      request-id:
+      - req_011CQjU6np4UoSmnpxa9yDKD
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}, {"role": "assistant", "content": [{"type": "text", "text": "I notice this
+      looks like a placeholder text (lorem ipsum) with no actual content. Is there
+      something specific you would like me to analyze or help you with? If you have
+      a real document, text, or data you''d like me to review, I''m ready to assist."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 1:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "I see this is again a placeholder text (lorem ipsum) with no
+      substantive content. This appears to be a repeated pattern, but without actual
+      text to analyze. \n\nIf you intend to have me perform an analysis, I recommend:\n1.
+      Providing the actual text or document you want me to review\n2. Specifying the
+      type of analysis you''re seeking (e.g., content analysis, linguistic review,
+      data interpretation)\n3. Sharing any specific questions or goals you have for
+      the analysis\n\nI''m ready to help once you provide the real content or clarify
+      your request."}]}, {"role": "user", "content": [{"type": "text", "text": "Chat:
+      Analysis part 2: lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I understand that this is the third instance
+      of a lorem ipsum placeholder text. \n\nAt this point, I want to confirm: Are
+      you intending to share multiple parts of a document or analysis, but haven''t
+      yet pasted the actual content? Or is this a test or placeholder exercise?\n\nIf
+      you genuinely want an analysis, I recommend:\n- Uploading the full text\n- Clarifying
+      the specific type of analysis you need\n- Providing context about the document
+      or data\n\nI''m prepared to help you with a thorough and professional analysis
+      once you share the actual content. Would you like to proceed with the real text?"}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 3:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '6802'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01QY3uC3EzcQPs6TDcfuHsq7","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"As
+        this is now the fourth consecutive message with identical lorem ipsum placeholder
+        text, I want to be direct and helpful:\n\n1. If you are experiencing technical
+        difficulties pasting your actual text, I suggest:\n- Double-checking your
+        copy/paste function\n- Restarting the chat\n- Breaking long text into smaller
+        segments\n\n2. If this is a deliberate test or placeholder, could you clarify:\n-
+        What specific analysis you need\n- The nature of the document\n- Any particular
+        goals or questions you have\n\n3. If you genuinely want an analysis, I''m
+        fully prepared to help once you provide:\n- Real text/content\n- Context about
+        the material\n- Specific analysis requirements\n\nWould you like to proceed
+        with sharing the actual content or explaining your specific needs?"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1169,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":167,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b22f0a767bf8-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:38:59 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:38:55Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:38:59Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:54Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:38:55Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1101'
+      request-id:
+      - req_011CQjU75H1kg9Q4sgVopcnT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}, {"role": "assistant", "content": [{"type": "text", "text": "I notice this
+      looks like a placeholder text (lorem ipsum) with no actual content. Is there
+      something specific you would like me to analyze or help you with? If you have
+      a real document, text, or data you''d like me to review, I''m ready to assist."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 1:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "I see this is again a placeholder text (lorem ipsum) with no
+      substantive content. This appears to be a repeated pattern, but without actual
+      text to analyze. \n\nIf you intend to have me perform an analysis, I recommend:\n1.
+      Providing the actual text or document you want me to review\n2. Specifying the
+      type of analysis you''re seeking (e.g., content analysis, linguistic review,
+      data interpretation)\n3. Sharing any specific questions or goals you have for
+      the analysis\n\nI''m ready to help once you provide the real content or clarify
+      your request."}]}, {"role": "user", "content": [{"type": "text", "text": "Chat:
+      Analysis part 2: lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I understand that this is the third instance
+      of a lorem ipsum placeholder text. \n\nAt this point, I want to confirm: Are
+      you intending to share multiple parts of a document or analysis, but haven''t
+      yet pasted the actual content? Or is this a test or placeholder exercise?\n\nIf
+      you genuinely want an analysis, I recommend:\n- Uploading the full text\n- Clarifying
+      the specific type of analysis you need\n- Providing context about the document
+      or data\n\nI''m prepared to help you with a thorough and professional analysis
+      once you share the actual content. Would you like to proceed with the real text?"}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 3:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "As this is now the fourth consecutive message with identical
+      lorem ipsum placeholder text, I want to be direct and helpful:\n\n1. If you
+      are experiencing technical difficulties pasting your actual text, I suggest:\n-
+      Double-checking your copy/paste function\n- Restarting the chat\n- Breaking
+      long text into smaller segments\n\n2. If this is a deliberate test or placeholder,
+      could you clarify:\n- What specific analysis you need\n- The nature of the document\n-
+      Any particular goals or questions you have\n\n3. If you genuinely want an analysis,
+      I''m fully prepared to help once you provide:\n- Real text/content\n- Context
+      about the material\n- Specific analysis requirements\n\nWould you like to proceed
+      with sharing the actual content or explaining your specific needs?"}]}, {"role":
+      "user", "content": [{"type": "text", "text": "Chat: Analysis part 4: lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '8924'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_014s8iYKfPM5jRDXgfduZpEM","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"I
+        appreciate your persistence, but I want to be clear and direct:\n\nYou''ve
+        now sent five consecutive messages, each containing identical lorem ipsum
+        placeholder text. This appears to be a deliberate pattern, but I cannot perform
+        a meaningful analysis on non-content text.\n\nIf you genuinely want an analysis,
+        I recommend:\n- Sharing the actual text you want analyzed\n- Explaining the
+        specific type of analysis you need\n- Providing context about your document
+        or data\n\nI''m fully prepared to help you with a professional, thorough analysis.
+        The ball is in your court - would you like to proceed with the real content?\n\nWould
+        you like to:\n1. Share the actual text\n2. Clarify your specific analysis
+        needs\n3. Explain the purpose of these placeholder messages\n\nI''m ready
+        to assist you effectively."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1547,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":175,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b24cfb047bfb-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:39:04 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:39:01Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:39:05Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:38:59Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:39:01Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1133'
+      request-id:
+      - req_011CQjU7RoJ4m22cLFmSbU5T
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Chat: Analysis part 0: lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      "}]}, {"role": "assistant", "content": [{"type": "text", "text": "I notice this
+      looks like a placeholder text (lorem ipsum) with no actual content. Is there
+      something specific you would like me to analyze or help you with? If you have
+      a real document, text, or data you''d like me to review, I''m ready to assist."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 1:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "I see this is again a placeholder text (lorem ipsum) with no
+      substantive content. This appears to be a repeated pattern, but without actual
+      text to analyze. \n\nIf you intend to have me perform an analysis, I recommend:\n1.
+      Providing the actual text or document you want me to review\n2. Specifying the
+      type of analysis you''re seeking (e.g., content analysis, linguistic review,
+      data interpretation)\n3. Sharing any specific questions or goals you have for
+      the analysis\n\nI''m ready to help once you provide the real content or clarify
+      your request."}]}, {"role": "user", "content": [{"type": "text", "text": "Chat:
+      Analysis part 2: lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant",
+      "content": [{"type": "text", "text": "I understand that this is the third instance
+      of a lorem ipsum placeholder text. \n\nAt this point, I want to confirm: Are
+      you intending to share multiple parts of a document or analysis, but haven''t
+      yet pasted the actual content? Or is this a test or placeholder exercise?\n\nIf
+      you genuinely want an analysis, I recommend:\n- Uploading the full text\n- Clarifying
+      the specific type of analysis you need\n- Providing context about the document
+      or data\n\nI''m prepared to help you with a thorough and professional analysis
+      once you share the actual content. Would you like to proceed with the real text?"}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 3:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type":
+      "text", "text": "As this is now the fourth consecutive message with identical
+      lorem ipsum placeholder text, I want to be direct and helpful:\n\n1. If you
+      are experiencing technical difficulties pasting your actual text, I suggest:\n-
+      Double-checking your copy/paste function\n- Restarting the chat\n- Breaking
+      long text into smaller segments\n\n2. If this is a deliberate test or placeholder,
+      could you clarify:\n- What specific analysis you need\n- The nature of the document\n-
+      Any particular goals or questions you have\n\n3. If you genuinely want an analysis,
+      I''m fully prepared to help once you provide:\n- Real text/content\n- Context
+      about the material\n- Specific analysis requirements\n\nWould you like to proceed
+      with sharing the actual content or explaining your specific needs?"}]}, {"role":
+      "user", "content": [{"type": "text", "text": "Chat: Analysis part 4: lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum "}]}, {"role": "assistant", "content": [{"type": "text", "text":
+      "I appreciate your persistence, but I want to be clear and direct:\n\nYou''ve
+      now sent five consecutive messages, each containing identical lorem ipsum placeholder
+      text. This appears to be a deliberate pattern, but I cannot perform a meaningful
+      analysis on non-content text.\n\nIf you genuinely want an analysis, I recommend:\n-
+      Sharing the actual text you want analyzed\n- Explaining the specific type of
+      analysis you need\n- Providing context about your document or data\n\nI''m fully
+      prepared to help you with a professional, thorough analysis. The ball is in
+      your court - would you like to proceed with the real content?\n\nWould you like
+      to:\n1. Share the actual text\n2. Clarify your specific analysis needs\n3. Explain
+      the purpose of these placeholder messages\n\nI''m ready to assist you effectively."}]},
+      {"role": "user", "content": [{"type": "text", "text": "Chat: Analysis part 5:
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem
+      ipsum lorem ipsum lorem ipsum "}]}], "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-beta:
+      - prompt-caching-2024-07-31
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '11078'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01Ub3R4NWo8KB2ukMkBqhbU5","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"At
+        this point, I want to be very direct and transparent:\n\nYou have repeatedly
+        sent identical lorem ipsum placeholder text across multiple messages (now
+        6 times), and I''m reasonably certain this is either:\n\n1. A deliberate testing/probing
+        interaction\n2. A technical issue preventing proper text input\n3. A misunderstanding
+        about how to share content for analysis\n\nMy recommendations are straightforward:\n\nIF
+        YOU WANT AN ACTUAL ANALYSIS:\n- Share the real text\n- Explain what type of
+        analysis you need\n- Provide context about your document/data\n\nIF THIS IS
+        A TEST:\n- Please clarify your specific purpose\n- Explain what you''re attempting
+        to verify\n\nIF YOU''RE EXPERIENCING TECHNICAL PROBLEMS:\n- Try restarting
+        the chat\n- Ensure you''re copying/pasting correctly\n- Break long text into
+        smaller segments\n\nI remain professionally ready to help you, but I cannot
+        analyze placeholder text. Your next step is crucial.\n\nWhat would you like
+        to do?"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":1933,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":219,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 9593b26f7e8d19bd-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:39:10 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '99000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:39:06Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:39:10Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:39:05Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '119000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:39:06Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '1288'
+      request-id:
+      - req_011CQjU7qP8LeGiLF8HGpB1k
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

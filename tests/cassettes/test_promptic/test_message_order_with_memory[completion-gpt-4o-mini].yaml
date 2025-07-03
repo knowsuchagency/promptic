@@ -1,0 +1,227 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant", "role": "system"},
+      {"content": "You always provide concise answers", "role": "system"}, {"content":
+      "You speak in a formal tone", "role": "system"}, {"content": "You are a helpful
+      assistant", "role": "system"}, {"content": "You always provide concise answers",
+      "role": "system"}, {"content": "You speak in a formal tone", "role": "system"},
+      {"content": [{"type": "text", "text": "Chat: Hello"}], "role": "user"}], "model":
+      "gpt-4o-mini", "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '512'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp61IJKh7UnMZt5J60gestLjxmptG\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517568,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"Greetings. How may I assist you today?\",\n
+        \       \"refusal\": null,\n        \"annotations\": []\n      },\n      \"logprobs\":
+        null,\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        66,\n    \"completion_tokens\": 9,\n    \"total_tokens\": 75,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b3056cf3cb91-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:39:29 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '844'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '329'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '341'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9992'
+      x-ratelimit-remaining-tokens:
+      - '199945'
+      x-ratelimit-reset-requests:
+      - 1m6.152s
+      x-ratelimit-reset-tokens:
+      - 16ms
+      x-request-id:
+      - req_c63d109081f455ee9d502e27863f12e7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant", "role": "system"},
+      {"content": "You always provide concise answers", "role": "system"}, {"content":
+      "You speak in a formal tone", "role": "system"}, {"content": "You are a helpful
+      assistant", "role": "system"}, {"content": "You always provide concise answers",
+      "role": "system"}, {"content": "You speak in a formal tone", "role": "system"},
+      {"content": [{"type": "text", "text": "Chat: Hello"}], "role": "user"}, {"content":
+      "Greetings. How may I assist you today?", "role": "assistant"}, {"content":
+      [{"type": "text", "text": "Chat: How are you?"}], "role": "user"}], "model":
+      "gpt-4o-mini", "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '667'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=rQJ0gT9SZxMTMLRxdeFAoQT51nqW6a6oNwRdw8i66Ls-1751517432-1.0.1.1-THmxx3emqedf6_un_35GAYiaH0zr9P8p2OBhgq4TxeOswHjwuQepRugEfPzYU4_Cy9posVjtdDG4pOHO5P8YGHaFyCZ3ccLFsS2koi1fTM4;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp61JK7VhhoLNGVvRRcl8PHPVqrHB\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751517569,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"I am functioning optimally, thank you.
+        How may I assist you further?\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 89,\n    \"completion_tokens\":
+        16,\n    \"total_tokens\": 105,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_62a23a81ef\"\n}\n"
+    headers:
+      CF-RAY:
+      - 9593b3086ecfcb91-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:39:29 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '876'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '402'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '405'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9991'
+      x-ratelimit-remaining-tokens:
+      - '199928'
+      x-ratelimit-reset-requests:
+      - 1m14.345s
+      x-ratelimit-reset-tokens:
+      - 21ms
+      x-request-id:
+      - req_4b14e8183378d6ef7fd162fa169dc9b9
+    status:
+      code: 200
+      message: OK
+version: 1

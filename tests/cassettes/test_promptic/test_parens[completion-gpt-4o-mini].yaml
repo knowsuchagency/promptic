@@ -1,0 +1,111 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "Who was the Vice President
+      of the United States in 2001?"}], "role": "user"}], "model": "gpt-4o-mini",
+      "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '173'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=KQNMiKLJO6j3NoE2nO1PtxSPCb2V02Hfzc2omWLIQwg-1751516317-1.0.1.1-e0bwqNvMVlZPPWI81TzG8KWUs9WTu5wOZ46TlnO1slRlwsa72gjBm9TO9td8jXfzikNoD0aS6yEgOT3GaCnGxCyCaXN_MsM7liPQioD_r1M;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5jzoiiYiNLbigVj9Rzs36ukkj36\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516495,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The Vice President of the United States
+        in 2001 was Dick Cheney. He served under President George W. Bush from January
+        20, 2001, to January 20, 2009.\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 21,\n    \"completion_tokens\":
+        41,\n    \"total_tokens\": 62,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 959398cffa862f15-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:21:36 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '956'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1272'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '1276'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9998'
+      x-ratelimit-remaining-tokens:
+      - '199983'
+      x-ratelimit-reset-requests:
+      - 16.264s
+      x-ratelimit-reset-tokens:
+      - 4ms
+      x-request-id:
+      - req_489a398a9b436a7752bd4d7072a8cf6f
+    status:
+      code: 200
+      message: OK
+version: 1

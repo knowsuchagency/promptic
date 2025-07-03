@@ -1,0 +1,88 @@
+interactions:
+- request:
+    body: '{"model": "claude-3-5-haiku-20241022", "messages": [{"role": "user", "content":
+      [{"type": "text", "text": "Who was the President of the United States in 2001?"}]}],
+      "temperature": 0, "max_tokens": 4096}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      anthropic-version:
+      - '2023-06-01'
+      connection:
+      - keep-alive
+      content-length:
+      - '202'
+      content-type:
+      - application/json
+      host:
+      - api.anthropic.com
+      user-agent:
+      - litellm/1.56.3
+      x-api-key:
+      - REDACTED
+    method: POST
+    uri: https://api.anthropic.com/v1/messages
+  response:
+    body:
+      string: '{"id":"msg_01R9tgBVQjFb2BqynpwTdDaG","type":"message","role":"assistant","model":"claude-3-5-haiku-20241022","content":[{"type":"text","text":"George
+        W. Bush was the President of the United States in 2001. He was inaugurated
+        on January 20, 2001, after winning the 2000 presidential election against
+        Al Gore. Bush was serving as president during the September 11, 2001 terrorist
+        attacks and led the country''s response to those events."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":20,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":72,"service_tier":"standard"}}'
+    headers:
+      CF-RAY:
+      - 959398ad2a1e2b55-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:21:32 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Robots-Tag:
+      - none
+      anthropic-organization-id:
+      - 83f98366-f43a-4b95-9db2-76c5b44e9083
+      anthropic-ratelimit-input-tokens-limit:
+      - '100000'
+      anthropic-ratelimit-input-tokens-remaining:
+      - '100000'
+      anthropic-ratelimit-input-tokens-reset:
+      - '2025-07-03T04:21:31Z'
+      anthropic-ratelimit-output-tokens-limit:
+      - '20000'
+      anthropic-ratelimit-output-tokens-remaining:
+      - '20000'
+      anthropic-ratelimit-output-tokens-reset:
+      - '2025-07-03T04:21:33Z'
+      anthropic-ratelimit-requests-limit:
+      - '1000'
+      anthropic-ratelimit-requests-remaining:
+      - '999'
+      anthropic-ratelimit-requests-reset:
+      - '2025-07-03T04:21:29Z'
+      anthropic-ratelimit-tokens-limit:
+      - '120000'
+      anthropic-ratelimit-tokens-remaining:
+      - '120000'
+      anthropic-ratelimit-tokens-reset:
+      - '2025-07-03T04:21:31Z'
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '616'
+      request-id:
+      - req_011CQjSn4QXqBGz3Ra6dJa6M
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      via:
+      - 1.1 google
+    status:
+      code: 200
+      message: OK
+version: 1

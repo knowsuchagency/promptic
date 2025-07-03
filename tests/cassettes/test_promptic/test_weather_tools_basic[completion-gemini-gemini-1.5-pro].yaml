@@ -1,0 +1,461 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      New York right now?"}]}], "tools": [{"function_declarations": [{"name": "get_location",
+      "description": "Get latitude and longitude based on city name", "parameters":
+      {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]}},
+      {"name": "get_weather", "description": "Get weather based on latitude and longitude",
+      "parameters": {"type": "object", "properties": {"latitude": {"type": "number"},
+      "longitude": {"type": "number"}}, "required": ["latitude", "longitude"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '667'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_location\",\n
+        \             \"args\": {\n                \"city\": \"New York\"\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_weather\",\n              \"args\": {\n                \"latitude\":
+        40.7128,\n                \"longitude\": -74.006\n              }\n            }\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.0035695960888495813\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 43,\n    \"candidatesTokenCount\": 13,\n    \"totalTokenCount\":
+        56,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 43\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"HwlmaJrMCKyAmNAPy8DBWA\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:37:52 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1187
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1003'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "How''s the weather in
+      New York right now?"}]}, {"role": "model", "parts": [{"function_call": {"name":
+      "get_location", "args": {"city": "New York"}}}, {"function_call": {"name": "get_weather",
+      "args": {"latitude": 40.7128, "longitude": -74.006}}}]}, {"parts": [{"function_response":
+      {"name": "get_location", "response": {"content": "{\"latitude\": 40.7128, \"longitude\":
+      -74.006, \"city\": \"New York\"}"}}}, {"function_response": {"name": "get_weather",
+      "response": {"content": "{\"temperature\": 59, \"condition\": \"sunny\", \"humidity\":
+      50, \"wind_speed\": 8}"}}}]}], "tools": [{"function_declarations": [{"name":
+      "get_location", "description": "Get latitude and longitude based on city name",
+      "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}, {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '1192'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"The weather in New York is sunny with
+        a temperature of 59 degrees Fahrenheit. The humidity is 50% and the wind speed
+        is 8 mph.\\n\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n
+        \     \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -0.02573532917920281\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 122,\n    \"candidatesTokenCount\":
+        34,\n    \"totalTokenCount\": 156,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 122\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 34\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n
+        \ \"responseId\": \"IAlmaMeZG6fQ1PIPp4DX2QQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:37:53 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=953
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '779'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Please compare the weather
+      between New York and Miami"}]}], "tools": [{"function_declarations": [{"name":
+      "get_location", "description": "Get latitude and longitude based on city name",
+      "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}, {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '680'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_location\",\n
+        \             \"args\": {\n                \"city\": \"New York\"\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_location\",\n              \"args\": {\n                \"city\":
+        \"Miami\"\n              }\n            }\n          },\n          {\n            \"functionCall\":
+        {\n              \"name\": \"get_weather\",\n              \"args\": {\n                \"longitude\":
+        -74.006,\n                \"latitude\": 40.7128\n              }\n            }\n
+        \         },\n          {\n            \"functionCall\": {\n              \"name\":
+        \"get_weather\",\n              \"args\": {\n                \"latitude\":
+        25.7617,\n                \"longitude\": -80.1918\n              }\n            }\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.00019766451790928841\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 41,\n    \"candidatesTokenCount\": 25,\n    \"totalTokenCount\":
+        66,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 41\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 25\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"IQlmaPr6JOzi1PIPzajVyQc\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:37:55 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1714
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1405'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Please compare the weather
+      between New York and Miami"}]}, {"role": "model", "parts": [{"function_call":
+      {"name": "get_location", "args": {"city": "New York"}}}, {"function_call": {"name":
+      "get_location", "args": {"city": "Miami"}}}, {"function_call": {"name": "get_weather",
+      "args": {"longitude": -74.006, "latitude": 40.7128}}}, {"function_call": {"name":
+      "get_weather", "args": {"latitude": 25.7617, "longitude": -80.1918}}}]}, {"parts":
+      [{"function_response": {"name": "get_location", "response": {"content": "{\"latitude\":
+      40.7128, \"longitude\": -74.006, \"city\": \"New York\"}"}}}, {"function_response":
+      {"name": "get_location", "response": {"content": "{\"latitude\": 25.7617, \"longitude\":
+      -80.1918, \"city\": \"Miami\"}"}}}, {"function_response": {"name": "get_weather",
+      "response": {"content": "{\"temperature\": 59, \"condition\": \"sunny\", \"humidity\":
+      50, \"wind_speed\": 8}"}}}, {"function_response": {"name": "get_weather", "response":
+      {"content": "{\"temperature\": 77, \"condition\": \"cloudy\", \"humidity\":
+      80, \"wind_speed\": 6}"}}}]}], "tools": [{"function_declarations": [{"name":
+      "get_location", "description": "Get latitude and longitude based on city name",
+      "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}, {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '1684'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"The weather in New York is currently
+        59 degrees and sunny, with 50% humidity and 8 mph wind speed. Miami is currently
+        77 degrees and cloudy, with 80% humidity and 6 mph wind speed.\\n\"\n          }\n
+        \       ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.02327877399968166\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 198,\n    \"candidatesTokenCount\": 51,\n    \"totalTokenCount\":
+        249,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 198\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 51\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"IwlmaMTnIafQ1PIPp4DX2QQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:37:56 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1140
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '833'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "What''s the temperature
+      difference between New York and Miami?"}]}], "tools": [{"function_declarations":
+      [{"name": "get_location", "description": "Get latitude and longitude based on
+      city name", "parameters": {"type": "object", "properties": {"city": {"type":
+      "string"}}, "required": ["city"]}}, {"name": "get_weather", "description": "Get
+      weather based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '688'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_location\",\n
+        \             \"args\": {\n                \"city\": \"New York\"\n              }\n
+        \           }\n          },\n          {\n            \"functionCall\": {\n
+        \             \"name\": \"get_location\",\n              \"args\": {\n                \"city\":
+        \"Miami\"\n              }\n            }\n          },\n          {\n            \"functionCall\":
+        {\n              \"name\": \"get_weather\",\n              \"args\": {\n                \"longitude\":
+        -74.006,\n                \"latitude\": 40.7128\n              }\n            }\n
+        \         },\n          {\n            \"functionCall\": {\n              \"name\":
+        \"get_weather\",\n              \"args\": {\n                \"longitude\":
+        -80.1918,\n                \"latitude\": 25.7617\n              }\n            }\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -8.5110766813159e-05\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 44,\n    \"candidatesTokenCount\": 25,\n    \"totalTokenCount\":
+        69,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 44\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 25\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"JQlmaO8V7brH8A_q3IPoCA\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:37:58 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1847
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1401'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "What''s the temperature
+      difference between New York and Miami?"}]}, {"role": "model", "parts": [{"function_call":
+      {"name": "get_location", "args": {"city": "New York"}}}, {"function_call": {"name":
+      "get_location", "args": {"city": "Miami"}}}, {"function_call": {"name": "get_weather",
+      "args": {"longitude": -74.006, "latitude": 40.7128}}}, {"function_call": {"name":
+      "get_weather", "args": {"longitude": -80.1918, "latitude": 25.7617}}}]}, {"parts":
+      [{"function_response": {"name": "get_location", "response": {"content": "{\"latitude\":
+      40.7128, \"longitude\": -74.006, \"city\": \"New York\"}"}}}, {"function_response":
+      {"name": "get_location", "response": {"content": "{\"latitude\": 25.7617, \"longitude\":
+      -80.1918, \"city\": \"Miami\"}"}}}, {"function_response": {"name": "get_weather",
+      "response": {"content": "{\"temperature\": 59, \"condition\": \"sunny\", \"humidity\":
+      50, \"wind_speed\": 8}"}}}, {"function_response": {"name": "get_weather", "response":
+      {"content": "{\"temperature\": 77, \"condition\": \"cloudy\", \"humidity\":
+      80, \"wind_speed\": 6}"}}}]}], "tools": [{"function_declarations": [{"name":
+      "get_location", "description": "Get latitude and longitude based on city name",
+      "parameters": {"type": "object", "properties": {"city": {"type": "string"}},
+      "required": ["city"]}}, {"name": "get_weather", "description": "Get weather
+      based on latitude and longitude", "parameters": {"type": "object", "properties":
+      {"latitude": {"type": "number"}, "longitude": {"type": "number"}}, "required":
+      ["latitude", "longitude"]}}]}], "toolConfig": {"functionCallingConfig": {"mode":
+      "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '1692'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"The temperature difference between
+        New York and Miami is 18 degrees Fahrenheit.  New York's temperature is 59
+        degrees Fahrenheit and Miami's temperature is 77 degrees Fahrenheit.\\n\"\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.02545064389705658\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 201,\n    \"candidatesTokenCount\": 40,\n    \"totalTokenCount\":
+        241,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 201\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 40\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-1.5-pro-002\",\n  \"responseId\":
+        \"JglmaO7JO8mNmNAPjavtmAE\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:38:00 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1149
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '831'
+    status:
+      code: 200
+      message: OK
+version: 1

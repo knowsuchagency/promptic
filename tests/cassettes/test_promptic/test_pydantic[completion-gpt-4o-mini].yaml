@@ -1,0 +1,115 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": [{"type": "text", "text": "What''s the capital
+      of France?"}], "role": "user"}, {"role": "user", "content": "Format your response
+      according to this JSON schema:\n```json\n{\n  \"properties\": {\n    \"country\":
+      {\n      \"type\": \"string\"\n    },\n    \"capital\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\":
+      [\n    \"country\",\n    \"capital\"\n  ],\n  \"type\": \"object\"\n}\n```\n\nProvide
+      the result enclosed in triple backticks with ''json'' on the first line. Don''t
+      put control characters in the wrong place or the JSON will be invalid."}], "model":
+      "gpt-4o-mini", "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '631'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=KQNMiKLJO6j3NoE2nO1PtxSPCb2V02Hfzc2omWLIQwg-1751516317-1.0.1.1-e0bwqNvMVlZPPWI81TzG8KWUs9WTu5wOZ46TlnO1slRlwsa72gjBm9TO9td8jXfzikNoD0aS6yEgOT3GaCnGxCyCaXN_MsM7liPQioD_r1M;
+        _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-Bp5k3DcCSkPIJpZd7YOXSbiPddqff\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1751516499,\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"```json\\n{\\n  \\\"country\\\": \\\"France\\\",\\n
+        \ \\\"capital\\\": \\\"Paris\\\"\\n}\\n```\",\n        \"refusal\": null,\n
+        \       \"annotations\": []\n      },\n      \"logprobs\": null,\n      \"finish_reason\":
+        \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 122,\n    \"completion_tokens\":
+        20,\n    \"total_tokens\": 142,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_34a54ae93c\"\n}\n"
+    headers:
+      CF-RAY:
+      - 959398ea8b822f15-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jul 2025 04:21:40 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '881'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '501'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      x-envoy-upstream-service-time:
+      - '524'
+      x-ratelimit-limit-requests:
+      - '10000'
+      x-ratelimit-limit-tokens:
+      - '200000'
+      x-ratelimit-remaining-requests:
+      - '9996'
+      x-ratelimit-remaining-tokens:
+      - '199886'
+      x-ratelimit-reset-requests:
+      - 29.286s
+      x-ratelimit-reset-tokens:
+      - 33ms
+      x-request-id:
+      - req_91020e447fe59241887db1f1588294b4
+    status:
+      code: 200
+      message: OK
+version: 1

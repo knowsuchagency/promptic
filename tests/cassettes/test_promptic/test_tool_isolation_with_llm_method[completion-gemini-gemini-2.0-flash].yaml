@@ -1,0 +1,200 @@
+interactions:
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Respond to: What time
+      is it?"}]}], "tools": [{"function_declarations": [{"name": "get_time", "description":
+      "Get the current time", "parameters": {"type": "object", "properties": {"llm_invocation":
+      {"type": "boolean", "description": "True if the function was invoked by an LLM"}},
+      "required": ["llm_invocation"]}}]}], "toolConfig": {"functionCallingConfig":
+      {"mode": "AUTO"}}, "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '467'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"functionCall\": {\n              \"name\": \"get_time\",\n
+        \             \"args\": {\n                \"llm_invocation\": true\n              }\n
+        \           }\n          }\n        ],\n        \"role\": \"model\"\n      },\n
+        \     \"finishReason\": \"STOP\",\n      \"avgLogprobs\": 2.1576197468675673e-06\n
+        \   }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 35,\n    \"candidatesTokenCount\":
+        8,\n    \"totalTokenCount\": 43,\n    \"promptTokensDetails\": [\n      {\n
+        \       \"modality\": \"TEXT\",\n        \"tokenCount\": 35\n      }\n    ],\n
+        \   \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 8\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n
+        \ \"responseId\": \"6glmaLfFLKmDmNAPuPHvKQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:41:15 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=553
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '779'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Respond to: What time
+      is it?"}]}, {"role": "model", "parts": [{"function_call": {"name": "get_time",
+      "args": {"llm_invocation": true}}}]}, {"parts": [{"function_response": {"name":
+      "get_time", "response": {"content": "\"12:00 PM\""}}}]}], "tools": [{"function_declarations":
+      [{"name": "get_time", "description": "Get the current time", "parameters": {"type":
+      "object", "properties": {"llm_invocation": {"type": "boolean", "description":
+      "True if the function was invoked by an LLM"}}, "required": ["llm_invocation"]}}]}],
+      "toolConfig": {"functionCallingConfig": {"mode": "AUTO"}}, "generationConfig":
+      {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '671'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"It is 12:00 PM.\\n\"\n          }\n
+        \       ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.01068584756417708\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 55,\n    \"candidatesTokenCount\": 11,\n    \"totalTokenCount\":
+        66,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 55\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 11\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n  \"responseId\":
+        \"6wlmaPnPHe26x_AP6tyD6Ag\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:41:15 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=509
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '663'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contents": [{"role": "user", "parts": [{"text": "Respond to: What time
+      is it?"}]}], "generationConfig": {"temperature": 0}}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '125'
+      content-type:
+      - application/json
+      host:
+      - generativelanguage.googleapis.com
+      user-agent:
+      - litellm/1.56.3
+    method: POST
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=REDACTED
+  response:
+    body:
+      string: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\":
+        [\n          {\n            \"text\": \"To give you the best response, I need
+        to know what time it is!  \\n\\nHowever, here are a few options depending
+        on the situation:\\n\\n*   **If I know the time:** \\\"It is [time] [AM/PM].\\\"\\n*
+        \  **If I don't know the time:** \\\"I'm sorry, I don't know the time.\\\"
+        or \\\"I don't have a clock on me.\\\"\\n*   **If I'm being playful:** \\\"Time
+        for you to get a watch!\\\" or \\\"Time to make the donuts!\\\" (if it's early)\\n*
+        \  **If I want to be helpful:** \\\"Let me check my phone/computer for you.\\\"\\n\"\n
+        \         }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\":
+        \"STOP\",\n      \"avgLogprobs\": -0.23019731366956556\n    }\n  ],\n  \"usageMetadata\":
+        {\n    \"promptTokenCount\": 8,\n    \"candidatesTokenCount\": 148,\n    \"totalTokenCount\":
+        156,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n
+        \       \"tokenCount\": 8\n      }\n    ],\n    \"candidatesTokensDetails\":
+        [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 148\n
+        \     }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.0-flash\",\n  \"responseId\":
+        \"7AlmaIz9De26x_AP6tyD6Ag\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Thu, 03 Jul 2025 04:41:17 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1563
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1131'
+    status:
+      code: 200
+      message: OK
+version: 1
