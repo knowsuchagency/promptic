@@ -232,30 +232,20 @@ print("".join(write_poem("artificial intelligence")))
 
 ### OpenAI Client
 
-Promptic uses [litellm](https://docs.litellm.ai/) by default, but supports any OpenAI-compatible client.
-
-Here's an example on how to use the [langfuse](https://langfuse.com/) OpenAI client to trace function calls.
+Promptic uses [litellm](https://docs.litellm.ai/) by default, but supports using the OpenAI client directly:
 
 ```py
-# examples/langfuse_openai.py
+from openai import OpenAI
+from promptic import llm
 
-from langfuse.openai import openai
-from langfuse.decorators import observe
-from promptic import Promptic
+client = OpenAI()
 
-
-promptic = Promptic(openai_client=openai.OpenAI())
-
-
-@observe
-@promptic.llm
+@llm(openai_client=client)
 def greet(name):
     """Greet {name}"""
 
-
 print(greet("John"))
 # Hello, John!
-
 ```
 
 ### Observability
@@ -693,6 +683,12 @@ print(
 
 - **Streaming**:
   - Gemini models do not support streaming when using tools/function calls
+
+- **Structured Outputs with Images**:
+  - Gemini 1.5 Pro may occasionally return the JSON schema structure itself instead of conforming data when processing images with Pydantic model return types. This appears to be a model-specific issue. If you encounter this, consider:
+    - Using Gemini 2.0 Flash instead, which handles structured outputs with images more reliably
+    - Using a string return type and parsing the JSON response manually
+    - Processing the image and structured output in separate calls
 
 These limitations reflect the underlying differences between LLM providers and their implementations. For provider-specific features or workarounds, you may need to interact with [litellm][litellm] or the provider's SDK directly.
 
