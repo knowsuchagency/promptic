@@ -346,6 +346,106 @@ def test_streaming_with_tools(model, create_completion_fn):
 
 
 @pytest.mark.vcr
+@pytest.mark.parametrize("model", REGULAR_MODELS)
+@pytest.mark.parametrize(
+    "create_completion_fn", [openai_completion_fn, litellm_completion]
+)
+def test_streaming_tools_with_memory(model, create_completion_fn):
+    """Test that streaming tool calls work with memory and trigger follow-up responses."""
+    if create_completion_fn == openai_completion_fn and not model.startswith("gpt"):
+        pytest.skip("Non-GPT models are not supported with OpenAI client")
+
+    if model.startswith(("gemini", "vertex")):  # pragma: no cover
+        pytest.skip("Gemini models do not support streaming with tools")
+
+    state = State()
+    time_mock = Mock(return_value="3:45 PM")
+    counter_value = [0]  # Use list to allow modification in closure
+    
+    def counter_mock():
+        counter_value[0] += 1
+        return f"Count: {counter_value[0]}"
+
+    @retry(
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(ERRORS),
+    )
+    @llm(
+        stream=True,
+        memory=True,
+        state=state,
+        model=model,
+        system="You are a helpful assistant that uses tools and provides follow-up responses",
+        temperature=0,
+        timeout=8,
+        create_completion_fn=create_completion_fn,
+    )
+    def streaming_assistant(query):
+        """{query}"""
+
+    @streaming_assistant.tool
+    def get_time():
+        """Get the current time"""
+        return time_mock()
+    
+    @streaming_assistant.tool
+    def increment_counter():
+        """Increment a counter and return the current count"""
+        return counter_mock()
+
+    # First query - should call tool and provide response
+    result1 = "".join(streaming_assistant("What time is it? Please tell me after you get the time."))
+    
+    # Verify the tool was called
+    time_mock.assert_called_once()
+    
+    # Verify response contains both tool result and assistant's follow-up
+    assert isinstance(result1, str)
+    assert len(result1) > 0
+    
+    # Check that memory contains the expected messages:
+    # 1. System message (added automatically)
+    # 2. User message
+    # 3. Assistant message with tool calls
+    # 4. Tool result message  
+    # 5. Assistant follow-up response (if our implementation is working correctly)
+    messages = state.get_messages()
+    print(f"Messages after first interaction: {len(messages)}")
+    for i, msg in enumerate(messages):
+        print(f"  {i}: {msg.get('role')} - {msg.get('content', 'N/A')[:50]}...")
+    
+    # Find the tool result message
+    tool_messages = [msg for msg in messages if msg.get("role") == "tool"]
+    assert len(tool_messages) == 1, f"Expected 1 tool message, got {len(tool_messages)}"
+    assert "3:45 PM" in tool_messages[0]["content"]
+    
+    # Second interaction - should increment counter and respond
+    counter_value[0] = 0  # Reset for clean test
+    result2 = "".join(streaming_assistant("Please increment the counter and tell me the result."))
+    
+    # Verify second tool was called
+    assert counter_value[0] == 1
+    
+    # Check messages after second interaction
+    messages_after = state.get_messages()
+    print(f"Messages after second interaction: {len(messages_after)}")
+    for i, msg in enumerate(messages_after):
+        print(f"  {i}: {msg.get('role')} - {msg.get('content', 'N/A')[:50]}...")
+    
+    # Verify the second tool result is in memory
+    tool_messages_after = [msg for msg in messages_after if msg.get("role") == "tool"]
+    assert len(tool_messages_after) == 2, f"Expected 2 tool messages total, got {len(tool_messages_after)}"
+    
+    # Find the counter tool result
+    counter_tool_messages = [msg for msg in tool_messages_after if "Count: 1" in msg.get("content", "")]
+    assert len(counter_tool_messages) == 1, "Should find counter tool result in memory"
+    
+    # Verify that both queries got responses (tool calls were executed and responses generated)
+    assert len(result1) > 0, "First interaction should have generated a response"
+    assert len(result2) > 0, "Second interaction should have generated a response"
+
+
+@pytest.mark.vcr
 @pytest.mark.parametrize("model", CHEAP_MODELS)
 @pytest.mark.parametrize(
     "create_completion_fn", [openai_completion_fn, litellm_completion]
