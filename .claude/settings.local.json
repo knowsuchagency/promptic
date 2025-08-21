@@ -11,8 +11,14 @@
       "Bash(uv sync:*)",
       "Bash(uv lock:*)",
       "Bash(find:*)",
-      "Bash(just test-ci:*)"
+      "Bash(just test-ci:*)",
+      "Bash(docker build:*)",
+      "Bash(docker run:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(just test:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
