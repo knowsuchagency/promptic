@@ -164,3 +164,4 @@ cython_debug/
 test.py
 .aider*
 .DS_Store
+.claude/settings.local.json
