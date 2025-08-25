@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.5.1"
+__version__ = "5.5.2"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -284,7 +284,6 @@ class Promptic:
 
     def message(self, message: str, **kwargs):
         messages = [{"content": message, "role": "user"}]
-        completion_messages, response = self._completion(messages, **kwargs)
 
         call = None
 
@@ -292,7 +291,7 @@ class Promptic:
             call = self.weave_client.create_call(
                 op="Promptic.message",
                 inputs={
-                    "messages": completion_messages,
+                    "messages": messages,
                 },
                 attributes={
                     "model": self.model,
@@ -303,16 +302,65 @@ class Promptic:
                 display_name="promptic_message",
             )
 
-        if (self.completion_kwargs | kwargs).get("stream"):
-            return self._stream_response(response, call)
-        else:
-            content = response.choices[0].message.content
-            result = self._parse_and_validate_response(content)
+        while True:
+            completion_messages, response = self._completion(messages, **kwargs)
 
-            if call and self.weave_client:
-                self.weave_client.finish_call(call, output=result)
+            if call:
+                call.inputs["messages"] = completion_messages
 
-            return result
+            if (self.completion_kwargs | kwargs).get("stream"):
+                return self._stream_response(response, call)
+
+            for choice in response.choices:
+                # Handle tool calls if present
+                if hasattr(choice.message, "tool_calls") and choice.message.tool_calls:
+                    tool_calls = choice.message.tool_calls
+                    messages.append(choice.message)
+
+                    for tool_call in tool_calls:
+                        function_name = tool_call.function.name
+                        if function_name in self.tools:
+                            function_args = json.loads(tool_call.function.arguments)
+                            if self.gemini and "llm_invocation" in function_args:
+                                function_args.pop("llm_invocation")
+                            if self.dry_run:
+                                self.logger.warning(
+                                    f"[DRY RUN]: {function_name = } {function_args = }"
+                                )
+                                function_response = f"[DRY RUN] Would have called {function_name = } {function_args = }"
+                            else:
+                                try:
+                                    self.logger.debug(
+                                        f"Calling tool {function_name}({function_args}) using {self.model = }"
+                                    )
+                                    fn = self.tools[function_name]
+                                    function_args = self._deserialize_pydantic_args(
+                                        fn, function_args
+                                    )
+                                    function_response = fn(**function_args)
+                                except Exception as e:
+                                    self.logger.error(
+                                        f"Error calling tool {function_name}({function_args}): {e}"
+                                    )
+                                    function_response = f"Error calling tool {function_name}({function_args}): {e}"
+                            msg = {
+                                "tool_call_id": tool_call.id,
+                                "role": "tool",
+                                "name": function_name,
+                                "content": to_json(function_response),
+                            }
+                            messages.append(msg)
+
+                # GPT and Claude have `stop` when conversation is complete
+                # Gemini has `stop` as a finish reason when tools are used
+                elif choice.finish_reason in ["stop", "max_tokens", "length"]:
+                    content = choice.message.content
+                    result = self._parse_and_validate_response(content)
+
+                    if call and self.weave_client:
+                        self.weave_client.finish_call(call, output=result)
+
+                    return result
 
     def _set_anthropic_cache(self, messages: List[dict]):
         """Set the cache control for the message if it is an Anthropic message"""
