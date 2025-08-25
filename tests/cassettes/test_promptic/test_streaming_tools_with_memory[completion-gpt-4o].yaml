@@ -1,0 +1,490 @@
+interactions:
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant that uses tools
+      and provides follow-up responses", "role": "system"}, {"content": "You are a
+      helpful assistant that uses tools and provides follow-up responses", "role":
+      "system"}, {"content": [{"type": "text", "text": "What time is it? Please tell
+      me after you get the time."}], "role": "user"}], "model": "gpt-4o", "stream":
+      true, "temperature": 0, "tool_choice": "auto", "tools": [{"type": "function",
+      "function": {"name": "get_time", "description": "Get the current time", "parameters":
+      {"type": "object", "properties": {}, "required": []}}}, {"type": "function",
+      "function": {"name": "increment_counter", "description": "Increment a counter
+      and return the current count", "parameters": {"type": "object", "properties":
+      {}, "required": []}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '802'
+      content-type:
+      - application/json
+      cookie:
+      - _cfuvid=64NqeN85i3oI_MhvbCVQaRIiOTwnd5zhZJIeAULt__U-1751516317219-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: 'data: {"id":"chatcmpl-C8ah1ajCYHtYwpxb8hmFZzOMJXrEe","object":"chat.completion.chunk","created":1756163707,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_ff25b2783a","choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_eBKgwOnIRT6HHxSXKKxvY5js","type":"function","function":{"name":"get_time","arguments":""}}],"refusal":null},"logprobs":null,"finish_reason":null}],"obfuscation":"0n6RQ4P8j"}
+
+
+        data: {"id":"chatcmpl-C8ah1ajCYHtYwpxb8hmFZzOMJXrEe","object":"chat.completion.chunk","created":1756163707,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_ff25b2783a","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}"}}]},"logprobs":null,"finish_reason":null}],"obfuscation":"7"}
+
+
+        data: {"id":"chatcmpl-C8ah1ajCYHtYwpxb8hmFZzOMJXrEe","object":"chat.completion.chunk","created":1756163707,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_ff25b2783a","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"obfuscation":"7"}
+
+
+        data: [DONE]
+
+
+        '
+    headers:
+      CF-RAY:
+      - 974eca244da2dbbe-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Date:
+      - Mon, 25 Aug 2025 23:15:08 GMT
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=nlnxQSa9oq8mTL2pC8fYbQO_irpCiMjEQQOEg6QS2AQ-1756163708-1.0.1.1-2B_IP6xG9VHzZGd4BwEuQTM95S1LPtfkynyPtxDRVgkQeiY3YwJItjifid3yJS.r5V.xQNiRwxa1YakzJAkfZzcT_xd9OoF11d3VrdJZaDk;
+        path=/; expires=Mon, 25-Aug-25 23:45:08 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=StP47i7IbpWBqIobq0Zz1lanGiAYHvQRfWe1hmNKQGE-1756163708303-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '336'
+      openai-project:
+      - proj_CcA31jIeoSaOgh02sb4Qn0yc
+      openai-version:
+      - '2020-10-01'
+      x-envoy-upstream-service-time:
+      - '390'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29944'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 112ms
+      x-request-id:
+      - req_4ac4889cd7f74860b25dbba791bd1602
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant that uses tools
+      and provides follow-up responses", "role": "system"}, {"content": "You are a
+      helpful assistant that uses tools and provides follow-up responses", "role":
+      "system"}, {"content": [{"type": "text", "text": "What time is it? Please tell
+      me after you get the time."}], "role": "user"}, {"role": "assistant", "content":
+      "", "tool_calls": [{"id": "call_eBKgwOnIRT6HHxSXKKxvY5js", "type": "function",
+      "function": {"name": "get_time", "arguments": "{}"}}]}, {"tool_call_id": "call_eBKgwOnIRT6HHxSXKKxvY5js",
+      "role": "tool", "name": "get_time", "content": "\"3:45 PM\""}], "model": "gpt-4o",
+      "temperature": 0, "tool_choice": "auto", "tools": [{"type": "function", "function":
+      {"name": "get_time", "description": "Get the current time", "parameters": {"type":
+      "object", "properties": {}, "required": []}}}, {"type": "function", "function":
+      {"name": "increment_counter", "description": "Increment a counter and return
+      the current count", "parameters": {"type": "object", "properties": {}, "required":
+      []}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1067'
+      content-type:
+      - application/json
+      cookie:
+      - _cfuvid=StP47i7IbpWBqIobq0Zz1lanGiAYHvQRfWe1hmNKQGE-1756163708303-0.0.1.1-604800000;
+        __cf_bm=nlnxQSa9oq8mTL2pC8fYbQO_irpCiMjEQQOEg6QS2AQ-1756163708-1.0.1.1-2B_IP6xG9VHzZGd4BwEuQTM95S1LPtfkynyPtxDRVgkQeiY3YwJItjifid3yJS.r5V.xQNiRwxa1YakzJAkfZzcT_xd9OoF11d3VrdJZaDk
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-C8ah2gqdhzZEdzZi1jDStjkEglp9Z\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1756163708,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The current time is 3:45 PM.\",\n        \"refusal\":
+        null,\n        \"annotations\": []\n      },\n      \"logprobs\": null,\n
+        \     \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\":
+        122,\n    \"completion_tokens\": 11,\n    \"total_tokens\": 133,\n    \"prompt_tokens_details\":
+        {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_ff25b2783a\"\n}\n"
+    headers:
+      CF-RAY:
+      - 974eca293973dbbe-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 Aug 2025 23:15:08 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '832'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '491'
+      openai-project:
+      - proj_CcA31jIeoSaOgh02sb4Qn0yc
+      openai-version:
+      - '2020-10-01'
+      x-envoy-upstream-service-time:
+      - '509'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29940'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 120ms
+      x-request-id:
+      - req_be61d8fcb0654332a24fbb7d76669725
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant that uses tools
+      and provides follow-up responses", "role": "system"}, {"content": "You are a
+      helpful assistant that uses tools and provides follow-up responses", "role":
+      "system"}, {"content": [{"type": "text", "text": "What time is it? Please tell
+      me after you get the time."}], "role": "user"}, {"role": "assistant", "content":
+      "", "tool_calls": [{"id": "call_eBKgwOnIRT6HHxSXKKxvY5js", "type": "function",
+      "function": {"name": "get_time", "arguments": "{}"}}]}, {"tool_call_id": "call_eBKgwOnIRT6HHxSXKKxvY5js",
+      "role": "tool", "name": "get_time", "content": "\"3:45 PM\""}, {"content": [{"type":
+      "text", "text": "Please increment the counter and tell me the result."}], "role":
+      "user"}], "model": "gpt-4o", "stream": true, "temperature": 0, "tool_choice":
+      "auto", "tools": [{"type": "function", "function": {"name": "get_time", "description":
+      "Get the current time", "parameters": {"type": "object", "properties": {}, "required":
+      []}}}, {"type": "function", "function": {"name": "increment_counter", "description":
+      "Increment a counter and return the current count", "parameters": {"type": "object",
+      "properties": {}, "required": []}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1196'
+      content-type:
+      - application/json
+      cookie:
+      - _cfuvid=StP47i7IbpWBqIobq0Zz1lanGiAYHvQRfWe1hmNKQGE-1756163708303-0.0.1.1-604800000;
+        __cf_bm=nlnxQSa9oq8mTL2pC8fYbQO_irpCiMjEQQOEg6QS2AQ-1756163708-1.0.1.1-2B_IP6xG9VHzZGd4BwEuQTM95S1LPtfkynyPtxDRVgkQeiY3YwJItjifid3yJS.r5V.xQNiRwxa1YakzJAkfZzcT_xd9OoF11d3VrdJZaDk
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: 'data: {"id":"chatcmpl-C8ah3SyQZSOhzsZwdYS1tpYc733Qy","object":"chat.completion.chunk","created":1756163709,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_46bff0e0c8","choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_RqNS2836xTphZqbKT8LHMHtm","type":"function","function":{"name":"increment_counter","arguments":""}}],"refusal":null},"logprobs":null,"finish_reason":null}],"obfuscation":""}
+
+
+        data: {"id":"chatcmpl-C8ah3SyQZSOhzsZwdYS1tpYc733Qy","object":"chat.completion.chunk","created":1756163709,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_46bff0e0c8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}"}}]},"logprobs":null,"finish_reason":null}],"obfuscation":"t"}
+
+
+        data: {"id":"chatcmpl-C8ah3SyQZSOhzsZwdYS1tpYc733Qy","object":"chat.completion.chunk","created":1756163709,"model":"gpt-4o-2024-08-06","service_tier":"default","system_fingerprint":"fp_46bff0e0c8","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"obfuscation":"2"}
+
+
+        data: [DONE]
+
+
+        '
+    headers:
+      CF-RAY:
+      - 974eca2d2cd5dbbe-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Date:
+      - Mon, 25 Aug 2025 23:15:09 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '302'
+      openai-project:
+      - proj_CcA31jIeoSaOgh02sb4Qn0yc
+      openai-version:
+      - '2020-10-01'
+      x-envoy-upstream-service-time:
+      - '395'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29926'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 148ms
+      x-request-id:
+      - req_5e9de6b093ea43e9a9d92aa0e3d9184f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"messages": [{"content": "You are a helpful assistant that uses tools
+      and provides follow-up responses", "role": "system"}, {"content": "You are a
+      helpful assistant that uses tools and provides follow-up responses", "role":
+      "system"}, {"content": [{"type": "text", "text": "What time is it? Please tell
+      me after you get the time."}], "role": "user"}, {"role": "assistant", "content":
+      "", "tool_calls": [{"id": "call_eBKgwOnIRT6HHxSXKKxvY5js", "type": "function",
+      "function": {"name": "get_time", "arguments": "{}"}}]}, {"tool_call_id": "call_eBKgwOnIRT6HHxSXKKxvY5js",
+      "role": "tool", "name": "get_time", "content": "\"3:45 PM\""}, {"content": [{"type":
+      "text", "text": "Please increment the counter and tell me the result."}], "role":
+      "user"}, {"role": "assistant", "content": "", "tool_calls": [{"id": "call_RqNS2836xTphZqbKT8LHMHtm",
+      "type": "function", "function": {"name": "increment_counter", "arguments": "{}"}}]},
+      {"tool_call_id": "call_RqNS2836xTphZqbKT8LHMHtm", "role": "tool", "name": "increment_counter",
+      "content": "\"Count: 1\""}], "model": "gpt-4o", "temperature": 0, "tool_choice":
+      "auto", "tools": [{"type": "function", "function": {"name": "get_time", "description":
+      "Get the current time", "parameters": {"type": "object", "properties": {}, "required":
+      []}}}, {"type": "function", "function": {"name": "increment_counter", "description":
+      "Increment a counter and return the current count", "parameters": {"type": "object",
+      "properties": {}, "required": []}}}]}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - REDACTED
+      connection:
+      - keep-alive
+      content-length:
+      - '1480'
+      content-type:
+      - application/json
+      cookie:
+      - _cfuvid=StP47i7IbpWBqIobq0Zz1lanGiAYHvQRfWe1hmNKQGE-1756163708303-0.0.1.1-604800000;
+        __cf_bm=nlnxQSa9oq8mTL2pC8fYbQO_irpCiMjEQQOEg6QS2AQ-1756163708-1.0.1.1-2B_IP6xG9VHzZGd4BwEuQTM95S1LPtfkynyPtxDRVgkQeiY3YwJItjifid3yJS.r5V.xQNiRwxa1YakzJAkfZzcT_xd9OoF11d3VrdJZaDk
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.58.1
+      x-stainless-arch:
+      - arm64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - MacOS
+      x-stainless-package-version:
+      - 1.58.1
+      x-stainless-raw-response:
+      - 'true'
+      x-stainless-retry-count:
+      - '0'
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.9
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: "{\n  \"id\": \"chatcmpl-C8ah3YBFVFMxXpgV1ioo35LdnbrRz\",\n  \"object\":
+        \"chat.completion\",\n  \"created\": 1756163709,\n  \"model\": \"gpt-4o-2024-08-06\",\n
+        \ \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\":
+        \"assistant\",\n        \"content\": \"The counter has been incremented, and
+        the current count is 1.\",\n        \"refusal\": null,\n        \"annotations\":
+        []\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\"\n
+        \   }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 160,\n    \"completion_tokens\":
+        16,\n    \"total_tokens\": 176,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\":
+        0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\":
+        {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\":
+        0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\":
+        \"default\",\n  \"system_fingerprint\": \"fp_ff25b2783a\"\n}\n"
+    headers:
+      CF-RAY:
+      - 974eca315835dbbe-LAX
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 Aug 2025 23:15:10 GMT
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-Content-Type-Options:
+      - nosniff
+      access-control-expose-headers:
+      - X-Request-ID
+      alt-svc:
+      - h3=":443"; ma=86400
+      cf-cache-status:
+      - DYNAMIC
+      content-length:
+      - '865'
+      openai-organization:
+      - user-jophf5jvdkzdvofm9pmvtpof
+      openai-processing-ms:
+      - '1107'
+      openai-project:
+      - proj_CcA31jIeoSaOgh02sb4Qn0yc
+      openai-version:
+      - '2020-10-01'
+      x-envoy-upstream-service-time:
+      - '1156'
+      x-ratelimit-limit-requests:
+      - '500'
+      x-ratelimit-limit-tokens:
+      - '30000'
+      x-ratelimit-remaining-requests:
+      - '499'
+      x-ratelimit-remaining-tokens:
+      - '29921'
+      x-ratelimit-reset-requests:
+      - 120ms
+      x-ratelimit-reset-tokens:
+      - 158ms
+      x-request-id:
+      - req_2413359d203d4b828394493af96e3e89
+    status:
+      code: 200
+      message: OK
+version: 1
