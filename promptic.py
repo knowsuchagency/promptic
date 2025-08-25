@@ -17,7 +17,7 @@ from jsonschema import validate as validate_json_schema
 from litellm import completion as litellm_completion
 from pydantic import BaseModel
 
-__version__ = "5.5.2"
+__version__ = "5.5.3"
 
 SystemPrompt = Optional[Union[str, List[str], List[Dict[str, str]]]]
 
@@ -226,7 +226,6 @@ class Promptic:
                 self.state.add_message(msg)
 
         return result
-
 
     def _completion(self, messages: list[dict], **kwargs):
         new_messages = self._set_anthropic_cache(messages)
@@ -862,14 +861,16 @@ class Promptic:
                                         tool_result_messages.append(tool_result_msg)
 
                                         # Store the complete tool call info for later reconstruction
-                                        completed_tool_calls.append({
-                                            "id": tool_info["id"],
-                                            "type": "function",
-                                            "function": {
-                                                "name": tool_info["name"],
-                                                "arguments": args_str
+                                        completed_tool_calls.append(
+                                            {
+                                                "id": tool_info["id"],
+                                                "type": "function",
+                                                "function": {
+                                                    "name": tool_info["name"],
+                                                    "arguments": args_str,
+                                                },
                                             }
-                                        })
+                                        )
 
                                         # Clear after successful execution
                                         del current_tool_calls[current_index]
@@ -891,16 +892,18 @@ class Promptic:
                                 tool_result_messages.append(tool_result_msg)
 
                                 # Store the tool call info even for errors
-                                completed_tool_calls.append({
-                                    "id": tool_info["id"],
-                                    "type": "function",
-                                    "function": {
-                                        "name": tool_info["name"],
-                                        "arguments": tool_info["arguments"]
+                                completed_tool_calls.append(
+                                    {
+                                        "id": tool_info["id"],
+                                        "type": "function",
+                                        "function": {
+                                            "name": tool_info["name"],
+                                            "arguments": tool_info["arguments"],
+                                        },
                                     }
-                                })
+                                )
 
-                               # del current_tool_calls[current_index]
+                            # del current_tool_calls[current_index]
                             continue
             # Stream regular content and accumulate
             if (
@@ -916,7 +919,7 @@ class Promptic:
             function_message = {
                 "role": "assistant",
                 "content": accumulated_response,
-                "tool_calls": completed_tool_calls
+                "tool_calls": completed_tool_calls,
             }
             # Add messages to conversation and state
             messages.append(function_message)
@@ -931,10 +934,15 @@ class Promptic:
                 # trigger a new agent completion with the tool result in state
                 if self.state:
                     # Continue the conversation with the tool results (force non-streaming)
-                    completion_messages, next_response = self._completion([], stream=False)
-                    
+                    completion_messages, next_response = self._completion(
+                        [], stream=False
+                    )
+
                     # Handle the next response (could have more tool calls or final content)
-                    if hasattr(next_response.choices[0].message, "tool_calls") and next_response.choices[0].message.tool_calls:
+                    if (
+                        hasattr(next_response.choices[0].message, "tool_calls")
+                        and next_response.choices[0].message.tool_calls
+                    ):
                         # More tool calls - this needs to be handled recursively, but for now just yield the content
                         if next_response.choices[0].message.content:
                             yield next_response.choices[0].message.content
