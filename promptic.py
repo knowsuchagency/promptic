@@ -309,7 +309,7 @@ class Promptic:
                 call.inputs["messages"] = completion_messages
 
             if (self.completion_kwargs | kwargs).get("stream"):
-                return self._stream_response(response, call)
+                return self._stream_response(response, messages, call)
 
             for choice in response.choices:
                 # Handle tool calls if present

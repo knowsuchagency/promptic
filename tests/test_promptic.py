@@ -1977,3 +1977,97 @@ def test_schema_simplification(model):
     assert isinstance(result, TestModel)
     assert result.name == "Bob"
     assert result.age == 25
+
+
+# ---------------------------------------------------------------------------
+# Regression test: .message() streaming + tools arity bug
+#
+# Before the fix, `_stream_response` was called with 2 positional args:
+#   self._stream_response(response, call)
+# But its signature is:
+#   def _stream_response(self, response, messages, call=None)
+# So `call` would bind to `messages`, and the first `messages.append(...)` inside
+# `_stream_response` would raise AttributeError.  No VCR / network needed —
+# we inject a fake create_completion_fn that returns a synthetic stream iterator.
+# ---------------------------------------------------------------------------
+
+
+def _make_fake_stream_chunk(
+    *, tool_id=None, tool_name=None, tool_index=None, args=None, content=None
+):
+    """Build a minimal chunk object that mimics an OpenAI/litellm streaming delta."""
+    import types
+
+    def ns(**kw):
+        return types.SimpleNamespace(**kw)
+
+    if tool_id is not None:
+        # First chunk: announce tool call with id + name
+        tool_call_obj = ns(
+            id=tool_id,
+            index=tool_index,
+            function=ns(name=tool_name, arguments=""),
+        )
+        delta = ns(tool_calls=[tool_call_obj], content=None)
+    elif args is not None:
+        # Subsequent chunk: accumulate arguments (no id)
+        tool_call_obj = ns(
+            id=None,
+            index=tool_index,
+            function=ns(name=None, arguments=args),
+        )
+        delta = ns(tool_calls=[tool_call_obj], content=None)
+    else:
+        # Regular text chunk
+        delta = ns(tool_calls=None, content=content)
+
+    choice = ns(delta=delta)
+    return ns(choices=[choice])
+
+
+def _make_fake_completion_fn(stream_chunks):
+    """Return a callable that ignores its arguments and yields the given chunks."""
+
+    def fake_completion_fn(**kwargs):
+        return iter(stream_chunks)
+
+    return fake_completion_fn
+
+
+def test_message_stream_with_tools_no_arity_error():
+    """Regression: .message(stream=True) must pass `messages` to _stream_response.
+
+    Simulates a streamed tool call (get_time → '{}') via an injected fake
+    create_completion_fn so no network / VCR cassette is needed.
+    The bug caused AttributeError when _stream_response tried messages.append(...)
+    because `call` (None) was mis-bound to the `messages` parameter.
+    """
+    tool_mock = Mock(return_value="12:00 PM")
+
+    # Build streaming chunks:
+    #  1. Tool call announcement  (id + name)
+    #  2. Tool arguments chunk    ('{}' — complete JSON, triggers execution)
+    #  3. Final text chunk
+    chunks = [
+        _make_fake_stream_chunk(
+            tool_id="call_abc123", tool_name="get_time", tool_index=0
+        ),
+        _make_fake_stream_chunk(args="{}", tool_index=0),
+        _make_fake_stream_chunk(content="The time is 12:00 PM."),
+    ]
+
+    p = Promptic(
+        model="gpt-4o",
+        create_completion_fn=_make_fake_completion_fn(chunks),
+    )
+
+    @p.tool
+    def get_time():
+        """Get the current time"""
+        return tool_mock()
+
+    # Drive the generator — pre-fix this raises AttributeError on messages.append()
+    result = "".join(p.message("What time is it?", stream=True))
+
+    assert "12:00 PM" in result
+    tool_mock.assert_called_once()
